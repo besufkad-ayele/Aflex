@@ -7,6 +7,10 @@ export const metadata: Metadata = {
     template: "%s | AFLEX Academy",
   },
   description: "African Leadership Excellence Academy: a federal institution for public leadership, research, and Africa's renaissance.",
+  icons: {
+    icon: [{ url: "/images/aflex-icon.png", type: "image/png" }],
+    apple: [{ url: "/images/aflex-icon.png", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

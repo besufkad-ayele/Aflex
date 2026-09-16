@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { CAMPUS_METADATA } from "@/lib/campus-data";
 import { InquiryForm, PageFrame, SectionTitle } from "@/components/page-primitives";
 
 function ContactFormWrapper() {
@@ -13,6 +15,8 @@ function ContactFormWrapper() {
 }
 
 export default function Contact() {
+  const { coordinates, googleMapsEmbedUrl, googleMapsUrl } = CAMPUS_METADATA;
+
   return (
     <PageFrame 
       active="Contact" 
@@ -50,21 +54,31 @@ export default function Contact() {
               </p>
             </div>
 
-            <div 
-              style={{
-                marginTop: "32px",
-                padding: "24px",
-                background: "var(--black)",
-                color: "var(--white)",
-                borderRadius: "4px",
-                border: "1px solid var(--line-dark)"
-              }}
-            >
-              <span className="mono" style={{ color: "var(--gold)" }}>COORDINATES</span>
-              <h4 style={{ margin: "8px 0 4px", fontSize: "16px" }}>9°11&apos;08.4&quot;N 38°44&apos;52.8&quot;E</h4>
-              <p style={{ color: "var(--muted-dark)", margin: 0, fontSize: "13px" }}>
+            <div className="contact-coordinates-card">
+              <span className="mono">COORDINATES</span>
+              <h4>{coordinates.formatted}</h4>
+              <p>
                 Elevation: 2,450 meters above sea level · Sululta Highlands
               </p>
+              <Link className="text-link contact-map-link" href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
+                <span>Open in Google Maps</span>
+                <span>↗</span>
+              </Link>
+            </div>
+
+            <div className="contact-map-wrap">
+              <div className="contact-map-header">
+                <span className="mono">CAMPUS LOCATION</span>
+                <span className="contact-map-live">LIVE MAP</span>
+              </div>
+              <iframe
+                title="AFLEX Academy Sululta Campus location map"
+                className="contact-map-embed"
+                src={googleMapsEmbedUrl}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
             </div>
           </div>
 
@@ -75,4 +89,4 @@ export default function Contact() {
       </section>
     </PageFrame>
   );
-}
+}

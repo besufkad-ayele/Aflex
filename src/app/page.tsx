@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { SiteFooter, SiteHeader, Weave } from "@/components/site-shell";
+import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { PanAfricanHeritage } from "@/components/pan-african-heritage";
 import { ResearchPolicySection } from "@/components/research-policy-section";
 import { HomeEventsStrip } from "@/components/home-events-strip";
@@ -147,7 +147,6 @@ export default function Home() {
         </div>
       </div>
       <div className="hero-caption mono">01 / SULULTA CAMPUS<br />ELEVATION 2,450M</div>
-      <Weave dark />
     </section>
     
     <section className="news-strip" id="news">
@@ -210,12 +209,13 @@ export default function Home() {
               style={{ "--stack-index": idx } as React.CSSProperties}
             >
               <div className="stacked-card-tab">
+                <img src="/images/aflex-icon.png" alt="" className="stacked-card-tab-logo" aria-hidden="true" />
                 <span className="stacked-tab-dot" />
                 <span>{program.code}</span>
               </div>
               <div className="stacked-card-inner">
                 <div className="stacked-card-left">
-                  <h3>{program.title}</h3>
+                  <h3><span>{program.code.split("/")[0]?.trim()}</span> {program.title}</h3>
                   <div className="stacked-card-separator" />
                   <p>{program.description}</p>
                   
@@ -273,11 +273,11 @@ export default function Home() {
           <div className="campus-copy-box">
             <span className="eyebrow" style={{ color: "var(--gold)" }}>WHY SULULTA</span>
             <h2>
-              A campus with<br />
-              <em>room to think.</em>
+              Sululta is the future for<br />
+              <em>Africa&apos;s solutions.</em>
             </h2>
             <p>
-              In the highland quiet of Sululta, the academy offers a conducive environment for learning: training halls, accommodation, a courtyard, and spaces for the conversations that matter.
+              From leadership and governance to energy, trade, and continental diplomacy — Sululta is where Africa shapes answers that work in every aspect of public life.
             </p>
             <Link className="button button-outline light" href="/about">
               <span>Discover the campus</span>

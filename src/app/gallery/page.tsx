@@ -2,15 +2,7 @@
 
 import { useState } from "react";
 import { PageFrame, SectionTitle } from "@/components/page-primitives";
-
-const galleryItems = [
-  { id: 1, album: "Campus", title: "Sululta highland campus at sunrise", shape: "tall", image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1200&q=85" },
-  { id: 2, album: "Cohorts & Events", title: "Executive seminar cohort in deliberation", shape: "wide", image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=85" },
-  { id: 3, album: "Pan-Africanism Forum", title: "Pan-African policy roundtable & delegates", shape: "standard", image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=85" },
-  { id: 4, album: "Green Legacy Program", title: "Environmental stewardship on campus grounds", shape: "tall", image: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1200&q=85" },
-  { id: 5, album: "Campus", title: "Central courtyard and quiet study pavilion", shape: "standard", image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=85" },
-  { id: 6, album: "Cohorts & Events", title: "Graduation ceremony & cohort celebration", shape: "wide", image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=85" }
-];
+import { galleryItems } from "@/lib/gallery-data";
 
 const albums = ["All albums", "Campus", "Cohorts & Events", "Pan-Africanism Forum", "Green Legacy Program"];
 

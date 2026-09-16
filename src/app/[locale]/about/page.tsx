@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { SiteFooter, SiteHeader, Weave } from "@/components/site-shell";
+import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { copy, getLocale, locales } from "@/lib/i18n";
 import { AboutCampusSlideshow } from "@/components/about-campus-slideshow";
+import { AboutHeroSection } from "@/components/about-hero-section";
 import { AboutLeadershipSection } from "@/components/about-leadership-section";
 
 export function generateStaticParams() {
@@ -21,14 +21,7 @@ export default async function LocalizedAbout({ params }: PageProps) {
     <>
       <SiteHeader active="About AFLEX" locale={locale} />
       <main id="main-content" lang={locale}>
-        <section className="page-header blue-section">
-          <div className="container">
-            <span className="mono breadcrumb">HOME <b>/</b> {text.crumb}</span>
-            <h1>{text.title}</h1>
-            <p>{text.intro}</p>
-          </div>
-          <Weave dark />
-        </section>
+        <AboutHeroSection />
 
         <section className="message-section section">
           <div className="container message-grid">
@@ -63,15 +56,15 @@ export default async function LocalizedAbout({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="section vision-section" style={{ background: "#000", color: "#fff", borderTop: "1px solid rgba(212,175,55,0.2)" }}>
+        <section className="section vision-section about-light-section">
           <div className="container vision-grid">
-            <article>
-              <span className="eyebrow" style={{ color: "var(--gold)" }}>01 / {text.vision}</span>
+            <article className="about-light-card">
+              <span className="eyebrow">01 / {text.vision}</span>
               <h2>{text.vision}</h2>
             </article>
-            <article>
-              <span className="eyebrow" style={{ color: "var(--gold)" }}>02 / {text.mission}</span>
-              <p className="lead" style={{ color: "#fff" }}>
+            <article className="about-light-card">
+              <span className="eyebrow">02 / {text.mission}</span>
+              <p className="lead">
                 AFLEX develops ethical, visionary leaders capable of meaningful change across public, private, and civic life.
               </p>
             </article>
@@ -95,18 +88,18 @@ export default async function LocalizedAbout({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="section pillars-section" style={{ background: "#050507", color: "#fff", borderTop: "1px solid rgba(212,175,55,0.2)" }}>
+        <section className="section pillars-section about-light-section about-pillars-light">
           <div className="container">
             <div className="pillars-intro">
-              <span className="eyebrow" style={{ color: "var(--gold)" }}>{text.pillars}</span>
+              <span className="eyebrow">{text.pillars}</span>
               <h2>{text.team}</h2>
             </div>
             <div className="pillar-grid">
               {["Innovate", "Integrate", "Impact"].map((value, index) => (
-                <article key={value} style={{ borderTop: "1px solid rgba(212,175,55,0.3)" }}>
-                  <span className="mono" style={{ color: "var(--gold)" }}>0{index + 1}</span>
-                  <h3 style={{ color: "#fff" }}>{value}</h3>
-                  <p style={{ color: "rgba(255,255,255,0.85)" }}>{text.team}</p>
+                <article key={value} className="about-pillar-card">
+                  <span className="mono pillar-code">0{index + 1}</span>
+                  <h3>{value}</h3>
+                  <p>{text.team}</p>
                 </article>
               ))}
             </div>

@@ -31,9 +31,9 @@ export const CAMPUS_METADATA = {
   elevation: "2,450m – 2,600m above sea level",
   location: "Sululta, Oromia Special Zone, Ethiopia (~25km North of Addis Ababa)",
   coordinates: {
-    lat: 9.10841,
-    lng: 38.72522,
-    formatted: "9°06'30.3\"N 38°43'30.8\"E"
+    lat: 9.185667,
+    lng: 38.748,
+    formatted: "9°11'08.4\"N 38°44'52.8\"E"
   },
   phones: {
     campusDirect: "+251 118 931 257",
@@ -41,7 +41,8 @@ export const CAMPUS_METADATA = {
     emergency: "+251 118 931 999"
   },
   email: "facilities@aflex.gov.et",
-  googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=9.10841,38.72522"
+  googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=9.185667,38.748",
+  googleMapsEmbedUrl: "https://maps.google.com/maps?q=9.185667,38.748&hl=en&z=15&output=embed"
 };
 
 export const CAMPUS_FACILITIES: CampusFacility[] = [

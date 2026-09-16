@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { copy, getLocale, localeNames, locales, type Locale } from "@/lib/i18n";
 import { searchIndex } from "@/lib/search-index";
+import { BrandLogo } from "@/components/brand-logo";
 import { OnlineLearningModal } from "@/components/online-learning-modal";
 import { FloatingQuickConnect } from "@/components/floating-quick-connect";
 
@@ -95,7 +96,13 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
       </div>
     </div>
     <header className={scrolled ? "site-header scrolled" : "site-header"}><div className="container nav-inner">
-      <Link href={route("/")} className="wordmark" aria-label="AFLEX Academy home"><span className="seal" aria-hidden="true"><i /><i /><i /></span><span><strong>AFLEX</strong><small>ACADEMY</small></span></Link>
+      <Link href={route("/")} className="wordmark brand-wordmark" aria-label="AFLEX Academy home">
+        <img src="/images/aflex-icon.png" alt="" className="brand-nav-icon" aria-hidden="true" />
+        <span>
+          <strong>AFLEX</strong>
+          <small>ACADEMY</small>
+        </span>
+      </Link>
       <nav className={menuOpen ? "main-nav is-open" : "main-nav"} aria-label="Primary navigation">
         {navItems.map(([label, href], index) => <Link key={label} className={active === label ? "active" : ""} href={index < 2 ? route(href) : localized ? route(href) : href} onClick={() => setMenuOpen(false)}>{labels[index]}</Link>)}
         <Link href={localized ? route("/contact") : "/contact"} onClick={() => setMenuOpen(false)}>{labels[5]}</Link>
@@ -121,16 +128,8 @@ export function SiteFooter() {
       <footer className="site-footer" id="contact">
         <div className="container footer-grid">
           <div className="footer-intro">
-            <div className="wordmark">
-              <span className="seal" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-              </span>
-              <span>
-                <strong>AFLEX</strong>
-                <small>ACADEMY</small>
-              </span>
+            <div className="wordmark brand-wordmark">
+              <BrandLogo variant="full" />
             </div>
             <p>A premier institution for leadership excellence, research, and Africa&apos;s renaissance.</p>
             <p className="mono">
@@ -243,6 +242,9 @@ export function SiteFooter() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="footer-wordmark-banner" aria-hidden="true">
+          <span className="footer-wordmark-text">AFLEX</span>
         </div>
         <div className="container footer-bottom">
           <span>© 2026 AFLEX Academy · All Rights Reserved</span>

@@ -164,6 +164,81 @@ const boardMembers: LeaderProfile[] = [
   }
 ];
 
+function LeaderExpandedCard({ leader, index }: { leader: LeaderProfile; index: number }) {
+  return (
+    <article
+      className="horizontal-card expanded card-gold executive-always-expanded"
+      style={{ animationDelay: `${index * 0.12}s` }}
+    >
+      <div className="card-top-photo-box">
+        <img src={leader.image} alt={leader.name} className="card-top-photo-img" />
+      </div>
+      <div className="card-bottom-extension">
+        <div className="card-extension-badge-row">
+          <span className="card-extension-badge">{leader.badge}</span>
+        </div>
+        <h4 className="card-extension-name">{leader.name}</h4>
+        <p className="card-extension-role">{leader.role}</p>
+        <div className="card-extension-accent-line">
+          <div className="card-extension-accent-dot" />
+        </div>
+        <p className="card-extension-bio">{leader.bio}</p>
+        {leader.responsibilities && (
+          <div className="card-extension-responsibilities">
+            <span className="responsibilities-title">PORTFOLIO & DIRECTIVES:</span>
+            <ul>
+              {leader.responsibilities.map((item, idx) => (
+                <li key={idx}>
+                  <span className="list-marker">✦</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {leader.externalUrl && (
+          <div className="card-extension-cta">
+            <a
+              href={leader.externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="extension-profile-btn"
+            >
+              <span>Official Executive Profile</span>
+              <span>↗</span>
+            </a>
+          </div>
+        )}
+      </div>
+    </article>
+  );
+}
+
+function ExecutiveShowcase({ leaders }: { leaders: LeaderProfile[] }) {
+  return (
+    <div className="leadership-strip-group executive-golden-strip executive-all-expanded">
+      <div className="leadership-strip-header executive-showcase-header">
+        <div className="leadership-badge-pill">
+          <span className="leadership-pill-dot" style={{ background: "#D4AF37", boxShadow: "0 0 8px #D4AF37" }} />
+          <span>EXECUTIVE DIRECTORATE</span>
+        </div>
+        <h3 className="strip-title">Senior Executive Team</h3>
+        <p className="strip-subtitle">
+          Directing the Academy&apos;s day-to-day operations, curriculum rigor, and continental statecraft flagships.
+        </p>
+      </div>
+
+      <div className="horizontal-accordion-container executive-expanded-container">
+        <div className="horizontal-accordion-track executive-expanded-track">
+          {leaders.map((leader, index) => (
+            <LeaderExpandedCard key={leader.id} leader={leader} index={index} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface HorizontalStripProps {
   title: string;
   subtitle: string;
@@ -293,7 +368,7 @@ export function AboutLeadershipSection({ locale }: AboutLeadershipSectionProps) 
     <section className="horizontal-leadership-section" id="governance">
       <div className="container">
         {/* Section Master Heading (No Tab Switcher Needed) */}
-        <div className="leadership-master-header">
+        <div className="leadership-master-header leadership-master-header-centered">
           <div className="leadership-badge-pill">
             <span className="leadership-pill-dot" />
             <span>ACADEMY GOVERNANCE & STEWARDSHIP</span>
@@ -302,20 +377,12 @@ export function AboutLeadershipSection({ locale }: AboutLeadershipSectionProps) 
             Leadership & <em>Governing Stewardship.</em>
           </h2>
           <p>
-            Entrusted with the mandate to shape Africa&apos;s premier institution for leadership excellence, policy research, and continental transformation. Click on any leader to expand their detailed biography and directives.
+            Entrusted with the mandate to shape Africa&apos;s premier institution for leadership excellence, policy research, and continental transformation.
           </p>
         </div>
 
-        {/* 1. Senior Executive Team Strip (Golden Theme) */}
-        <HorizontalStrip
-          title="Senior Executive Team"
-          subtitle="Directing the Academy's day-to-day operations, curriculum rigor, and continental statecraft flagships."
-          badgeTitle="EXECUTIVE DIRECTORATE"
-          badgeDotColor="#D4AF37"
-          leaders={seniorExecutives}
-          theme="gold"
-          defaultActiveId="zadig-abreha"
-        />
+        {/* 1. Senior Executive Team — all profiles visible, centered */}
+        <ExecutiveShowcase leaders={seniorExecutives} />
 
         {/* 2. AFLEX Board Members Strip (Governing Board) */}
         <HorizontalStrip

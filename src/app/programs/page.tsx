@@ -1,18 +1,8 @@
 import Link from "next/link";
-import { DocumentRow, PageFrame, SectionTitle } from "@/components/page-primitives";
+import { PageFrame, SectionTitle } from "@/components/page-primitives";
 import { ProgramsListView } from "@/components/programs-list-view";
 import { ProgramsResearchImpact } from "@/components/programs-research-impact";
-
-const themes = [
-  "Pan-Africanism",
-  "Political Economy",
-  "State Leadership",
-  "Nation Building",
-  "Intellectualism",
-  "Public Diplomacy",
-  "Leadership Personalities",
-  "Institutional Leadership"
-];
+import { ResearchThemesSection } from "@/components/research-themes-section";
 
 export const metadata = {
   title: "Programs & Research",
@@ -99,27 +89,7 @@ export default function Programs() {
       {/* Comprehensive Research Impact & Policy Studies Section */}
       <ProgramsResearchImpact />
 
-      <section className="research-section" style={{ background: "#000000", borderTop: "1px solid rgba(212, 175, 55, 0.2)" }}>
-        <div className="container">
-          <SectionTitle
-            eyebrow="RESEARCH THEMES"
-            title={<>Themes guiding our<br /><em>inquiry.</em></>}
-            copy="Our research practice explores the histories, systems, and ideas that shape African leadership and public life."
-          />
-          <div className="tag-grid">
-            {themes.map((theme) => (
-              <span className="tag" key={theme} style={{ background: "#050507", borderColor: "rgba(212, 175, 55, 0.35)", color: "#fff" }}>
-                {theme}
-              </span>
-            ))}
-          </div>
-          <DocumentRow
-            title="Architectures of Wisdom: Reclaiming African Institutional Philosophy"
-            filename="architectures-of-wisdom-2026.pdf"
-            detail="AFLEX Policy White Paper · 36 Pages PDF"
-          />
-        </div>
-      </section>
+      <ResearchThemesSection />
     </PageFrame>
   );
 }

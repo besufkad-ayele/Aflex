@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { SiteFooter, SiteHeader, Weave } from "@/components/site-shell";
+import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { AboutCampusSlideshow } from "@/components/about-campus-slideshow";
+import { AboutHeroSection } from "@/components/about-hero-section";
 import { AboutLeadershipSection } from "@/components/about-leadership-section";
 import { AboutStorySection } from "@/components/about-story-section";
 
@@ -41,15 +41,7 @@ export default function About() {
     <>
       <SiteHeader active="About AFLEX" />
       <main id="main-content">
-        {/* Page Header */}
-        <section className="page-header blue-section">
-          <div className="container">
-            <span className="mono breadcrumb">HOME <b>/</b> ABOUT AFLEX</span>
-            <h1>About<br /><em>AFLEX.</em></h1>
-            <p>A premier institution for public leadership, policy research, and Africa&apos;s renaissance.</p>
-          </div>
-          <Weave dark />
-        </section>
+        <AboutHeroSection />
         
         {/* Note from the Chief of Academy & Executive Message */}
         <section className="message-section section" style={{ background: "#080808", color: "#fff" }}>
@@ -76,17 +68,17 @@ export default function About() {
         <AboutStorySection />
 
         {/* Vision & Mission Section */}
-        <section className="section vision-section" style={{ background: "#050505", color: "#fff", borderTop: "1px solid rgba(158,140,57,0.25)" }}>
+        <section className="section vision-section about-light-section">
           <div className="container vision-grid">
-            <article style={{ borderLeft: "2px solid var(--gold)", paddingLeft: "24px" }}>
-              <span className="eyebrow" style={{ color: "var(--gold)" }}>01 / VISION</span>
+            <article className="about-light-card">
+              <span className="eyebrow">01 / VISION</span>
               <h2 style={{ fontSize: "clamp(1.8rem, 3.2vw, 2.6rem)", margin: "12px 0 16px" }}>
                 To be the African center of excellence in leadership and to raise <em>elite leaders</em> who realize African prosperity.
               </h2>
             </article>
-            <article style={{ borderLeft: "2px solid var(--gold)", paddingLeft: "24px" }}>
-              <span className="eyebrow" style={{ color: "var(--gold)" }}>02 / MISSION</span>
-              <p className="lead" style={{ color: "#fff", fontSize: "20px", lineHeight: "1.6", margin: "12px 0" }}>
+            <article className="about-light-card">
+              <span className="eyebrow">02 / MISSION</span>
+              <p className="lead" style={{ fontSize: "20px", lineHeight: "1.6", margin: "12px 0" }}>
                 Provide existing and emerging African leaders with premium innovative learning, research, and collaborative experience that enables them to positively impact the lives of Africans.
               </p>
             </article>
@@ -116,21 +108,21 @@ export default function About() {
         </section>
 
         {/* Three Pillars Section */}
-        <section className="section pillars-section" style={{ background: "#070709", color: "#fff", borderTop: "1px solid rgba(158,140,57,0.2)" }}>
+        <section className="section pillars-section about-light-section about-pillars-light">
           <div className="container">
             <div className="pillars-intro">
-              <span className="eyebrow" style={{ color: "var(--gold)" }}>THE THREE PILLARS</span>
+              <span className="eyebrow">THE THREE PILLARS</span>
               <h2>Three engines of<br /><em>continental impact.</em></h2>
-              <p style={{ color: "rgba(255,255,255,0.75)", marginTop: "12px" }}>
+              <p style={{ marginTop: "12px" }}>
                 Leadership Development, Research, and Policy Advisory Services structured into three actionable pillars.
               </p>
             </div>
             <div className="pillar-grid">
               {pillars.map((pillar) => (
-                <article key={pillar.title} style={{ borderTop: "1px solid rgba(158,140,57,0.35)", padding: "28px 0" }}>
-                  <span className="mono" style={{ color: "var(--gold)", fontSize: "11px" }}>{pillar.code}</span>
-                  <h3 style={{ color: "#fff", margin: "16px 0 10px", fontSize: "24px" }}>{pillar.title}</h3>
-                  <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "14px", lineHeight: "1.65" }}>{pillar.text}</p>
+                <article key={pillar.title} className="about-pillar-card">
+                  <span className="mono pillar-code">{pillar.code}</span>
+                  <h3>{pillar.title}</h3>
+                  <p>{pillar.text}</p>
                 </article>
               ))}
             </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { SiteFooter, SiteHeader, Weave } from "@/components/site-shell";
+import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { PanAfricanHeritage } from "@/components/pan-african-heritage";
 import { ResearchPolicySection } from "@/components/research-policy-section";
 import { HomeEventsStrip } from "@/components/home-events-strip";
@@ -140,7 +140,6 @@ export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClien
         </div>
       </div>
       <div className="hero-caption mono">01 / SULULTA CAMPUS<br />ELEVATION 2,450M</div>
-      <Weave dark />
     </section>
     
     <section className="news-strip" id="news">
@@ -290,8 +289,21 @@ export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClien
         <div className="container">
           <div className="campus-copy-box" lang={locale}>
             <span className="eyebrow" style={{ color: "var(--gold)" }}>{text.campus}</span>
-            <h2>{text.campusTitle}</h2>
-            <p>{text.campusCopy}</p>
+            <h2>
+              {locale === "en" ? (
+                <>
+                  Sululta is the future for<br />
+                  <em>Africa&apos;s solutions.</em>
+                </>
+              ) : (
+                text.campusTitle
+              )}
+            </h2>
+            <p>
+              {locale === "en"
+                ? "From leadership and governance to energy, trade, and continental diplomacy — Sululta is where Africa shapes answers that work in every aspect of public life."
+                : text.campusCopy}
+            </p>
             <Link className="button button-outline light" href={`/${locale}/about`}>
               <span>{text.explore}</span>
               <span>↗</span>

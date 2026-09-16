@@ -125,11 +125,26 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
 
   const programsUrl = locale ? `/${locale}/programs` : "/programs";
   const totalSlides = heritageStories.length + 1; // +1 for the Grand Closing Card
+  const maxSlideIndex = totalSlides - 1;
+  const FINALE_HOLD_RATIO = 0.35;
 
-  // Vertical scroll drives horizontal translate
+  const getMaxTranslate = useCallback(() => {
+    if (!trackRef.current) return 0;
+    const cards = trackRef.current.querySelectorAll(".heritage-card");
+    const lastCard = cards[cards.length - 1] as HTMLElement | undefined;
+    if (!lastCard) return 0;
+
+    // Center the 90vw finale card with breathing room on both sides
+    const trackStyle = window.getComputedStyle(trackRef.current);
+    const paddingLeft = parseFloat(trackStyle.paddingLeft) || 0;
+    const sideInset = (window.innerWidth - lastCard.offsetWidth) / 2;
+    return Math.max(0, lastCard.offsetLeft + paddingLeft - sideInset);
+  }, []);
+
+  // Vertical scroll drives horizontal translate; finale slide holds fully visible before release
   useEffect(() => {
     const onScroll = () => {
-      if (!containerRef.current || !trackRef.current) return;
+      if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const scrollHeight = containerRef.current.offsetHeight - window.innerHeight;
       if (scrollHeight <= 0) return;
@@ -138,10 +153,18 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
       const progress = Math.max(0, Math.min(1, scrolled / scrollHeight));
       setScrollProgress(progress);
 
-      const maxTranslate = Math.max(0, trackRef.current.scrollWidth - window.innerWidth + 80);
-      setTranslateX(progress * maxTranslate);
+      const holdStart = 1 - FINALE_HOLD_RATIO;
+      const carouselProgress =
+        progress >= holdStart ? 1 : progress / holdStart;
 
-      const currentIndex = Math.min(totalSlides - 1, Math.floor(progress * totalSlides));
+      const maxTranslate = getMaxTranslate();
+      const rawPosition = carouselProgress * maxSlideIndex;
+      const currentIndex =
+        progress >= holdStart
+          ? maxSlideIndex
+          : Math.min(maxSlideIndex, Math.round(rawPosition));
+
+      setTranslateX(carouselProgress * maxTranslate);
       setActiveStoryIndex(currentIndex);
     };
 
@@ -153,7 +176,7 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, [totalSlides]);
+  }, [maxSlideIndex, getMaxTranslate]);
 
   const handleStart = (clientX: number) => {
     if (isUnlocked) return;
@@ -206,8 +229,15 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
     };
   }, [isDragging, handleMove, handleEnd]);
 
+  const isFinaleHold = activeStoryIndex === maxSlideIndex;
+
   return (
-    <div className="heritage-pinned-section" ref={containerRef} id="heritage">
+    <div
+      className="heritage-pinned-section"
+      ref={containerRef}
+      id="heritage"
+      style={{ "--heritage-scroll-units": totalSlides + 1.5 } as React.CSSProperties}
+    >
       <div className="heritage-sticky-viewport">
         <div className="container" style={{ width: "100%" }}>
           <div className="heritage-header">
@@ -223,7 +253,7 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
 
             <div className="heritage-scroll-indicator">
               <span className="heritage-scroll-pulse">
-                <span>SCROLL TO EXPLORE</span>
+                <span>{isFinaleHold ? "SCROLL TO CONTINUE" : "SCROLL TO EXPLORE"}</span>
                 <span>↓</span>
               </span>
               <span className="mono" style={{ color: "var(--gold)", fontSize: "14px", fontWeight: 700 }}>
@@ -241,8 +271,11 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
             transform: `translate3d(-${translateX}px, 0, 0)`
           }}
         >
-          {heritageStories.map((story) => (
-            <article className="heritage-card" key={story.id}>
+          {heritageStories.map((story, index) => (
+            <article
+              className={`heritage-card${activeStoryIndex === index ? " heritage-card-active" : ""}`}
+              key={story.id}
+            >
               {/* Media Column with Sculpted Internal Mask */}
               <div className="heritage-card-media-col">
                 <div className="heritage-media-bend-mask">
@@ -301,7 +334,9 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
           ))}
 
           {/* THE GRAND CLOSING FINALE CARD: "BEGIN HERE / The next chapter needs leaders." */}
-          <article className="heritage-card heritage-gold-card">
+          <article
+            className={`heritage-card heritage-gold-card${activeStoryIndex === heritageStories.length ? " heritage-card-active" : ""}`}
+          >
             {/* Left Column Callout */}
             <div className="gold-callout-col">
               <div>
