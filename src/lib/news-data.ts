@@ -11,9 +11,58 @@ export interface NewsItem {
   content: string[];
   keyTakeaways?: string[];
   pressContact?: string;
+  featured?: boolean;
 }
 
 export const newsArticles: NewsItem[] = [
+  {
+    slug: "green-legacy-program-expanded",
+    title: "Green Legacy Program must be expanded widely: HE. Demeke Mekonen",
+    category: "PRESS",
+    date: "20.02.23",
+    readTime: "4 MIN READ",
+    image: "/images/news1.jpg",
+    author: "Strategic Communications",
+    authorRole: "AFLEX Media Desk",
+    featured: true,
+    excerpt:
+      "The FDRE Deputy Prime Minister and Foreign Affairs Minister, Mr. Demeke Mekonen, stated that the Green Legacy Program should be widely continued for its continental and international benefits.",
+    keyTakeaways: [
+      "Deputy Prime Minister Demeke Mekonen called for the Green Legacy Program to be expanded widely.",
+      "The program delivers continental and international environmental and diplomatic benefits.",
+      "Remarks were delivered at AFLEX during the first Pan-Africanism Forum.",
+    ],
+    content: [
+      "The Green Legacy Program has great continental and international benefits. The FDRE Deputy Prime Minister and Foreign Affairs Minister, Mr. Demeke Mekonen, stated that the Green Legacy Program should be widely continued.",
+      "The Deputy Prime Minister, who attended the first Pan-Africanism Forum held at the African Leadership Excellence Academy, said Pan-Africanism in the 21st century must be grounded in shared responsibility for the continent’s ecological future as well as its political and economic destiny.",
+      "Speaking at the AFLEX campus during the forum, H.E. Demeke Mekonen underscored that tree-planting and environmental stewardship are not only national priorities for Ethiopia, but also instruments of continental solidarity—visible in joint planting ceremonies that bring African states together under a common green agenda.",
+      "AFLEX continues to host high-level dialogue that connects leadership development with continental challenges, including climate resilience, public diplomacy, and the renewal of Pan-African thought.",
+    ],
+  },
+  {
+    slug: "first-pan-africanism-forum",
+    title: "AFLEX Launches First Pan-Africanism Forum",
+    category: "ACADEMY",
+    date: "20.02.23",
+    readTime: "5 MIN READ",
+    image: "/images/news2.png",
+    author: "Strategic Communications",
+    authorRole: "AFLEX Media Desk",
+    featured: true,
+    excerpt:
+      "“Reinvigorating and recalibrating Pan-Africanism requires us to disrupt the status quo and leap into the future” — Prime Minister Abiy Ahmed, speaking at the AFLEX Pan-Africanism Forum on the occasion of the AU Summit.",
+    keyTakeaways: [
+      "AFLEX launched its first Pan-Africanism Forum in February 2023 during the AU Summit.",
+      "Prime Minister Abiy Ahmed called for reinvigorating Pan-Africanism as a living idea.",
+      "The forum convened senior African leaders to rethink unity for the 21st century.",
+    ],
+    content: [
+      "“Reinvigorating and recalibrating Pan-Africanism requires us to disrupt the status quo and leap into the future,” said Prime Minister Abiy Ahmed.",
+      "The Prime Minister attended the Pan-Africanism Forum prepared by the African Leadership Excellence Academy (AFLEX) on the occasion of the AU Summit. He stressed the need for Pan-Africanism to flourish as an idea of shared destiny—one that must be renewed for contemporary challenges of security, prosperity, and continental integration.",
+      "Held at the AFLEX campus, the inaugural forum brought together heads of government, diplomats, and scholars to examine how Pan-African philosophy can guide policy and leadership practice in a changing world.",
+      "The Academy framed the gathering as both a scholarly and practical convening: reconnecting liberation-era ideals with the institutional work of building capable African states and a more coherent continental agenda.",
+    ],
+  },
   {
     slug: "leadership-learning-work-ahead",
     title: "Leadership, learning, and the work ahead",
@@ -136,3 +185,5 @@ export const newsArticles: NewsItem[] = [
     ]
   }
 ];
+
+export const featuredNews = newsArticles.filter((item) => item.featured);

@@ -1,49 +1,54 @@
 "use client";
 
 import Link from "next/link";
-import { SiteFooter, SiteHeader, Weave } from "@/components/site-shell";
-import { useState } from "react";
+import { SiteFooter, SiteHeader } from "@/components/site-shell";
+import { useMemo, useState } from "react";
 import { academyEvents, type AcademyEvent } from "@/lib/events-data";
 import { newsArticles, type NewsItem } from "@/lib/news-data";
+import { NewsHeroSection } from "@/components/news-hero-section";
+
+function sortNews(items: NewsItem[]) {
+  return [...items].sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
+}
 
 export default function NewsEventsPage() {
   const [newsCategory, setNewsCategory] = useState<string>("ALL");
   const [selectedEvent, setSelectedEvent] = useState<AcademyEvent | null>(null);
 
-  const filteredNews = newsCategory === "ALL"
-    ? newsArticles
-    : newsArticles.filter((item) => item.category === newsCategory);
+  const filteredNews = useMemo(() => {
+    const base =
+      newsCategory === "ALL"
+        ? newsArticles
+        : newsArticles.filter((item) => item.category === newsCategory);
+    return sortNews(base);
+  }, [newsCategory]);
 
   return (
     <>
       <SiteHeader active="News & Events" />
       <main id="main-content">
-        {/* Page Header */}
-        <section className="page-header blue-section">
-          <div className="container">
-            <span className="mono breadcrumb">HOME <b>/</b> NEWS & EVENTS</span>
-            <h1>News &<br /><em>Events.</em></h1>
-            <p>Stay informed about the latest developments, insights, and upcoming programs at AFLEX Academy.</p>
-          </div>
-          <Weave dark />
-        </section>
+        <NewsHeroSection />
 
         {/* Section 1: LATEST UPDATES · Academy News */}
-        <section className="section" style={{ background: "#050507", color: "#ffffff", padding: "80px 0" }}>
+        <section
+          className="section"
+          id="academy-news"
+          style={{ background: "#050507", color: "#ffffff", padding: "80px 0" }}
+        >
           <div className="container">
             <div className="section-heading" style={{ maxWidth: "800px", marginBottom: "36px" }}>
               <span className="eyebrow" style={{ color: "var(--gold)" }}>
                 LATEST UPDATES
               </span>
               <h2>
-                Academy<br />
+                Academy
+                <br />
                 <em>News.</em>
               </h2>
             </div>
 
-            {/* Category Filter Bar */}
             <div className="leadership-filter-bar" style={{ marginBottom: "40px" }}>
-              {["ALL", "ACADEMY", "CAMPUS", "INSIGHT", "RESEARCH"].map((cat) => (
+              {["ALL", "ACADEMY", "CAMPUS", "INSIGHT", "RESEARCH", "PRESS"].map((cat) => (
                 <button
                   key={cat}
                   type="button"
@@ -55,13 +60,19 @@ export default function NewsEventsPage() {
               ))}
             </div>
 
-            {/* News Items Grid */}
             <div className="news-detailed-grid">
               {filteredNews.map((item) => (
-                <article className="news-editorial-card" key={item.slug}>
+                <article
+                  className={`news-editorial-card ${item.featured ? "is-featured" : ""}`}
+                  key={item.slug}
+                >
                   <div className="news-editorial-thumb">
                     <img src={item.image} alt={item.title} />
-                    <span className="news-editorial-badge">{item.category}</span>
+                    {item.featured ? (
+                      <span className="news-featured-badge">Featured</span>
+                    ) : (
+                      <span className="news-editorial-badge">{item.category}</span>
+                    )}
                   </div>
 
                   <div className="news-editorial-body">
@@ -73,7 +84,10 @@ export default function NewsEventsPage() {
                     <h3>{item.title}</h3>
                     <p>{item.excerpt}</p>
 
-                    <div className="news-editorial-footer" style={{ marginTop: "auto", paddingTop: "16px" }}>
+                    <div
+                      className="news-editorial-footer"
+                      style={{ marginTop: "auto", paddingTop: "16px" }}
+                    >
                       <Link className="text-link news-read-more-link" href={`/news/${item.slug}`}>
                         <span>Read more</span>
                         <span>→</span>
@@ -87,22 +101,32 @@ export default function NewsEventsPage() {
         </section>
 
         {/* Section 2: UPCOMING · Academy Events */}
-        <section className="section" id="events" style={{ background: "#000000", color: "#ffffff", padding: "80px 0", borderTop: "1px solid rgba(212, 175, 55, 0.2)" }}>
+        <section
+          className="section"
+          id="events"
+          style={{
+            background: "#000000",
+            color: "#ffffff",
+            padding: "80px 0",
+            borderTop: "1px solid rgba(212, 175, 55, 0.2)",
+          }}
+        >
           <div className="container">
             <div className="section-heading" style={{ maxWidth: "800px", marginBottom: "44px" }}>
               <span className="eyebrow" style={{ color: "var(--gold)" }}>
                 UPCOMING
               </span>
               <h2>
-                Academy<br />
+                Academy
+                <br />
                 <em>Events.</em>
               </h2>
               <p style={{ color: "rgba(255, 255, 255, 0.85)", fontSize: "16px", marginTop: "12px" }}>
-                Join us for leadership programs, forums, and learning opportunities throughout the year.
+                Join us for leadership programs, forums, and learning opportunities throughout the
+                year.
               </p>
             </div>
 
-            {/* Upcoming Events List */}
             <div className="academy-events-stack">
               {academyEvents.map((event) => (
                 <article key={event.id} className="academy-event-row-card">
@@ -142,7 +166,6 @@ export default function NewsEventsPage() {
           </div>
         </section>
 
-        {/* Modal for Event Agenda / Details */}
         {selectedEvent && (
           <div
             className="leader-detail-overlay"
@@ -172,55 +195,137 @@ export default function NewsEventsPage() {
                   {selectedEvent.title}
                 </h2>
 
-                <div style={{ background: "#000", borderLeft: "3px solid var(--gold)", padding: "14px 18px", borderRadius: "4px", marginBottom: "20px" }}>
-                  <span className="mono" style={{ color: "var(--gold)", fontSize: "11px" }}>VENUE & SCHEDULE</span>
+                <div
+                  style={{
+                    background: "#000",
+                    borderLeft: "3px solid var(--gold)",
+                    padding: "14px 18px",
+                    borderRadius: "4px",
+                    marginBottom: "20px",
+                  }}
+                >
+                  <span className="mono" style={{ color: "var(--gold)", fontSize: "11px" }}>
+                    VENUE & SCHEDULE
+                  </span>
                   <p style={{ margin: "4px 0 0", color: "#fff", fontSize: "14px" }}>
                     📍 {selectedEvent.venue} · {selectedEvent.location} · ⏰ {selectedEvent.time}
                   </p>
                 </div>
 
                 <div style={{ marginBottom: "24px" }}>
-                  <span className="eyebrow" style={{ color: "var(--gold)", fontSize: "11px", marginBottom: "8px" }}>
+                  <span
+                    className="eyebrow"
+                    style={{ color: "var(--gold)", fontSize: "11px", marginBottom: "8px" }}
+                  >
                     CONVENING OVERVIEW
                   </span>
                   {selectedEvent.overview.map((para, idx) => (
-                    <p key={idx} style={{ fontSize: "14px", lineHeight: "1.7", color: "rgba(255, 255, 255, 0.88)", marginBottom: "10px" }}>
+                    <p
+                      key={idx}
+                      style={{
+                        fontSize: "14px",
+                        lineHeight: "1.7",
+                        color: "rgba(255, 255, 255, 0.88)",
+                        marginBottom: "10px",
+                      }}
+                    >
                       {para}
                     </p>
                   ))}
                 </div>
 
-                {/* Event Schedule Agenda */}
                 {selectedEvent.schedule && selectedEvent.schedule.length > 0 && (
                   <div style={{ marginBottom: "24px" }}>
-                    <span className="eyebrow" style={{ color: "var(--gold)", fontSize: "11px", marginBottom: "12px", display: "block" }}>
+                    <span
+                      className="eyebrow"
+                      style={{
+                        color: "var(--gold)",
+                        fontSize: "11px",
+                        marginBottom: "12px",
+                        display: "block",
+                      }}
+                    >
                       PROGRAM SCHEDULE
                     </span>
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                       {selectedEvent.schedule.map((item, idx) => (
-                        <div key={idx} style={{ background: "#050507", border: "1px solid rgba(212, 175, 55, 0.2)", padding: "12px 16px", borderRadius: "4px" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                            <span className="mono" style={{ color: "var(--gold)", fontSize: "12px", fontWeight: 600 }}>{item.time}</span>
-                            {item.speaker && <span className="mono" style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: "11px" }}>{item.speaker}</span>}
+                        <div
+                          key={idx}
+                          style={{
+                            background: "#050507",
+                            border: "1px solid rgba(212, 175, 55, 0.2)",
+                            padding: "12px 16px",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "baseline",
+                            }}
+                          >
+                            <span
+                              className="mono"
+                              style={{ color: "var(--gold)", fontSize: "12px", fontWeight: 600 }}
+                            >
+                              {item.time}
+                            </span>
+                            {item.speaker && (
+                              <span
+                                className="mono"
+                                style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: "11px" }}
+                              >
+                                {item.speaker}
+                              </span>
+                            )}
                           </div>
-                          <h4 style={{ color: "#fff", fontSize: "14px", margin: "4px 0 2px" }}>{item.session}</h4>
-                          <p style={{ color: "rgba(255, 255, 255, 0.75)", fontSize: "12.5px", margin: 0 }}>{item.description}</p>
+                          <h4 style={{ color: "#fff", fontSize: "14px", margin: "4px 0 2px" }}>
+                            {item.session}
+                          </h4>
+                          <p
+                            style={{
+                              color: "rgba(255, 255, 255, 0.75)",
+                              fontSize: "12.5px",
+                              margin: 0,
+                            }}
+                          >
+                            {item.description}
+                          </p>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "20px", borderTop: "1px solid rgba(212, 175, 55, 0.2)", flexWrap: "wrap", gap: "12px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingTop: "20px",
+                    borderTop: "1px solid rgba(212, 175, 55, 0.2)",
+                    flexWrap: "wrap",
+                    gap: "12px",
+                  }}
+                >
                   <div>
-                    <span className="mono" style={{ color: "var(--gold)", fontSize: "12px", display: "block" }}>
+                    <span
+                      className="mono"
+                      style={{ color: "var(--gold)", fontSize: "12px", display: "block" }}
+                    >
                       STATUS: {selectedEvent.status.toUpperCase()}
                     </span>
                   </div>
                   <Link
                     className="button button-primary"
                     href={`/contact?event=${selectedEvent.id}`}
-                    style={{ background: "var(--gold)", color: "#000", fontWeight: 600, fontSize: "13px" }}
+                    style={{
+                      background: "var(--gold)",
+                      color: "#000",
+                      fontWeight: 600,
+                      fontSize: "13px",
+                    }}
                   >
                     <span>Register interest</span>
                     <span>→</span>

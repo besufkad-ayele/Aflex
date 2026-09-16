@@ -250,3 +250,6 @@ export const vacancies: Vacancy[] = [
 export function getVacancyById(id: string): Vacancy | undefined {
   return vacancies.find((v) => v.id === id);
 }
+
+/** Open roles shown on the utility-bar Vacancies badge */
+export const openVacancyCount = vacancies.length;

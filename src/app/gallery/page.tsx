@@ -1,160 +1,241 @@
 "use client";
 
-import { useState } from "react";
-import { PageFrame, SectionTitle } from "@/components/page-primitives";
-import { galleryItems } from "@/lib/gallery-data";
+import { useMemo, useState } from "react";
+import { SiteFooter, SiteHeader } from "@/components/site-shell";
+import { SectionTitle } from "@/components/page-primitives";
+import { GalleryHeroSection } from "@/components/gallery-hero-section";
+import {
+  galleryAlbums,
+  galleryItems,
+  type GalleryItem,
+  type GalleryMediaType,
+} from "@/lib/gallery-data";
 
-const albums = ["All albums", "Campus", "Cohorts & Events", "Pan-Africanism Forum", "Green Legacy Program"];
+type MediaFilter = "all" | GalleryMediaType;
 
 export default function Gallery() {
+  const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
   const [activeAlbum, setActiveAlbum] = useState("All albums");
-  const [selectedPhoto, setSelectedPhoto] = useState<typeof galleryItems[0] | null>(null);
+  const [selected, setSelected] = useState<GalleryItem | null>(null);
 
-  const filteredItems = activeAlbum === "All albums"
-    ? galleryItems
-    : galleryItems.filter((item) => item.album === activeAlbum);
+  const filteredItems = useMemo(() => {
+    return galleryItems.filter((item) => {
+      const mediaOk = mediaFilter === "all" || item.type === mediaFilter;
+      const albumOk = activeAlbum === "All albums" || item.album === activeAlbum;
+      return mediaOk && albumOk;
+    });
+  }, [mediaFilter, activeAlbum]);
+
+  const photoCount = galleryItems.filter((i) => i.type === "photo").length;
+  const videoCount = galleryItems.filter((i) => i.type === "video").length;
 
   return (
-    <PageFrame 
-      active="Gallery" 
-      crumb="Gallery" 
-      title="Gallery & Resources" 
-      intro="A visual archive of the people, spaces, and intellectual life that make the academy a place of transformative practice."
-    >
-      <section className="section">
-        <div className="container">
-          <SectionTitle 
-            eyebrow="THE ARCHIVE" 
-            title={<>See the academy<br /><em>in practice.</em></>} 
-            copy="Explore photographs from our Sululta campus, cohort convenings, and continental symposiums."
-          />
+    <>
+      <SiteHeader active="Gallery" />
+      <main id="main-content">
+        <GalleryHeroSection />
 
-          <div className="filter-bar gallery-filters">
-            {albums.map((album) => (
-              <button 
-                key={album}
-                className={`filter ${activeAlbum === album ? "active" : ""}`}
-                onClick={() => setActiveAlbum(album)}
+        <section className="section gallery-archive-section" id="archive">
+          <div className="container">
+            <SectionTitle
+              eyebrow="THE ARCHIVE"
+              title={
+                <>
+                  See the academy
+                  <br />
+                  <em>in practice.</em>
+                </>
+              }
+              copy="Browse a Pinterest-style mosaic of campus photography and motion from Sululta — filter by photos, videos, or album."
+            />
+
+            <div className="gallery-media-tabs" role="tablist" aria-label="Media type">
+              <button
                 type="button"
+                role="tab"
+                aria-selected={mediaFilter === "all"}
+                className={`gallery-media-tab ${mediaFilter === "all" ? "active" : ""}`}
+                onClick={() => setMediaFilter("all")}
               >
-                {album}
+                All <b>{galleryItems.length}</b>
               </button>
-            ))}
-          </div>
-
-          <div className="masonry-grid">
-            {filteredItems.map((item) => (
-              <figure 
-                className={`gallery-item ${item.shape}`} 
-                key={item.id}
-                onClick={() => setSelectedPhoto(item)}
-                style={{ cursor: "pointer" }}
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mediaFilter === "photo"}
+                className={`gallery-media-tab ${mediaFilter === "photo" ? "active" : ""}`}
+                onClick={() => setMediaFilter("photo")}
               >
-                <div 
-                  className="gallery-image"
-                  style={{
-                    backgroundImage: `linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.65)), url(${item.image})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    transition: "transform 0.25s ease, box-shadow 0.25s ease"
-                  }}
-                >
-                  <span className="mono" style={{ background: "rgba(0,0,0,0.8)", border: "1px solid var(--gold)", color: "var(--gold)" }}>
-                    {item.album} ↗
-                  </span>
-                </div>
-                <figcaption style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span>{item.title}</span>
-                  <span className="mono" style={{ color: "var(--muted-light)", fontSize: "11px" }}>Expand ⌕</span>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        </div>
-      </section>
+                Photos <b>{photoCount}</b>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mediaFilter === "video"}
+                className={`gallery-media-tab ${mediaFilter === "video" ? "active" : ""}`}
+                onClick={() => setMediaFilter("video")}
+              >
+                Videos <b>{videoCount}</b>
+              </button>
+            </div>
 
-      {/* Lightbox Preview Modal */}
-      {selectedPhoto && (
-        <div className="lightbox-overlay" role="dialog" aria-modal="true" onClick={() => setSelectedPhoto(null)}>
-          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
-            <div style={{ position: "relative" }}>
-              <img src={selectedPhoto.image} alt={selectedPhoto.title} />
-              <button 
-                type="button" 
-                onClick={() => setSelectedPhoto(null)}
-                style={{
-                  position: "absolute",
-                  top: "16px",
-                  right: "16px",
-                  background: "rgba(0,0,0,0.75)",
-                  border: "1px solid rgba(255,255,255,0.3)",
-                  color: "white",
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  cursor: "pointer",
-                  fontSize: "18px"
-                }}
-                aria-label="Close photo"
+            <div className="filter-bar gallery-filters">
+              {galleryAlbums.map((album) => (
+                <button
+                  key={album}
+                  className={`filter ${activeAlbum === album ? "active" : ""}`}
+                  onClick={() => setActiveAlbum(album)}
+                  type="button"
+                >
+                  {album}
+                </button>
+              ))}
+            </div>
+
+            <div className="pinterest-masonry">
+              {filteredItems.map((item) => (
+                <figure
+                  className={`pinterest-pin ${item.shape} ${item.type}`}
+                  key={item.id}
+                  onClick={() => setSelected(item)}
+                >
+                  <div className="pinterest-pin-media">
+                    {item.type === "video" ? (
+                      <video
+                        src={item.video}
+                        poster={item.image}
+                        muted
+                        playsInline
+                        preload="metadata"
+                        onMouseEnter={(e) => {
+                          e.currentTarget.play().catch(() => undefined);
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.pause();
+                          e.currentTarget.currentTime = 0;
+                        }}
+                      />
+                    ) : (
+                      <img src={item.image} alt={item.title} loading="lazy" />
+                    )}
+                    <div className="pinterest-pin-shade" />
+                    {item.type === "video" ? (
+                      <span className="pinterest-play" aria-hidden="true">
+                        ▶
+                      </span>
+                    ) : null}
+                    <span className="pinterest-pin-type">
+                      {item.type === "video" ? "Video" : "Photo"}
+                    </span>
+                  </div>
+                  <figcaption>
+                    <span className="mono">{item.album}</span>
+                    <strong>{item.title}</strong>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+
+            {filteredItems.length === 0 ? (
+              <p className="gallery-empty">No items in this view. Try another filter.</p>
+            ) : null}
+          </div>
+        </section>
+
+        {selected && (
+          <div
+            className="lightbox-overlay"
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setSelected(null)}
+          >
+            <div className="lightbox-content lightbox-media" onClick={(e) => e.stopPropagation()}>
+              <button
+                type="button"
+                className="lightbox-close"
+                onClick={() => setSelected(null)}
+                aria-label="Close"
               >
                 ✕
               </button>
-            </div>
-            <div className="lightbox-caption" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div>
-                <span className="mono" style={{ color: "var(--gold)" }}>{selectedPhoto.album}</span>
-                <h4 style={{ margin: "4px 0 0", fontSize: "18px" }}>{selectedPhoto.title}</h4>
+              {selected.type === "video" && selected.video ? (
+                <video
+                  src={selected.video}
+                  poster={selected.image}
+                  controls
+                  autoPlay
+                  playsInline
+                />
+              ) : (
+                <img src={selected.image} alt={selected.title} />
+              )}
+              <div className="lightbox-caption">
+                <div>
+                  <span className="mono" style={{ color: "var(--gold)" }}>
+                    {selected.type === "video" ? "VIDEO" : "PHOTO"} · {selected.album}
+                  </span>
+                  <h4 style={{ margin: "4px 0 0", fontSize: "18px" }}>{selected.title}</h4>
+                </div>
+                <span className="mono" style={{ color: "var(--muted-dark)" }}>
+                  AFLEX ARCHIVE
+                </span>
               </div>
-              <span className="mono" style={{ color: "var(--muted-dark)" }}>AFLEX SULULTA CAMPUS</span>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <section className="section downloads-section">
-        <div className="container">
-          <SectionTitle 
-            eyebrow="PUBLICATIONS & MEDIA" 
-            title={<>Official documents &<br /><em>brochures.</em></>} 
-            copy="Download official institution guidelines, academic calendar summaries, and press materials."
-          />
-          <div className="documents">
-            <div className="document-row">
-              <span className="document-icon">PDF</span>
-              <div>
-                <h3>AFLEX Academy Institutional Overview & Curriculum</h3>
-                <span className="mono">aflex-overview-2026.pdf · 4.8 MB · English / Amharic</span>
+        <section className="section downloads-section">
+          <div className="container">
+            <SectionTitle
+              eyebrow="PUBLICATIONS & MEDIA"
+              title={
+                <>
+                  Official documents &amp;
+                  <br />
+                  <em>brochures.</em>
+                </>
+              }
+              copy="Download official institution guidelines, academic calendar summaries, and press materials."
+            />
+            <div className="documents">
+              <div className="document-row">
+                <span className="document-icon">PDF</span>
+                <div>
+                  <h3>AFLEX Academy Institutional Overview &amp; Curriculum</h3>
+                  <span className="mono">aflex-overview-2026.pdf · 4.8 MB · English / Amharic</span>
+                </div>
+                <a
+                  href="/docs/02-prd.md"
+                  download="AFLEX-Academy-Brochure.pdf"
+                  className="icon-button document-download"
+                  aria-label="Download AFLEX overview"
+                  style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                >
+                  ↓
+                </a>
               </div>
-              <a 
-                href="/docs/02-prd.md" 
-                download="AFLEX-Academy-Brochure.pdf" 
-                className="icon-button document-download" 
-                aria-label="Download AFLEX overview"
-                style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-              >
-                ↓
-              </a>
-            </div>
 
-            <div className="document-row">
-              <span className="document-icon">PDF</span>
-              <div>
-                <h3>Project WILD — Women in Leadership Program Dossier</h3>
-                <span className="mono">project-wild-brief.pdf · 2.1 MB · English</span>
+              <div className="document-row">
+                <span className="document-icon">PDF</span>
+                <div>
+                  <h3>Project WILD — Women in Leadership Program Dossier</h3>
+                  <span className="mono">project-wild-brief.pdf · 2.1 MB · English</span>
+                </div>
+                <a
+                  href="/docs/01-design-system.md"
+                  download="Project-WILD-Brief.pdf"
+                  className="icon-button document-download"
+                  aria-label="Download Project WILD brief"
+                  style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                >
+                  ↓
+                </a>
               </div>
-              <a 
-                href="/docs/01-design-system.md" 
-                download="Project-WILD-Brief.pdf" 
-                className="icon-button document-download" 
-                aria-label="Download Project WILD brief"
-                style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-              >
-                ↓
-              </a>
             </div>
           </div>
-        </div>
-      </section>
-    </PageFrame>
+        </section>
+      </main>
+      <SiteFooter />
+    </>
   );
-}
+}

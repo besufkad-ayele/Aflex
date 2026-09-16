@@ -127,20 +127,23 @@ export function ResearchThemesSection() {
 
         <div className="research-themes-featured">
           <div className="research-themes-doc">
-            <span className="mono research-themes-doc-badge">FEATURED WHITE PAPER · 2026</span>
-            <h3>Architectures of Wisdom: Reclaiming African Institutional Philosophy</h3>
+            <span className="mono research-themes-doc-badge">FEATURED RESEARCH · PAN-AFRICANISM</span>
+            <h3>Pan-Africanism Now: Pan-Africanism for a Changing World</h3>
             <p>
-              A 36-page policy white paper investigating how African public institutions draw from
-              centuries of lived governance philosophy to build agile, ethical state institutions.
+              A commissioned AFLEX study on Pan-Africanism’s meaning for contemporary stability,
+              security, and prosperity—and how Ethiopia can advance continental objectives.
             </p>
-            <Link className="button button-outline" href="/catalog?doc=indigenous-wisdom">
-              <span>Read the full brief</span>
+            <Link className="button button-outline" href="#pan-africanism">
+              <span>Read the project overview</span>
               <span>↗</span>
             </Link>
           </div>
 
-          <div className="research-themes-connect" aria-hidden="true">
-            <img src="/images/aflex-icon.png" alt="" />
+          <div className="research-themes-connect research-themes-connect-photo">
+            <img
+              src="/images/pan1.jpg"
+              alt="Founding Pan-African leaders at an early African unity summit."
+            />
             <p>
               Every AFLEX program is informed by ongoing research across these themes—connecting
               classroom learning to live policy inquiry.

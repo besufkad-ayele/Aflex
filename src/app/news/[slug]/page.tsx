@@ -38,6 +38,9 @@ export default async function ArticlePage({ params }: PageProps) {
             </div>
 
             <div className="article-badge-row">
+              {article.featured ? (
+                <span className="news-featured-badge news-featured-badge-inline">Featured</span>
+              ) : null}
               <span className="news-editorial-badge" style={{ position: "static", display: "inline-block" }}>
                 {article.category}
               </span>

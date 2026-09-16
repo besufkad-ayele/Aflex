@@ -10,6 +10,23 @@ interface ProgramsResearchImpactProps {
 
 const studies = [
   {
+    id: "pan-africanism-now",
+    category: "pan-africanism",
+    categoryLabel: "PAN-AFRICANISM",
+    badge: "COMMISSIONED RESEARCH PROJECT",
+    year: "2026",
+    title: "Pan-Africanism Now: Pan-Africanism for a Changing World",
+    abstract:
+      "Studying Pan-Africanism as an intellectual and political movement for liberation, unity, and self-reliance—and its significance for contemporary stability, security, and prosperity across Africa and the diaspora.",
+    docTitle: "Pan-Africanism Now: Pan-Africanism for a Changing World",
+    pages: "RESEARCH BRIEF · PDF",
+    citation: "AFLEX Policy & Research · Commissioned Study",
+    metrics: [
+      { label: "Thematic Focus", val: "Unity" },
+      { label: "Policy Horizon", val: "Continental" },
+    ],
+  },
+  {
     id: "indigenous-wisdom",
     category: "indigenous",
     categoryLabel: "INDIGENOUS STATECRAFT",
@@ -127,6 +144,13 @@ export function ProgramsResearchImpact({ locale }: ProgramsResearchImpactProps) 
             onClick={() => setActiveCategory("all")}
           >
             All Studies ({studies.length})
+          </button>
+          <button
+            type="button"
+            className={`leadership-filter-btn ${activeCategory === "pan-africanism" ? "active" : ""}`}
+            onClick={() => setActiveCategory("pan-africanism")}
+          >
+            Pan-Africanism
           </button>
           <button
             type="button"

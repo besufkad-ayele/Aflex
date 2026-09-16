@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { SiteHeader, SiteFooter, Weave } from "@/components/site-shell";
+import { FaqStewardAgent } from "@/components/faq-steward-agent";
 
 interface FAQItem {
   id: string;
@@ -148,6 +149,8 @@ export default function FaqPage() {
           </div>
           <Weave dark />
         </section>
+
+        <FaqStewardAgent />
 
         {/* FAQ Search & Interactive Accordions */}
         <section className="section" style={{ background: "#f8f9fa", color: "#111", padding: "64px 0" }}>

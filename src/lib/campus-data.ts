@@ -42,7 +42,8 @@ export const CAMPUS_METADATA = {
   },
   email: "facilities@aflex.gov.et",
   googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=9.185667,38.748",
-  googleMapsEmbedUrl: "https://maps.google.com/maps?q=9.185667,38.748&hl=en&z=15&output=embed"
+  googleMapsEmbedUrl: "https://maps.google.com/maps?q=9.185667,38.748&hl=en&z=15&output=embed",
+  googleMapsDirectionsUrl: "https://www.google.com/maps/dir/?api=1&destination=9.185667,38.748"
 };
 
 export const CAMPUS_FACILITIES: CampusFacility[] = [
