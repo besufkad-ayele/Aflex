@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import type { Locale } from "@/lib/i18n";
 
 export interface LeaderProfile {
@@ -171,7 +172,7 @@ function LeaderExpandedCard({ leader, index }: { leader: LeaderProfile; index: n
       style={{ animationDelay: `${index * 0.12}s` }}
     >
       <div className="card-top-photo-box">
-        <img src={leader.image} alt={leader.name} className="card-top-photo-img" />
+        <Image src={leader.image} alt={leader.name} fill sizes="(max-width: 768px) 100vw, 320px" className="card-top-photo-img" style={{ objectFit: "cover" }} />
       </div>
       <div className="card-bottom-extension">
         <div className="card-extension-badge-row">
@@ -292,7 +293,10 @@ function HorizontalStrip({
               >
                 {/* 1. TOP PORTRAIT PHOTO (Always fully visible at top, never covered) */}
                 <div className="card-top-photo-box">
-                  <img
+                  <Image
+                    fill
+                    sizes="(max-width: 768px) 100vw, 320px"
+                    style={{ objectFit: "cover" }}
                     src={leader.image}
                     alt={leader.name}
                     className="card-top-photo-img"

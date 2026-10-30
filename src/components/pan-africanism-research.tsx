@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const researchAims = [
   "Refocus Africa’s agenda amid global security and pandemic aftershocks",
@@ -10,7 +11,11 @@ export function PanAfricanismResearch() {
   return (
     <section className="pan-africanism-section" id="pan-africanism">
       <div className="pan-africanism-banner">
-        <img
+        <Image
+          fill
+          sizes="(max-width: 768px) 100vw, 1200px"
+          style={{ objectFit: "cover" }}
+          priority
           src="/images/pan1.jpg"
           alt="Historical photograph of founding Pan-African leaders, including Emperor Haile Selassie I and Jomo Kenyatta, at an early African unity summit."
           className="pan-africanism-banner-image"

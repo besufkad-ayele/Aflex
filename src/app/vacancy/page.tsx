@@ -110,7 +110,7 @@ export default function VacancyHubPage() {
         </section>
 
         {/* Search, Filter & Listings Section */}
-        <section className="section" style={{ background: "#f8f9fa", color: "#111", padding: "64px 0" }}>
+        <section className="section" style={{ background: "#f0f5fd", color: "#024696", padding: "64px 0" }}>
           <div className="container">
             
             {/* Filter Bar */}
@@ -136,13 +136,13 @@ export default function VacancyHubPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="search-input-field"
-                  style={{ background: "#fff", borderColor: "#ddd", color: "#111", padding: "12px 16px", borderRadius: "4px" }}
+                  style={{ background: "#fff", borderColor: "rgba(2,70,150,0.2)", color: "#024696", padding: "12px 16px", borderRadius: "4px" }}
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery("")}
-                    style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#888", cursor: "pointer" }}
+                    style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "rgba(2,70,150,0.4)", cursor: "pointer" }}
                   >
                     ✕
                   </button>
@@ -171,7 +171,7 @@ export default function VacancyHubPage() {
                           {pos.category.toUpperCase()} · {pos.type.toUpperCase()}
                         </span>
                         <span style={{ color: "#cbd5e1" }}>•</span>
-                        <span className="mono" style={{ color: "#64748b", fontSize: "12px" }}>
+                        <span className="mono" style={{ color: "rgba(2,70,150,0.6)", fontSize: "12px" }}>
                           REF: {pos.referenceNumber}
                         </span>
                       </div>
@@ -191,11 +191,11 @@ export default function VacancyHubPage() {
                     </p>
 
                     <div style={{ display: "flex", gap: "16px", alignItems: "center", flexWrap: "wrap", borderTop: "1px solid #f1f5f9", paddingTop: "16px" }}>
-                      <span style={{ fontSize: "13px", color: "#64748b" }}>
+                      <span style={{ fontSize: "13px", color: "rgba(2,70,150,0.6)" }}>
                         📍 <strong>Duty Station:</strong> {pos.location}
                       </span>
                       <span style={{ color: "#cbd5e1" }}>•</span>
-                      <span style={{ fontSize: "13px", color: "#64748b" }}>
+                      <span style={{ fontSize: "13px", color: "rgba(2,70,150,0.6)" }}>
                         💼 <strong>Grade:</strong> {pos.gradeLevel}
                       </span>
 
@@ -216,7 +216,7 @@ export default function VacancyHubPage() {
                 <div style={{ padding: "64px 24px", textAlign: "center", background: "#fff", borderRadius: "6px", border: "1px solid #e2e8f0" }}>
                   <span style={{ fontSize: "36px", display: "block", marginBottom: "12px" }}>🔍</span>
                   <h3 style={{ margin: "0 0 8px", fontSize: "20px" }}>No active openings match your criteria</h3>
-                  <p style={{ color: "#64748b", maxWidth: "480px", margin: "0 auto 24px", fontSize: "14px" }}>
+                  <p style={{ color: "rgba(2,70,150,0.6)", maxWidth: "480px", margin: "0 auto 24px", fontSize: "14px" }}>
                     Try selecting a different department category or submit your CV to our Pan-African Talent Registry for future appointments.
                   </p>
                   <button
@@ -260,7 +260,7 @@ export default function VacancyHubPage() {
               <div style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto 48px" }}>
                 <span className="eyebrow" style={{ color: "var(--gold)" }}>SELECTION ARCHITECTURE</span>
                 <h2 style={{ fontSize: "30px", margin: "8px 0 12px" }}>The AFLEX Recruitment Journey</h2>
-                <p style={{ color: "#64748b", fontSize: "15px" }}>
+                <p style={{ color: "rgba(2,70,150,0.6)", fontSize: "15px" }}>
                   A merit-based, transparent 5-stage evaluation process designed to attract Africa&apos;s most capable scholars and leaders.
                 </p>
               </div>
@@ -272,7 +272,7 @@ export default function VacancyHubPage() {
                       {step.num}
                     </span>
                     <h4 style={{ margin: "0 0 8px", fontSize: "16px", color: "#0f172a" }}>{step.title}</h4>
-                    <p style={{ margin: 0, fontSize: "13px", color: "#64748b", lineHeight: "1.5" }}>{step.desc}</p>
+                    <p style={{ margin: 0, fontSize: "13px", color: "rgba(2,70,150,0.6)", lineHeight: "1.5" }}>{step.desc}</p>
                   </div>
                 ))}
               </div>
@@ -393,7 +393,7 @@ export default function VacancyHubPage() {
                 
                 <div>
                   <label style={{ fontSize: "12px", color: "rgba(255,255,255,0.8)", display: "block", marginBottom: "4px" }}>Primary Discipline / Domain *</label>
-                  <select className="search-input-field" style={{ background: "#111", color: "#fff" }}>
+                  <select className="search-input-field" style={{ background: "#ffffff", color: "#024696", borderColor: "rgba(2,70,150,0.25)" }}>
                     <option>Pan-African Governance & Statecraft</option>
                     <option>Public Policy, Economics & Development</option>
                     <option>Executive Leadership & Coaching</option>

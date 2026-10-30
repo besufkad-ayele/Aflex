@@ -153,7 +153,7 @@ export default function FaqPage() {
         <FaqStewardAgent />
 
         {/* FAQ Search & Interactive Accordions */}
-        <section className="section" style={{ background: "#f8f9fa", color: "#111", padding: "64px 0" }}>
+        <section className="section" style={{ background: "#f0f5fd", color: "#024696", padding: "64px 0" }}>
           <div className="container">
             
             {/* Search Box */}
@@ -168,7 +168,7 @@ export default function FaqPage() {
                   style={{
                     background: "#fff",
                     borderColor: "#cbd5e1",
-                    color: "#111",
+                    color: "#024696",
                     padding: "16px 20px",
                     borderRadius: "6px",
                     fontSize: "16px",
@@ -179,7 +179,7 @@ export default function FaqPage() {
                   <button
                     type="button"
                     onClick={() => setSearchQuery("")}
-                    style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#888", cursor: "pointer", fontSize: "16px" }}
+                    style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "rgba(2,70,150,0.4)", cursor: "pointer", fontSize: "16px" }}
                   >
                     ✕
                   </button>
@@ -204,7 +204,7 @@ export default function FaqPage() {
 
             {/* Quick Actions (Expand/Collapse) */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: "860px", margin: "0 auto 16px" }}>
-              <span className="mono" style={{ color: "#64748b", fontSize: "12px" }}>
+              <span className="mono" style={{ color: "rgba(2,70,150,0.6)", fontSize: "12px" }}>
                 Showing {filteredFaqs.length} question{filteredFaqs.length === 1 ? "" : "s"}
               </span>
               <div style={{ display: "flex", gap: "12px" }}>
@@ -219,7 +219,7 @@ export default function FaqPage() {
                 <button
                   type="button"
                   onClick={collapseAll}
-                  style={{ background: "none", border: "none", color: "#64748b", fontSize: "12px", cursor: "pointer" }}
+                  style={{ background: "none", border: "none", color: "rgba(2,70,150,0.6)", fontSize: "12px", cursor: "pointer" }}
                 >
                   Collapse All −
                 </button>
@@ -305,7 +305,7 @@ export default function FaqPage() {
                 <div style={{ padding: "64px 24px", textAlign: "center", background: "#fff", borderRadius: "6px", border: "1px solid #e2e8f0" }}>
                   <span style={{ fontSize: "36px", display: "block", marginBottom: "12px" }}>❓</span>
                   <h3 style={{ margin: "0 0 8px", fontSize: "20px" }}>No matching answers found</h3>
-                  <p style={{ color: "#64748b", maxWidth: "480px", margin: "0 auto 24px", fontSize: "14px" }}>
+                  <p style={{ color: "rgba(2,70,150,0.6)", maxWidth: "480px", margin: "0 auto 24px", fontSize: "14px" }}>
                     Have a specific question not covered here? Reach out directly to our Academy Admissions & Inquiries team.
                   </p>
                   <Link href="/contact" className="button button-primary">

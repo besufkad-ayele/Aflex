@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import {
   portalLinks,
   qrImageUrl,
@@ -210,7 +211,8 @@ export function FloatingQuickConnect() {
 
                 <div className="aflex-qr-display-box">
                   <div className="aflex-qr-frame">
-                    <img
+                    <Image
+                      unoptimized
                       key={active.url}
                       className="aflex-qr-image"
                       src={qrSrc}

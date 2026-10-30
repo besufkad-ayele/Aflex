@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import type { Locale } from "@/lib/i18n";
 
 interface ResearchPolicySectionProps {
@@ -44,7 +45,7 @@ export function ResearchPolicySection({ locale }: ResearchPolicySectionProps) {
           </div>
 
           <div className="research-feature-mark" aria-hidden="true">
-            <img src="/images/aflex-logo.png" alt="" />
+            <Image src="/images/aflex-logo.png" alt="" width={140} height={140} style={{ objectFit: "contain" }} />
           </div>
         </div>
       </div>

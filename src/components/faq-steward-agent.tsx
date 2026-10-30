@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 type ChatRole = "user" | "assistant";
 
@@ -137,7 +138,7 @@ export function FaqStewardAgent() {
           <div className="steward-console-chrome">
             <div className="steward-identity">
               <span className="steward-avatar" aria-hidden="true">
-                <img src="/images/aflex-icon.png" alt="" />
+                <Image src="/images/aflex-icon.png" alt="" width={24} height={24} />
               </span>
               <div>
                 <strong>Sululta Steward</strong>

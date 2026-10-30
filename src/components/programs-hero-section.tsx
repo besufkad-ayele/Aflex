@@ -1,10 +1,15 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function ProgramsHeroSection() {
   return (
     <section className="programs-hero" aria-label="Programs and research">
       <div className="programs-hero-media" aria-hidden="true">
-        <img
+        <Image
+          fill
+          sizes="100vw"
+          priority
+          style={{ objectFit: "cover" }}
           src="/images/pan1.jpg"
           alt=""
           className="programs-hero-image"

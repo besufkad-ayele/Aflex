@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { featuredNews } from "@/lib/news-data";
 
@@ -32,7 +33,11 @@ export function NewsHeroSection() {
     >
       <div className="news-hero-media" aria-hidden="true">
         {slides.map((slide, index) => (
-          <img
+          <Image
+            fill
+            sizes="100vw"
+            priority={index === 0}
+            style={{ objectFit: "cover" }}
             key={slide.slug}
             src={slide.image}
             alt=""

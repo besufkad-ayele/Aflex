@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { programDetails } from "@/lib/programs-data";
 import type { Locale } from "@/lib/i18n";
@@ -60,9 +61,11 @@ export function ProgramsListView({ locale }: ProgramsListViewProps) {
                   </div>
 
                   <div className="program-title-row">
-                    <img
+                    <Image
                       src="/images/aflex-icon.png"
                       alt=""
+                      width={22}
+                      height={22}
                       className="program-card-mark"
                       aria-hidden="true"
                     />
@@ -111,17 +114,26 @@ export function ProgramsListView({ locale }: ProgramsListViewProps) {
                   </div>
                 </div>
 
-                <div className="program-card-media-col">
-                  <img src={img} alt={program.title} className="program-banner-img" />
+                <div className="program-card-media-col" style={{ position: "relative", minHeight: "280px" }}>
+                  <Image
+                    src={img}
+                    alt={program.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 550px"
+                    className="program-banner-img"
+                    style={{ objectFit: "cover" }}
+                  />
                   <div className="program-media-overlay" />
                 </div>
               </div>
 
               {isExpanded && (
                 <div className="program-card-expanded-drawer">
-                  <img
+                  <Image
                     src="/images/aflex-icon.png"
                     alt=""
+                    width={96}
+                    height={96}
                     className="program-drawer-watermark"
                     aria-hidden="true"
                   />

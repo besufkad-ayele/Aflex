@@ -1,17 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { useMemo, useState } from "react";
 import { academyEvents, type AcademyEvent } from "@/lib/events-data";
 import { newsArticles, type NewsItem } from "@/lib/news-data";
 import { NewsHeroSection } from "@/components/news-hero-section";
+import { copy, getLocale, type Locale } from "@/lib/i18n";
 
 function sortNews(items: NewsItem[]) {
   return [...items].sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
 }
 
-export default function NewsEventsPage() {
+export default function NewsEventsPage({ locale = "en" }: { locale?: Locale }) {
+  const loc = getLocale(locale);
+  const text = copy[loc].news;
   const [newsCategory, setNewsCategory] = useState<string>("ALL");
   const [selectedEvent, setSelectedEvent] = useState<AcademyEvent | null>(null);
 
@@ -25,8 +29,8 @@ export default function NewsEventsPage() {
 
   return (
     <>
-      <SiteHeader active="News & Events" />
-      <main id="main-content">
+      <SiteHeader active="News & Events" locale={loc} />
+      <main id="main-content" lang={loc}>
         <NewsHeroSection />
 
         {/* Section 1: LATEST UPDATES · Academy News */}
@@ -38,12 +42,10 @@ export default function NewsEventsPage() {
           <div className="container">
             <div className="section-heading" style={{ maxWidth: "800px", marginBottom: "36px" }}>
               <span className="eyebrow" style={{ color: "var(--gold)" }}>
-                LATEST UPDATES
+                {text.eyebrow}
               </span>
               <h2>
-                Academy
-                <br />
-                <em>News.</em>
+                {text.title}
               </h2>
             </div>
 
@@ -55,7 +57,7 @@ export default function NewsEventsPage() {
                   className={`leadership-filter-btn ${newsCategory === cat ? "active" : ""}`}
                   onClick={() => setNewsCategory(cat)}
                 >
-                  {cat}
+                  {cat === "ALL" ? text.all : cat}
                 </button>
               ))}
             </div>
@@ -66,10 +68,16 @@ export default function NewsEventsPage() {
                   className={`news-editorial-card ${item.featured ? "is-featured" : ""}`}
                   key={item.slug}
                 >
-                  <div className="news-editorial-thumb">
-                    <img src={item.image} alt={item.title} />
+                  <div className="news-editorial-thumb" style={{ position: "relative" }}>
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                      style={{ objectFit: "cover" }}
+                    />
                     {item.featured ? (
-                      <span className="news-featured-badge">Featured</span>
+                      <span className="news-featured-badge">{text.featured}</span>
                     ) : (
                       <span className="news-editorial-badge">{item.category}</span>
                     )}
@@ -88,8 +96,11 @@ export default function NewsEventsPage() {
                       className="news-editorial-footer"
                       style={{ marginTop: "auto", paddingTop: "16px" }}
                     >
-                      <Link className="text-link news-read-more-link" href={`/news/${item.slug}`}>
-                        <span>Read more</span>
+                      <Link
+                        className="text-link news-read-more-link"
+                        href={loc === "en" ? `/news/${item.slug}` : `/${loc}/news/${item.slug}`}
+                      >
+                        <span>{text.readMore}</span>
                         <span>→</span>
                       </Link>
                     </div>
@@ -146,7 +157,7 @@ export default function NewsEventsPage() {
                   <div className="academy-event-actions-col">
                     <Link
                       className="button button-primary academy-event-cta-btn"
-                      href={`/contact?event=${event.id}`}
+                      href={loc === "en" ? `/contact?event=${event.id}` : `/${loc}/contact?event=${event.id}`}
                     >
                       <span>Register interest</span>
                       <span>→</span>
@@ -319,7 +330,7 @@ export default function NewsEventsPage() {
                   </div>
                   <Link
                     className="button button-primary"
-                    href={`/contact?event=${selectedEvent.id}`}
+                    href={loc === "en" ? `/contact?event=${selectedEvent.id}` : `/${loc}/contact?event=${selectedEvent.id}`}
                     style={{
                       background: "var(--gold)",
                       color: "#000",

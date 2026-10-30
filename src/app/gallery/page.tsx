@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { SectionTitle } from "@/components/page-primitives";
 import { GalleryHeroSection } from "@/components/gallery-hero-section";
@@ -116,7 +117,14 @@ export default function Gallery() {
                         }}
                       />
                     ) : (
-                      <img src={item.image} alt={item.title} loading="lazy" />
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        style={{ objectFit: "cover" }}
+                        loading="lazy"
+                      />
                     )}
                     <div className="pinterest-pin-shade" />
                     {item.type === "video" ? (
@@ -167,7 +175,16 @@ export default function Gallery() {
                   playsInline
                 />
               ) : (
-                <img src={selected.image} alt={selected.title} />
+                <div style={{ position: "relative", width: "100%", height: "60vh", minHeight: "360px" }}>
+                  <Image
+                    src={selected.image}
+                    alt={selected.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 1000px"
+                    style={{ objectFit: "contain" }}
+                    priority
+                  />
+                </div>
               )}
               <div className="lightbox-caption">
                 <div>

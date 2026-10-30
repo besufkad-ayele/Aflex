@@ -5,7 +5,11 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale })); 
 }
 
-export default async function LocalizedHome({ params }: PageProps<"/[locale]">) {
+interface LocalizedHomeProps {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function LocalizedHome({ params }: LocalizedHomeProps) {
   const { locale: rawLocale } = await params;
   const locale = getLocale(rawLocale);
   const text = copy[locale].home;

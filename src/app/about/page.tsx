@@ -1,8 +1,10 @@
+import Image from "next/image";
 import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { AboutCampusSlideshow } from "@/components/about-campus-slideshow";
 import { AboutHeroSection } from "@/components/about-hero-section";
 import { AboutLeadershipSection } from "@/components/about-leadership-section";
 import { AboutStorySection } from "@/components/about-story-section";
+import { PartnersMarquee } from "@/components/partners-marquee";
 
 const values = [
   { name: "Civility", letter: "C", description: "Mutual respect, deep listening, and dignity in all public deliberation." },
@@ -44,10 +46,17 @@ export default function About() {
         <AboutHeroSection />
         
         {/* Note from the Chief of Academy & Executive Message */}
-        <section className="message-section section" style={{ background: "#080808", color: "#fff" }}>
+        <section className="message-section section" style={{ background: "#024696", color: "#fff" }}>
           <div className="container message-grid">
-            <div className="chief-portrait">
-              <img src="/images/zadig abereha.webp" alt="H.E. Zadig Abreha, Chief of Academy" />
+            <div className="chief-portrait" style={{ position: "relative" }}>
+              <Image
+                src="/images/zadig abereha.webp"
+                alt="H.E. Zadig Abreha, Chief of Academy"
+                fill
+                sizes="(max-width: 768px) 100vw, 420px"
+                style={{ objectFit: "cover" }}
+                priority
+              />
               <span className="chief-portrait-badge">CHIEF OF THE ACADEMY</span>
             </div>
             <div className="message-copy">
@@ -129,6 +138,9 @@ export default function About() {
           </div>
         </section>
         
+        {/* Strategic Partners & Alliances */}
+        <PartnersMarquee />
+
         {/* Interactive Horizontal Accordion: Board Members & Senior Executives */}
         <AboutLeadershipSection />
 

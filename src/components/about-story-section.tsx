@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function AboutStorySection() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -69,7 +70,11 @@ export function AboutStorySection() {
           <div className="about-story-media">
             <div className="about-team-photo-card">
               <div className="team-photo-wrapper">
-                <img
+                <Image
+                  fill
+                  sizes="(max-width: 768px) 100vw, 600px"
+                  style={{ objectFit: "cover" }}
+                  priority
                   src="/about/aflex workees.jpg"
                   alt="AFLEX Academy Faculty, Leadership, and Staff at Sululta Campus"
                   className="team-photo-img"

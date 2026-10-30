@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
+import { copy, getLocale, type Locale } from "@/lib/i18n";
 import { PageFrame, SectionTitle } from "@/components/page-primitives";
 import { 
   CAMPUS_FACILITIES, 
@@ -19,7 +20,9 @@ const CATEGORIES = [
   "Administration & Protocol"
 ] as const;
 
-export default function CampusLocatorPage() {
+export default function CampusLocatorPage({ locale = "en" }: { locale?: Locale }) {
+  const loc = getLocale(locale);
+  const text = copy[loc].campus;
   const [selectedCategory, setSelectedCategory] = useState<string>("All Facilities");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFacilityId, setActiveFacilityId] = useState<string>("01");
@@ -218,14 +221,14 @@ export default function CampusLocatorPage() {
                   <defs>
                     {/* Background Gradients & Filters */}
                     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#0B1320" />
-                      <stop offset="50%" stopColor="#101C2E" />
-                      <stop offset="100%" stopColor="#080E18" />
+                      <stop offset="0%" stopColor="#012554" />
+                      <stop offset="50%" stopColor="#01336e" />
+                      <stop offset="100%" stopColor="#010f38" />
                     </linearGradient>
 
                     <linearGradient id="roadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#1E2B3E" />
-                      <stop offset="100%" stopColor="#15202E" />
+                      <stop offset="0%" stopColor="#023282" />
+                      <stop offset="100%" stopColor="#012060" />
                     </linearGradient>
 
                     <linearGradient id="forestGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -234,18 +237,18 @@ export default function CampusLocatorPage() {
                     </linearGradient>
 
                     <linearGradient id="buildingGradGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#9E7D3B" stopOpacity="0.85" />
-                      <stop offset="100%" stopColor="#765B27" stopOpacity="0.95" />
+                      <stop offset="0%" stopColor="#024696" stopOpacity="0.85" />
+                      <stop offset="100%" stopColor="#012d6e" stopOpacity="0.95" />
                     </linearGradient>
 
                     <linearGradient id="buildingGradActive" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#D4AF37" />
-                      <stop offset="100%" stopColor="#B38F26" />
+                      <stop offset="0%" stopColor="#024696" />
+                      <stop offset="100%" stopColor="#012d6e" />
                     </linearGradient>
 
                     <linearGradient id="buildingGradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#1E3A5F" stopOpacity="0.9" />
-                      <stop offset="100%" stopColor="#132742" stopOpacity="0.95" />
+                      <stop offset="0%" stopColor="#023882" stopOpacity="0.9" />
+                      <stop offset="100%" stopColor="#012060" stopOpacity="0.95" />
                     </linearGradient>
 
                     <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
@@ -284,10 +287,10 @@ export default function CampusLocatorPage() {
                   />
 
                   {/* Contour Elevation Lines */}
-                  <path d="M 0,100 Q 400,80 800,120" fill="none" stroke="rgba(212,175,55,0.06)" strokeWidth="1" strokeDasharray="4 6" />
-                  <path d="M 0,220 Q 400,190 800,240" fill="none" stroke="rgba(212,175,55,0.06)" strokeWidth="1" strokeDasharray="4 6" />
-                  <path d="M 0,360 Q 400,320 800,380" fill="none" stroke="rgba(212,175,55,0.06)" strokeWidth="1" strokeDasharray="4 6" />
-                  <path d="M 0,480 Q 400,450 800,500" fill="none" stroke="rgba(212,175,55,0.06)" strokeWidth="1" strokeDasharray="4 6" />
+                  <path d="M 0,100 Q 400,80 800,120" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" strokeDasharray="4 6" />
+                  <path d="M 0,220 Q 400,190 800,240" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" strokeDasharray="4 6" />
+                  <path d="M 0,360 Q 400,320 800,380" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" strokeDasharray="4 6" />
+                  <path d="M 0,480 Q 400,450 800,500" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" strokeDasharray="4 6" />
 
                   {/* Campus Ring Road & Internal Arteries */}
                   <g className="roads-layer" opacity="0.85">
@@ -295,14 +298,14 @@ export default function CampusLocatorPage() {
                     <path
                       d="M 345,0 L 345,140 L 450,140 L 450,290 L 345,290 L 345,500 L 480,500"
                       fill="none"
-                      stroke="#22334A"
+                      stroke="#023282"
                       strokeWidth="22"
                       strokeLinecap="round"
                     />
                     <path
                       d="M 345,0 L 345,140 L 450,140 L 450,290 L 345,290 L 345,500 L 480,500"
                       fill="none"
-                      stroke="#3D5373"
+                      stroke="#1a6be8"
                       strokeWidth="2"
                       strokeDasharray="6 8"
                     />
@@ -311,7 +314,7 @@ export default function CampusLocatorPage() {
                     <path
                       d="M 450,140 L 680,140 L 680,350 L 450,350"
                       fill="none"
-                      stroke="#22334A"
+                      stroke="#023282"
                       strokeWidth="16"
                       strokeLinejoin="round"
                     />
@@ -319,7 +322,7 @@ export default function CampusLocatorPage() {
                     <path
                       d="M 345,200 L 190,200 L 190,470 L 345,470"
                       fill="none"
-                      stroke="#22334A"
+                      stroke="#023282"
                       strokeWidth="16"
                       strokeLinejoin="round"
                     />
@@ -328,22 +331,22 @@ export default function CampusLocatorPage() {
                     <path
                       d="M 60,60 Q 400,30 740,60 Q 750,300 740,520 Q 400,550 60,520 Q 40,300 60,60 Z"
                       fill="none"
-                      stroke="#1B4D3E"
+                      stroke="#144d3e"
                       strokeWidth="3"
                       strokeDasharray="8 6"
                     />
                   </g>
 
                   {/* Central Ceremonial Plaza & Flag Court */}
-                  <circle cx="450" cy="220" r="32" fill="#132338" stroke="#D4AF37" strokeWidth="1.5" />
-                  <circle cx="450" cy="220" r="14" fill="#1A304C" stroke="#D4AF37" strokeWidth="1" strokeDasharray="3 3" />
-                  <text x="450" y="224" textAnchor="middle" fill="#D4AF37" fontSize="9" fontFamily="monospace" fontWeight="600">
+                  <circle cx="450" cy="220" r="32" fill="#012060" stroke="#024696" strokeWidth="1.5" />
+                  <circle cx="450" cy="220" r="14" fill="#023282" stroke="#024696" strokeWidth="1" strokeDasharray="3 3" />
+                  <text x="450" y="224" textAnchor="middle" fill="#024696" fontSize="9" fontFamily="monospace" fontWeight="600">
                     FLAG PLAZA
                   </text>
 
                   {/* Gate Entrance Portal Markers */}
                   <g className="gate-marker">
-                    <rect x="290" y="2" width="110" height="24" fill="#0E1826" stroke="#D4AF37" strokeWidth="1" rx="3" />
+                    <rect x="290" y="2" width="110" height="24" fill="#010f38" stroke="#024696" strokeWidth="1" rx="3" />
                     <text x="345" y="17" textAnchor="middle" fill="#FFFFFF" fontSize="10" fontWeight="600" fontFamily="sans-serif">
                       ▲ MAIN SULULTA GATEWAY
                     </text>
@@ -382,7 +385,7 @@ export default function CampusLocatorPage() {
                             height={height + 12}
                             rx="8"
                             fill="none"
-                            stroke="#D4AF37"
+                            stroke="#024696"
                             strokeWidth="2.5"
                             strokeDasharray="4 4"
                             className="pulse-stroke"
@@ -398,7 +401,7 @@ export default function CampusLocatorPage() {
                           height={height}
                           rx="5"
                           fill={isActive ? "url(#buildingGradActive)" : isHovered ? "url(#buildingGradGold)" : "url(#buildingGradBlue)"}
-                          stroke={isActive ? "#FFFFFF" : isHovered ? "#D4AF37" : "#2E486B"}
+                          stroke={isActive ? "#FFFFFF" : isHovered ? "#024696" : "#024696"}
                           strokeWidth={isActive ? "2" : "1.2"}
                           filter={isActive ? "url(#glow)" : undefined}
                         />
@@ -412,7 +415,7 @@ export default function CampusLocatorPage() {
                           cx={x + 18}
                           cy={y + 18}
                           r="10"
-                          fill={isActive ? "#0E1826" : "#D4AF37"}
+                          fill={isActive ? "#010f38" : "#024696"}
                           stroke="#FFFFFF"
                           strokeWidth="1"
                         />
@@ -420,7 +423,7 @@ export default function CampusLocatorPage() {
                           x={x + 18}
                           y={y + 22}
                           textAnchor="middle"
-                          fill={isActive ? "#D4AF37" : "#0E1826"}
+                          fill={isActive ? "#024696" : "#010f38"}
                           fontSize="9"
                           fontWeight="700"
                           fontFamily="monospace"
@@ -433,7 +436,7 @@ export default function CampusLocatorPage() {
                           x={x + width / 2}
                           y={y + height / 2 + (height > 70 ? 10 : 6)}
                           textAnchor="middle"
-                          fill={isActive ? "#0B1320" : "#FFFFFF"}
+                          fill={isActive ? "#012554" : "#FFFFFF"}
                           fontSize={width > 110 ? "11" : "9.5"}
                           fontWeight="600"
                           fontFamily="sans-serif"

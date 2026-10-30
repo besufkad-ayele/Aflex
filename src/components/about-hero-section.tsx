@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { Weave } from "@/components/site-shell";
 import { aboutHeroSlides } from "@/lib/gallery-data";
 
@@ -95,16 +96,16 @@ export function AboutHeroSection() {
         {/* Logo shapes */}
         <div className="about-logo-shapes" aria-hidden="true">
           <div className="about-logo-shape about-logo-shape-circle">
-            <img src="/images/aflex-logo.png" alt="" />
+            <Image src="/images/aflex-logo.png" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
           </div>
           <div className="about-logo-shape about-logo-shape-rounded">
-            <img src="/images/aflex-logo.png" alt="" />
+            <Image src="/images/aflex-logo.png" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
           </div>
           <div className="about-logo-shape about-logo-shape-diamond">
-            <img src="/images/aflex-logo.png" alt="" />
+            <Image src="/images/aflex-logo.png" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
           </div>
           <div className="about-logo-shape about-logo-shape-hex">
-            <img src="/images/aflex-logo.png" alt="" />
+            <Image src="/images/aflex-logo.png" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
           </div>
         </div>
 

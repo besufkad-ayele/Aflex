@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { galleryHeroSlides } from "@/lib/gallery-data";
 
 const SLIDE_MS = 2000;
@@ -60,7 +61,7 @@ export function GalleryHeroSection() {
                 preload="metadata"
               />
             ) : (
-              <img className="gallery-hero-asset" src={slide.src} alt="" />
+              <Image fill sizes="100vw" style={{ objectFit: "cover" }} className="gallery-hero-asset" src={slide.src} alt="" priority={index === 0} />
             )}
           </div>
         ))}

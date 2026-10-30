@@ -167,7 +167,10 @@ export function PartnersMarquee() {
               title={partner.name}
             >
               <div className="partner-logo-box">
-                <img
+                <Image
+                  width={120}
+                  height={48}
+                  style={{ objectFit: "contain" }}
                   src={partner.logo}
                   alt={partner.name}
                   className="partner-logo-img"

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 
 const researchThemes = [
@@ -140,7 +141,10 @@ export function ResearchThemesSection() {
           </div>
 
           <div className="research-themes-connect research-themes-connect-photo">
-            <img
+            <Image
+              width={480}
+              height={260}
+              style={{ objectFit: "cover", width: "100%", height: "auto" }}
               src="/images/pan1.jpg"
               alt="Founding Pan-African leaders at an early African unity summit."
             />

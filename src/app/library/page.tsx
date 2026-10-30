@@ -3,80 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { SiteHeader, SiteFooter, Weave } from "@/components/site-shell";
-
-interface LibraryResource {
-  id: string;
-  title: string;
-  category: "Policy Brief" | "Historical Archive" | "Executive Monograph" | "Applied Thesis";
-  author: string;
-  year: string;
-  pages: string;
-  abstract: string;
-  keywords: string[];
-}
-
-const resources: LibraryResource[] = [
-  {
-    id: "res-01",
-    title: "Institutional Capability & State Transformation in 21st-Century Africa",
-    category: "Policy Brief",
-    author: "AFLEX Policy Advisory Working Group",
-    year: "2025",
-    pages: "48 pp.",
-    abstract: "A synthesis of institutional reform models across 14 African nations, evaluating civil service professionalization, performance compacts, and meritocratic promotion systems.",
-    keywords: ["Governance", "Civil Service Reform", "State Capacity", "Pan-Africanism"]
-  },
-  {
-    id: "res-02",
-    title: "Speeches & Declarations of the Organization of African Unity (1963–2002)",
-    category: "Historical Archive",
-    author: "Pan-African Diplomatic Archives Collection",
-    year: "Historical Compilation (Ed. 2024)",
-    pages: "312 pp.",
-    abstract: "Declassified plenary addresses, founding charters, and summit communiqués chronicling continental liberation, non-alignment, and the evolution toward the African Union.",
-    keywords: ["OAU", "African Union", "Diplomacy", "Decolonization", "Founding Fathers"]
-  },
-  {
-    id: "res-03",
-    title: "Leadership in Crisis: Decision-Making Under Extreme Fiscal & Geopolitical Shocks",
-    category: "Executive Monograph",
-    author: "Prof. Mamadou Diouf & Dr. Seleshi Bekele (Eds.)",
-    year: "2024",
-    pages: "186 pp.",
-    abstract: "Case studies drawn from African heads of state and finance ministers navigating debt restructuring, pandemic mitigation, and strategic resource negotiations.",
-    keywords: ["Crisis Leadership", "Strategic Negotiation", "Macroeconomics", "Statecraft"]
-  },
-  {
-    id: "res-04",
-    title: "Digital Sovereignty & AI Governance Strategies for African Public Administration",
-    category: "Policy Brief",
-    author: "AFLEX Digital Governance Center",
-    year: "2026",
-    pages: "64 pp.",
-    abstract: "Roadmap for national digital identity, sovereign data infrastructure, and ethical artificial intelligence deployment across African ministerial ecosystems.",
-    keywords: ["Digital Governance", "AI Policy", "Data Sovereignty", "Public Tech"]
-  },
-  {
-    id: "res-05",
-    title: "Transformative Women Leaders in African Public Sector Governance",
-    category: "Applied Thesis",
-    author: "Project WILD Senior Fellowship Cohort",
-    year: "2025",
-    pages: "128 pp.",
-    abstract: "Empirical evaluation of women executive leadership pathways, institutional mentorship frameworks, and policy outcomes in East and Southern Africa.",
-    keywords: ["Women Leadership", "Project WILD", "Inclusivity", "Executive Cohorts"]
-  },
-  {
-    id: "res-06",
-    title: "Regional Economic Integration & the AfCFTA: Infrastructure & Customs Harmony",
-    category: "Policy Brief",
-    author: "UNECA & AFLEX Joint Policy Clinic",
-    year: "2025",
-    pages: "92 pp.",
-    abstract: "Strategic policy handbook addressing non-tariff barriers, multi-modal transport corridors, and regional payment settlement systems.",
-    keywords: ["AfCFTA", "Economic Integration", "Trade Policy", "Infrastructure"]
-  }
-];
+import { libraryResources as resources, type LibraryResource } from "@/lib/library-data";
 
 export default function LibraryPage() {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
@@ -163,12 +90,12 @@ export default function LibraryPage() {
         </section>
 
         {/* Digital Repository Search & Explorer */}
-        <section className="section" style={{ background: "#f8f9fa", color: "#111", padding: "64px 0" }}>
+        <section className="section" style={{ background: "#f0f5fd", color: "#024696", padding: "64px 0" }}>
           <div className="container">
             <div style={{ maxWidth: "760px", marginBottom: "32px" }}>
               <span className="eyebrow" style={{ color: "var(--gold)" }}>DIGITAL REPOSITORY & POLICY BRIEFS</span>
               <h2 style={{ fontSize: "28px", margin: "8px 0 12px" }}>Search Academy Publications & Historical Archives</h2>
-              <p style={{ color: "#64748b", fontSize: "15px" }}>
+              <p style={{ color: "rgba(2,70,150,0.6)", fontSize: "15px" }}>
                 Filter our growing repository of open-access policy briefs, executive monographs, and Pan-African historical collections.
               </p>
             </div>
@@ -195,13 +122,13 @@ export default function LibraryPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="search-input-field"
-                  style={{ background: "#fff", borderColor: "#ddd", color: "#111", padding: "12px 16px", borderRadius: "4px" }}
+                  style={{ background: "#fff", borderColor: "rgba(2,70,150,0.2)", color: "#024696", padding: "12px 16px", borderRadius: "4px" }}
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery("")}
-                    style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#888", cursor: "pointer" }}
+                    style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "rgba(2,70,150,0.4)", cursor: "pointer" }}
                   >
                     ✕
                   </button>
@@ -283,7 +210,7 @@ export default function LibraryPage() {
               <div style={{ padding: "64px 24px", textAlign: "center", background: "#fff", borderRadius: "6px", border: "1px solid #e2e8f0" }}>
                 <span style={{ fontSize: "36px", display: "block", marginBottom: "12px" }}>📖</span>
                 <h3 style={{ margin: "0 0 8px", fontSize: "20px" }}>No documents found matching &ldquo;{searchQuery}&rdquo;</h3>
-                <p style={{ color: "#64748b", maxWidth: "480px", margin: "0 auto 20px", fontSize: "14px" }}>
+                <p style={{ color: "rgba(2,70,150,0.6)", maxWidth: "480px", margin: "0 auto 20px", fontSize: "14px" }}>
                   Our research librarians can assist you in locating specific policy briefs or historical documents.
                 </p>
                 <button
@@ -301,7 +228,7 @@ export default function LibraryPage() {
             <div style={{ marginTop: "80px" }}>
               <span className="eyebrow" style={{ color: "var(--gold)" }}>INSTITUTIONAL ALLIANCES</span>
               <h2 style={{ fontSize: "28px", margin: "8px 0 16px" }}>Partner Subscription Databases</h2>
-              <p style={{ color: "#64748b", fontSize: "15px", maxWidth: "700px", marginBottom: "32px" }}>
+              <p style={{ color: "rgba(2,70,150,0.6)", fontSize: "15px", maxWidth: "700px", marginBottom: "32px" }}>
                 Enrolled fellows, visiting faculty, and researchers have full federated single-sign-on (SSO) access to leading international databases:
               </p>
 
@@ -314,7 +241,7 @@ export default function LibraryPage() {
                       </span>
                     </div>
                     <h3 style={{ margin: "0 0 8px", fontSize: "18px", color: "#0f172a" }}>{db.name}</h3>
-                    <p style={{ fontSize: "13px", color: "#64748b", lineHeight: "1.5", margin: "0 0 16px" }}>{db.desc}</p>
+                    <p style={{ fontSize: "13px", color: "rgba(2,70,150,0.6)", lineHeight: "1.5", margin: "0 0 16px" }}>{db.desc}</p>
                     <a
                       href={db.url}
                       target="_blank"
@@ -532,7 +459,7 @@ export default function LibraryPage() {
                 </div>
                 <div>
                   <label style={{ fontSize: "12px", color: "rgba(255,255,255,0.8)", display: "block", marginBottom: "4px" }}>Preferred Consultation Mode</label>
-                  <select className="search-input-field" style={{ background: "#111", color: "#fff" }}>
+                  <select className="search-input-field" style={{ background: "#ffffff", color: "#024696", borderColor: "rgba(2,70,150,0.25)" }}>
                     <option>In-Person at Sululta Library Consultation Suite</option>
                     <option>Virtual Video Conference (Zoom / Teams)</option>
                     <option>Email Literature Package Delivery</option>

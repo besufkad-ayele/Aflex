@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { copy, getLocale, locales } from "@/lib/i18n";
 import { AboutCampusSlideshow } from "@/components/about-campus-slideshow";
@@ -25,8 +26,15 @@ export default async function LocalizedAbout({ params }: PageProps) {
 
         <section className="message-section section">
           <div className="container message-grid">
-            <div className="chief-portrait">
-              <img src="/images/zadig abereha.webp" alt="H.E. Zadig Abreha, Chief of Academy" />
+            <div className="chief-portrait" style={{ position: "relative" }}>
+              <Image
+                src="/images/zadig abereha.webp"
+                alt="H.E. Zadig Abreha, Chief of Academy"
+                fill
+                sizes="(max-width: 768px) 100vw, 420px"
+                style={{ objectFit: "cover" }}
+                priority
+              />
               <span className="chief-portrait-badge">CHIEF OF ACADEMY</span>
             </div>
             <div className="message-copy">
