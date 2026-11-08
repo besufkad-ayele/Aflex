@@ -15,6 +15,7 @@ import {
   Check
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { revalidateCmsContent } from '@/lib/cms/actions';
 import type { Program } from '@/lib/supabase/types';
 
 const INITIAL_PROGRAMS: Program[] = [
@@ -154,12 +155,7 @@ export default function AdminProgramsPage() {
       setIsEditing(false);
     }, 1200);
 
-    // Trigger ISR Revalidation
-    fetch('/api/revalidate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-revalidation-secret': 'aflex-secret-token-2026' },
-      body: JSON.stringify({ type: 'programs' }),
-    }).catch(() => {});
+    void revalidateCmsContent({ table: 'programs' }).catch(() => {});
   };
 
   return (

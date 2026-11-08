@@ -14,6 +14,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { revalidateCmsContent } from '@/lib/cms/actions';
 
 interface BannerItem {
   id: string;
@@ -83,12 +84,7 @@ export default function AdminBannersPage() {
     setSuccessMsg('New alert banner created and activated on homepage.');
     setTimeout(() => setSuccessMsg(null), 3000);
 
-    // Revalidate ISR
-    fetch('/api/revalidate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-revalidation-secret': 'aflex-secret-token-2026' },
-      body: JSON.stringify({ path: '/' }),
-    }).catch(() => {});
+    void revalidateCmsContent({ table: 'emergency_banners', path: '/' }).catch(() => {});
   };
 
   return (

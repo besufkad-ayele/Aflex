@@ -7,6 +7,7 @@ import { ProgramsResearchImpact } from "@/components/programs-research-impact";
 import { PanAfricanismResearch } from "@/components/pan-africanism-research";
 import { ResearchThemesSection } from "@/components/research-themes-section";
 import { copy, getLocale, locales } from "@/lib/i18n";
+import { getPublishedPrograms } from "@/lib/cms/public-content";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -20,6 +21,7 @@ export default async function LocalizedPrograms({ params }: LocalizedProgramsPro
   const { locale: rawLocale } = await params;
   const locale = getLocale(rawLocale);
   const text = copy[locale].programs;
+  const programs = await getPublishedPrograms();
 
   return (
     <>
@@ -39,7 +41,7 @@ export default async function LocalizedPrograms({ params }: LocalizedProgramsPro
               copy={text.offerCopy}
             />
 
-            <ProgramsListView locale={locale} />
+            <ProgramsListView locale={locale} programs={programs} />
           </div>
         </section>
 

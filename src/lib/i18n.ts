@@ -111,7 +111,7 @@ export const copy: Record<Locale, LocaleCopy> = {
       crumb: "ABOUT AFLEX",
       title: "About AFLEX.",
       intro: "We are a federal academy for the people entrusted with Africa's most consequential decisions.",
-      message: "The work of leadership is the work of widening what is possible for the people we serve.",
+      message: "Shaping the future leaders of Africa",
       story: "OUR STORY",
       storyTitle: "A young institution with a long memory.",
       vision: "VISION",

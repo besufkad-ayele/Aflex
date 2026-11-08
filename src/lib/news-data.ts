@@ -70,8 +70,8 @@ export const newsArticles: NewsItem[] = [
     date: "07.06.24",
     readTime: "5 MIN READ",
     image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1200&q=85",
-    author: "H.E. Zadig Abreha",
-    authorRole: "Chief of Academy · AFLEX",
+    author: "Mohammedrafie Abaraya",
+    authorRole: "Chief Executive Officer (CEO) · AFLEX",
     excerpt: "Exploring the intersection of leadership development and practical governance in modern Africa.",
     keyTakeaways: [
       "African public executives must balance technical operational competence with deep philosophical grounding.",

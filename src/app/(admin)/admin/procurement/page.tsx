@@ -4,77 +4,47 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Plus, FileText, CheckCircle2, Clock, Eye, Download, Search, Filter } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { toggleContentStatus } from '@/lib/cms/actions';
 import type { ProcurementTender } from '@/lib/supabase/types';
 
-const INITIAL_DEMO_TENDERS: ProcurementTender[] = [
-  {
-    id: 'ten-01',
-    tender_no: 'AFLEX/NCB/2026/041',
-    title: 'Procurement of High-Performance Campus Datacenter & Cloud Architecture for AFLEX',
-    procurement_type: 'National Competitive Bidding (NCB)',
-    closing_date: '2026-11-25T14:00:00Z',
-    bid_bond_amount: 150000,
-    bid_bond_currency: 'ETB',
-    tor_document_url: 'https://qezexucrwwdxgotpofph.supabase.co/storage/v1/object/public/bid-documents/tor-datacenter-2026.pdf',
-    status: 'published',
-    created_by: null,
-    created_at: new Date(Date.now() - 3 * 24 * 3600 * 1000).toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'ten-02',
-    tender_no: 'AFLEX/RFP/2026/019',
-    title: 'Consultancy Services for Macroeconomic Impact Modeling of Pan-African Trade Corridor',
-    procurement_type: 'Consultancy (RFP)',
-    closing_date: '2026-12-10T17:00:00Z',
-    bid_bond_amount: 80000,
-    bid_bond_currency: 'ETB',
-    tor_document_url: null,
-    status: 'published',
-    created_by: null,
-    created_at: new Date(Date.now() - 8 * 24 * 3600 * 1000).toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'ten-03',
-    tender_no: 'AFLEX/ICB/2026/005',
-    title: 'Supply, Installation & Commissioning of High-Altitude Athletics & Wellness Technology',
-    procurement_type: 'International Competitive Bidding (ICB)',
-    closing_date: '2027-01-15T10:00:00Z',
-    bid_bond_amount: 10000,
-    bid_bond_currency: 'USD',
-    tor_document_url: 'https://qezexucrwwdxgotpofph.supabase.co/storage/v1/object/public/bid-documents/tor-wellness-2026.pdf',
-    status: 'published',
-    created_by: null,
-    created_at: new Date(Date.now() - 12 * 24 * 3600 * 1000).toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-];
-
 export default function AdminProcurementPage() {
-  const [tenders, setTenders] = useState<ProcurementTender[]>(INITIAL_DEMO_TENDERS);
+  const [tenders, setTenders] = useState<ProcurementTender[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     async function loadTenders() {
+      setLoading(true);
+      setLoadError(null);
       try {
         const supabase = createClient();
-        const { data } = await supabase.from('procurement_tenders').select('*').order('created_at', { ascending: false });
-        if (data && data.length > 0) {
-          setTenders(data as unknown as ProcurementTender[]);
-        }
-      } catch {
-        // Fallback to demo items
+        const { data, error } = await supabase.from('procurement_tenders').select('*').order('created_at', { ascending: false });
+        if (error) throw new Error(error.message);
+        setTenders((data as ProcurementTender[]) || []);
+      } catch (err) {
+        setLoadError(err instanceof Error ? err.message : 'Failed to load tenders');
+        setTenders([]);
+      } finally {
+        setLoading(false);
       }
     }
     loadTenders();
   }, []);
 
-  const handleToggleStatus = (id: string) => {
-    const updated = tenders.map((t) =>
-      t.id === id ? { ...t, status: t.status === 'published' ? 'draft' : 'published' } as ProcurementTender : t
-    );
-    setTenders(updated);
+  const handleToggleStatus = async (id: string) => {
+    const current = tenders.find((t) => t.id === id);
+    if (!current) return;
+    const nextStatus = current.status === 'published' ? 'draft' : 'published';
+    try {
+      await toggleContentStatus({ table: 'procurement_tenders', id, nextStatus });
+      setTenders((prev) =>
+        prev.map((t) => (t.id === id ? ({ ...t, status: nextStatus } as ProcurementTender) : t))
+      );
+    } catch (err) {
+      console.error(err);
+      alert(err instanceof Error ? err.message : 'Failed to update status');
+    }
   };
 
   const filtered = tenders.filter((t) =>
@@ -105,6 +75,20 @@ export default function AdminProcurementPage() {
           <span>Publish Tender Notice</span>
         </Link>
       </div>
+
+      {loading && (
+        <p className="text-xs font-mono text-white/50 uppercase tracking-wider">Loading tenders…</p>
+      )}
+      {loadError && (
+        <p className="text-xs font-mono text-rose-300 border border-rose-500/30 bg-rose-500/10 px-3 py-2 rounded-[2px]">
+          {loadError}
+        </p>
+      )}
+      {!loading && !loadError && tenders.length === 0 && (
+        <p className="text-xs font-sans text-white/60 border border-white/10 bg-[#02142d] px-3 py-3 rounded-[2px]">
+          No procurement notices in the database yet.
+        </p>
+      )}
 
       {/* Search Bar */}
       <div className="flex items-center justify-between gap-4 bg-[#02142d] border border-white/10 p-3.5 rounded-[2px]">

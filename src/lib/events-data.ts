@@ -48,7 +48,7 @@ export const academyEvents: AcademyEvent[] = [
       "The Executive Leadership Intensive is AFLEX's cornerstone residential program designed for public and private sector leaders navigating complex institutional transformations.",
       "Conducted in the serene highlands of Sululta, participants analyze authentic African case studies, take part in crisis simulations, and build enduring peer networks."
     ],
-    featuredSpeakers: ["H.E. Zadig Abreha", "AFLEX Senior Faculty", "Guest Policy Envoys"],
+    featuredSpeakers: ["Mohammedrafie Abaraya", "AFLEX Senior Faculty", "Guest Policy Envoys"],
     targetAudience: ["Ministers & State Ministers", "Permanent Secretaries", "Public Agency Chief Executives"],
     keyThemes: ["Strategic Judgment in Ambiguity", "Institutional Transformation", "Ethical Governance"],
     schedule: [
@@ -164,7 +164,7 @@ export const academyEvents: AcademyEvent[] = [
     overview: [
       "The Annual Leadership Symposium brings together AFLEX alumni, council members, and international partners for a day of high-level reflection and thought leadership."
     ],
-    featuredSpeakers: ["H.E. Zadig Abreha", "Dr. Eng. Seleshi Bekele", "Visiting African Statesmen"],
+    featuredSpeakers: ["Mohammedrafie Abaraya", "Dr. Eng. Seleshi Bekele", "Visiting African Statesmen"],
     targetAudience: ["AFLEX Alumni", "Government Executives", "International Development Partners"],
     keyThemes: ["Continental Statecraft Trends", "Institutional Memory", "2025 Strategic Priorities"],
     schedule: [

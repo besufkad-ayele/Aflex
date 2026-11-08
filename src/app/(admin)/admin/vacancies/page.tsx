@@ -4,69 +4,47 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Plus, Briefcase, CheckCircle2, Clock, Eye, Search } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { toggleContentStatus } from '@/lib/cms/actions';
 import type { Vacancy } from '@/lib/supabase/types';
 
-const INITIAL_DEMO_VACANCIES: Vacancy[] = [
-  {
-    id: 'vac-01',
-    reference_no: 'AFLEX/HR/2026/088',
-    title: 'Senior Research Fellow in Governance & Pan-African Integration',
-    department: 'Research & Policy Analysis Directorate',
-    location: 'Sululta, Ethiopia',
-    employment_type: 'Full-Time (Permanent)',
-    positions_available: 2,
-    deadline: '2026-11-30',
-    requirements: 'PhD in Political Science, Public Policy, or Economics with 6+ years of policy publication experience.',
-    responsibilities: 'Lead continental policy modeling, mentor executive fellows, and coordinate research with AU organs.',
-    status: 'published',
-    application_url: 'https://recruitment.aflex.edu.et',
-    created_by: null,
-    created_at: new Date(Date.now() - 4 * 24 * 3600 * 1000).toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'vac-02',
-    reference_no: 'AFLEX/HR/2026/092',
-    title: 'Lead Curriculum Architect for Executive Leadership Excellence',
-    department: 'Center for Pan-African Leadership',
-    location: 'Sululta, Ethiopia',
-    employment_type: 'Contractual (2-Year)',
-    positions_available: 1,
-    deadline: '2026-12-15',
-    requirements: 'Masters or PhD in Educational Leadership, Organizational Behavior, or Executive Coaching.',
-    responsibilities: 'Design modular simulation cases, executive retreats, and capstone assessment rubrics.',
-    status: 'published',
-    application_url: 'https://recruitment.aflex.edu.et',
-    created_by: null,
-    created_at: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-];
-
 export default function AdminVacanciesPage() {
-  const [vacancies, setVacancies] = useState<Vacancy[]>(INITIAL_DEMO_VACANCIES);
+  const [vacancies, setVacancies] = useState<Vacancy[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     async function loadVacancies() {
+      setLoading(true);
+      setLoadError(null);
       try {
         const supabase = createClient();
-        const { data } = await supabase.from('vacancies').select('*').order('created_at', { ascending: false });
-        if (data && data.length > 0) {
-          setVacancies(data as unknown as Vacancy[]);
-        }
-      } catch {
-        // Fallback to demo items
+        const { data, error } = await supabase.from('vacancies').select('*').order('created_at', { ascending: false });
+        if (error) throw new Error(error.message);
+        setVacancies((data as Vacancy[]) || []);
+      } catch (err) {
+        setLoadError(err instanceof Error ? err.message : 'Failed to load vacancies');
+        setVacancies([]);
+      } finally {
+        setLoading(false);
       }
     }
     loadVacancies();
   }, []);
 
-  const handleToggleStatus = (id: string) => {
-    const updated = vacancies.map((v) =>
-      v.id === id ? { ...v, status: v.status === 'published' ? 'draft' : 'published' } as Vacancy : v
-    );
-    setVacancies(updated);
+  const handleToggleStatus = async (id: string) => {
+    const current = vacancies.find((v) => v.id === id);
+    if (!current) return;
+    const nextStatus = current.status === 'published' ? 'draft' : 'published';
+    try {
+      await toggleContentStatus({ table: 'vacancies', id, nextStatus });
+      setVacancies((prev) =>
+        prev.map((v) => (v.id === id ? ({ ...v, status: nextStatus } as Vacancy) : v))
+      );
+    } catch (err) {
+      console.error(err);
+      alert(err instanceof Error ? err.message : 'Failed to update status');
+    }
   };
 
   const filtered = vacancies.filter((v) =>
@@ -97,6 +75,20 @@ export default function AdminVacanciesPage() {
           <span>Post New Vacancy</span>
         </Link>
       </div>
+
+      {loading && (
+        <p className="text-xs font-mono text-white/50 uppercase tracking-wider">Loading vacancies…</p>
+      )}
+      {loadError && (
+        <p className="text-xs font-mono text-rose-300 border border-rose-500/30 bg-rose-500/10 px-3 py-2 rounded-[2px]">
+          {loadError}
+        </p>
+      )}
+      {!loading && !loadError && vacancies.length === 0 && (
+        <p className="text-xs font-sans text-white/60 border border-white/10 bg-[#02142d] px-3 py-3 rounded-[2px]">
+          No vacancy postings in the database yet.
+        </p>
+      )}
 
       {/* Search Bar */}
       <div className="flex items-center justify-between gap-4 bg-[#02142d] border border-white/10 p-3 rounded-[2px]">

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { revalidateCmsContent } from '@/lib/cms/actions';
 
 export default function NewProcurementTenderPage() {
   const router = useRouter();
@@ -62,14 +63,9 @@ export default function NewProcurementTenderPage() {
         new_data: { tender_no: tenderNo, title },
       } as any);
 
-      // Trigger On-Demand ISR
-      await fetch('/api/revalidate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-revalidation-secret': 'aflex-secret-token-2026',
-        },
-        body: JSON.stringify({ type: 'tenders' }),
+      await revalidateCmsContent({
+        table: 'procurement_tenders',
+        record: { id: (data as { id?: string } | null)?.id },
       }).catch((e) => console.warn('Cache revalidation trigger:', e));
 
       setSuccess(true);

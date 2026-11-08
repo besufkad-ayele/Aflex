@@ -130,6 +130,38 @@ export interface AuditLog {
   created_at: string;
 }
 
+export interface FaqItem {
+  id: string;
+  category: string;
+  question_en: string;
+  answer_en: string;
+  question_am: string | null;
+  answer_am: string | null;
+  question_om: string | null;
+  answer_om: string | null;
+  status: ContentStatus;
+  sort_order: number;
+  updated_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AcademyEventRow {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string | null;
+  location: string | null;
+  starts_at: string;
+  ends_at: string | null;
+  hero_image_url: string | null;
+  status: ContentStatus;
+  featured: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -179,6 +211,18 @@ export type Database = {
         Row: AuditLog;
         Insert: Partial<AuditLog> & { action: string; target_table: string };
         Update: Partial<AuditLog>;
+        Relationships: [];
+      };
+      faqs: {
+        Row: FaqItem;
+        Insert: Partial<FaqItem> & { question_en: string; answer_en: string };
+        Update: Partial<FaqItem>;
+        Relationships: [];
+      };
+      events: {
+        Row: AcademyEventRow;
+        Insert: Partial<AcademyEventRow> & { slug: string; title: string; starts_at: string };
+        Update: Partial<AcademyEventRow>;
         Relationships: [];
       };
     };

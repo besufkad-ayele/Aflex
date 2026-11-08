@@ -33,8 +33,8 @@ export const aboutHeroSlides: AboutHeroSlide[] = [
   {
     id: 1,
     album: "Leadership",
-    title: "H.E. Zadig Abreha — Chief of the Academy",
-    image: "/images/zadig abereha.webp",
+    title: "Mohammedrafie Abaraya — Chief Executive Officer",
+    image: "/Mohammedrafie.jpg",
   },
   {
     id: 2,
@@ -76,7 +76,7 @@ export const aboutHeroSlides: AboutHeroSlide[] = [
     id: 8,
     album: "AFLEX",
     title: "African Leadership Excellence Academy",
-    image: "/images/aflex-logo.png",
+    image: "/images/aflex-logo.jpg",
   },
   {
     id: 9,
@@ -166,9 +166,9 @@ export const galleryHeroSlides: GalleryHeroSlide[] = [
   {
     id: 7,
     type: "photo",
-    title: "H.E. Zadig Abreha — Chief of the Academy",
+    title: "Mohammedrafie Abaraya — Chief Executive Officer",
     album: "Leadership",
-    src: "/images/zadig abereha.webp",
+    src: "/Mohammedrafie.jpg",
   },
   {
     id: 8,
@@ -264,10 +264,10 @@ export const galleryItems: GalleryItem[] = [
   {
     id: 11,
     album: "Leadership",
-    title: "H.E. Zadig Abreha — Chief of the Academy",
+    title: "Mohammedrafie Abaraya — Chief Executive Officer",
     shape: "tall",
     type: "photo",
-    image: "/images/zadig abereha.webp",
+    image: "/Mohammedrafie.jpg",
   },
   {
     id: 12,

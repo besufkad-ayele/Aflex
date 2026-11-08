@@ -250,7 +250,7 @@ export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClien
                 >
                   <div className="stacked-card-tab">
                     <Image
-                      src="/images/aflex-icon.png"
+                      src="/images/aflex-icon.jpg"
                       alt=""
                       width={16}
                       height={16}

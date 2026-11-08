@@ -6,6 +6,7 @@ import { ProgramsListView } from "@/components/programs-list-view";
 import { ProgramsResearchImpact } from "@/components/programs-research-impact";
 import { PanAfricanismResearch } from "@/components/pan-africanism-research";
 import { ResearchThemesSection } from "@/components/research-themes-section";
+import { getPublishedPrograms } from "@/lib/cms/public-content";
 
 export const metadata = {
   title: "Programs & Research",
@@ -13,7 +14,9 @@ export const metadata = {
     "Leadership development, Project WILD, PSLE, and Pan-Africanism policy research at AFLEX Academy.",
 };
 
-export default function Programs() {
+export default async function Programs() {
+  const programs = await getPublishedPrograms();
+
   return (
     <>
       <SiteHeader active="Programs" />
@@ -38,7 +41,7 @@ export default function Programs() {
               copy="AFLEX is committed to changing the organizational and leadership culture of our continent. Through engaging curricula—classroom, eLearning, and immersive technology—leaders expand strategic thinking and business acumen. Three pillars support the work: access to learning, quality research for policy, and consulting that accelerates institutional change."
             />
 
-            <ProgramsListView />
+            <ProgramsListView programs={programs} />
           </div>
         </section>
 

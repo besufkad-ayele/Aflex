@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const LOGO_SRC = "/images/aflex-logo.png";
+const LOGO_SRC = "/images/aflex-logo.jpg";
 
 type BrandLogoProps = {
   variant?: "full" | "compact";
@@ -20,6 +20,7 @@ export function BrandLogo({ variant = "full", className = "", priority = false }
         height={isCompact ? 40 : 56}
         priority={priority}
         className="brand-logo-img"
+        style={{ width: "auto", height: "auto" }}
       />
     </span>
   );

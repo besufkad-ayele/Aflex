@@ -1,4 +1,5 @@
-import NewsEventsPage from "@/app/news/page";
+import NewsEventsPage from "@/app/news/news-page-client";
+import { getPublishedNews } from "@/lib/cms/public-content";
 import { getLocale, locales } from "@/lib/i18n";
 
 export function generateStaticParams() {
@@ -12,6 +13,6 @@ interface PageProps {
 export default async function LocalizedNews({ params }: PageProps) {
   const { locale: rawLocale } = await params;
   const locale = getLocale(rawLocale);
-  return <NewsEventsPage locale={locale} />;
+  const articles = await getPublishedNews();
+  return <NewsEventsPage locale={locale} articles={articles} />;
 }
-

@@ -138,7 +138,7 @@ export function FaqStewardAgent() {
           <div className="steward-console-chrome">
             <div className="steward-identity">
               <span className="steward-avatar" aria-hidden="true">
-                <Image src="/images/aflex-icon.png" alt="" width={24} height={24} />
+                <Image src="/images/aflex-icon.jpg" alt="" width={24} height={24} />
               </span>
               <div>
                 <strong>Sululta Steward</strong>

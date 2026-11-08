@@ -1,47 +1,66 @@
-import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
-
-const REVALIDATION_SECRET = process.env.REVALIDATION_SECRET || 'aflex-secret-token-2026';
+import {
+  collectRevalidatePaths,
+  revalidateCollectedPaths,
+  type CmsTable,
+} from '@/lib/cms/revalidate-paths';
 
 export async function POST(request: NextRequest) {
   try {
+    const secret = process.env.REVALIDATION_SECRET_TOKEN;
     const authHeader = request.headers.get('x-revalidation-secret');
-    const { searchParams } = new URL(request.url);
-    const secretQuery = searchParams.get('secret');
+    const secretQuery = request.nextUrl.searchParams.get('secret');
 
-    if (authHeader !== REVALIDATION_SECRET && secretQuery !== REVALIDATION_SECRET) {
-      return NextResponse.json({ message: 'Invalid or missing revalidation secret' }, { status: 401 });
+    if (!secret || (authHeader !== secret && secretQuery !== secret)) {
+      return NextResponse.json(
+        { error: 'Invalid or missing revalidation secret' },
+        { status: 401 }
+      );
     }
 
     const body = await request.json().catch(() => ({}));
-    const { path, tag, type } = body as { path?: string; tag?: string; type?: 'news' | 'programs' | 'vacancies' | 'tenders' };
+    const {
+      table,
+      type,
+      path,
+      tag,
+      record,
+      old_record,
+    } = body as {
+      table?: CmsTable | string;
+      type?: 'news' | 'programs' | 'vacancies' | 'tenders' | 'banners';
+      path?: string;
+      tag?: string;
+      record?: { slug?: string; id?: string };
+      old_record?: { slug?: string; id?: string };
+    };
 
-    const locales = ['en', 'am', 'om', 'ti', 'so', 'aa', 'ar', 'fr'];
-    const revalidatedPaths: string[] = [];
+    const paths = collectRevalidatePaths({
+      table,
+      type,
+      path,
+      record,
+      old_record,
+    });
 
-    if (path) {
-      revalidatePath(path);
-      revalidatedPaths.push(path);
+    if (paths.length === 1 && !table && !type && !path) {
+      return NextResponse.json(
+        { message: 'No purge rules for payload', table: table ?? null, type: type ?? null },
+        { status: 200 }
+      );
     }
+
+    revalidateCollectedPaths(paths);
 
     if (tag) {
+      const { revalidateTag } = await import('next/cache');
       revalidateTag(tag, 'max-age');
-    }
-
-    if (type) {
-      for (const loc of locales) {
-        const localizedPath = `/${loc}/${type}`;
-        revalidatePath(localizedPath);
-        revalidatedPaths.push(localizedPath);
-      }
-      revalidatePath(`/${type}`);
-      revalidatePath('/');
     }
 
     return NextResponse.json({
       revalidated: true,
       timestamp: new Date().toISOString(),
-      paths: revalidatedPaths,
+      paths,
       tag: tag || null,
     });
   } catch (error: unknown) {
@@ -49,4 +68,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ revalidated: false, message: errMessage }, { status: 500 });
   }
 }
-

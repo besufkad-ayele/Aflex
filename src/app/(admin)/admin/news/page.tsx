@@ -5,103 +5,57 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Plus, Newspaper, CheckCircle2, Clock, Eye, Search, Filter } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { toggleContentStatus } from '@/lib/cms/actions';
 import type { NewsArticle } from '@/lib/supabase/types';
 
-const INITIAL_DEMO_NEWS: NewsArticle[] = [
-  {
-    id: 'news-01',
-    slug: 'aflex-concludes-high-level-leadership-summit',
-    category: 'Institutional',
-    published_at: '2026-10-28',
-    hero_image_url: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=1200',
-    featured: true,
-    status: 'published',
-    title_en: 'AFLEX Concludes High-Level Pan-African Leadership Summit at Sululta',
-    lead_en: 'Over 400 African executive leaders and ministers concluded deliberations on ethical civil service stewardship.',
-    body_en: 'The African Leadership Excellence Academy gathered top continental delegates in Sululta...',
-    title_am: 'አፍሌክስ በሱሉልታ ሲያካሂድ የነበረውን ከፍተኛ የአመራር ጉባኤ አጠናቀቀ',
-    lead_am: 'ከ400 በላይ አፍሪካውያን ከፍተኛ መሪዎች የተሳተፉበት ጉባኤ በስኬት ተጠናቋል።',
-    body_am: 'በሱሉልታ ግቢ በተካሄደው ጉባኤ ላይ...',
-    title_om: 'AFLEX Walga\'ii Hoggansa Olaanaa Sulultatti Xumure',
-    lead_om: 'Hoggantoonni Afrikaa 400 ol ta\'an walga\'ii kana irratti hirmaataniiru.',
-    body_om: 'Dhaabbanni AFLEX hoggantoota Afrikaa simachuun...',
-    author_id: null,
-    created_at: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'news-02',
-    slug: 'project-wild-cohort-launches',
-    category: 'Executive Education',
-    published_at: '2026-10-25',
-    hero_image_url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=1200',
-    featured: true,
-    status: 'published',
-    title_en: 'Project WILD Welcomes New Cohort of Pan-African Female Executives',
-    lead_en: '85 emerging female leaders from 14 AU countries began their 18-month transformative fellowship.',
-    body_en: 'Empowering women across civil service, diplomacy, and macroeconomic policy...',
-    title_am: 'የፕሮጀክት ዋይልድ አዲስ የሴት አመራሮች ስብስብ ስልጠና ጀመረ',
-    lead_am: 'ከ14 የአፍሪካ ሀገራት የተውጣጡ 85 ሴት መሪዎች ስልጠናቸውን ጀምረዋል።',
-    body_am: 'በአፍሪካ የሴቶች መሪነትን ለማጎልበት...',
-    title_om: 'Sagantaan WILD Hoggantoota Dubartootaa Haaraa Simatee',
-    lead_om: 'Dubartoonni 85 leenjii hoggansaa ji\'a 18 eegalaniiru.',
-    body_om: 'Hoggansa dubartootaa cimsuuf...',
-    author_id: null,
-    created_at: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'news-03',
-    slug: 'datacenter-cloud-infrastructure-upgrade',
-    category: 'Smart Campus',
-    published_at: '2026-10-20',
-    hero_image_url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200',
-    featured: false,
-    status: 'review_pending',
-    title_en: 'AFLEX Announces Campus Cloud Datacenter Modernization Program',
-    lead_en: 'Upgrading digital research infrastructure to power national administrative intelligence.',
-    body_en: 'The procurement directorate has issued invitations to bid for high-performance computing clusters...',
-    title_am: 'አፍሌክስ የዳታ ማዕከል እና የደመና መሰረተ-ልማት ማዘመኛ ይፋ አደረገ',
-    lead_am: 'የዲጂታል ምርምር መሰረተ ልማትን ለማሳደግ የተዘጋጀ ፕሮግራም ነው።',
-    body_am: 'የግዢ ዳይሬክቶሬቱ ጨረታ ማውጣቱን ገልጿል...',
-    title_om: 'AFLEX Sagantaa Fooyya\'iinsa Daataa Wiirtuu Labsaniiru',
-    lead_om: 'Miseensa ICT cimsuuf sagantaan qophaa\'eera.',
-    body_om: 'Caalbaasiin teknooloojii baheera...',
-    author_id: null,
-    created_at: new Date(Date.now() - 10 * 24 * 3600 * 1000).toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-];
-
 export default function AdminNewsListPage() {
-  const [articles, setArticles] = useState<NewsArticle[]>(INITIAL_DEMO_NEWS);
+  const [articles, setArticles] = useState<NewsArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
     async function fetchNews() {
+      setLoading(true);
+      setLoadError(null);
       try {
         const supabase = createClient();
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('news_articles')
           .select('*')
           .order('created_at', { ascending: false });
-
-        if (data && data.length > 0) {
-          setArticles(data as unknown as NewsArticle[]);
-        }
-      } catch {
-        // Fallback to demo items
+        if (error) throw new Error(error.message);
+        setArticles((data as NewsArticle[]) || []);
+      } catch (err) {
+        setLoadError(err instanceof Error ? err.message : 'Failed to load articles');
+        setArticles([]);
+      } finally {
+        setLoading(false);
       }
     }
     fetchNews();
   }, []);
 
-  const handleToggleStatus = (id: string) => {
-    const updated = articles.map((a) =>
-      a.id === id ? { ...a, status: a.status === 'published' ? 'draft' : 'published' } as NewsArticle : a
-    );
-    setArticles(updated);
+  const handleToggleStatus = async (id: string) => {
+    const current = articles.find((a) => a.id === id);
+    if (!current) return;
+
+    const nextStatus = current.status === 'published' ? 'draft' : 'published';
+    try {
+      await toggleContentStatus({
+        table: 'news_articles',
+        id,
+        nextStatus,
+        slug: current.slug,
+      });
+      setArticles((prev) =>
+        prev.map((a) => (a.id === id ? ({ ...a, status: nextStatus } as NewsArticle) : a))
+      );
+    } catch (err) {
+      console.error(err);
+      alert(err instanceof Error ? err.message : 'Failed to update status');
+    }
   };
 
   const filtered = articles.filter((a) => {
@@ -134,6 +88,20 @@ export default function AdminNewsListPage() {
           <span>Compose New Article</span>
         </Link>
       </div>
+
+      {loading && (
+        <p className="text-xs font-mono text-white/50 uppercase tracking-wider">Loading articles from Supabase…</p>
+      )}
+      {loadError && (
+        <p className="text-xs font-mono text-rose-300 border border-rose-500/30 bg-rose-500/10 px-3 py-2 rounded-[2px]">
+          {loadError}
+        </p>
+      )}
+      {!loading && !loadError && articles.length === 0 && (
+        <p className="text-xs font-sans text-white/60 border border-white/10 bg-[#02142d] px-3 py-3 rounded-[2px]">
+          No articles yet. Compose the first official release to populate the public news desk.
+        </p>
+      )}
 
       {/* Filter and Search Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#02142d] border border-white/10 p-3 rounded-[2px]">

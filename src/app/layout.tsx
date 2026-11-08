@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   },
   description: "African Leadership Excellence Academy: a federal institution for public leadership, research, and Africa's renaissance.",
   icons: {
-    icon: [{ url: "/images/aflex-icon.png", type: "image/png" }],
-    apple: [{ url: "/images/aflex-icon.png", type: "image/png" }],
+    icon: [{ url: "/images/aflex-icon.jpg", type: "image/jpeg" }],
+    apple: [{ url: "/images/aflex-icon.jpg", type: "image/jpeg" }],
   },
 };
 

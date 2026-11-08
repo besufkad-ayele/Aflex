@@ -13,6 +13,8 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { revalidateCmsContent } from '@/lib/cms/actions';
+import { RichTextEditor } from '@/components/admin/rich-text-editor';
 
 export default function NewNewsArticlePage() {
   const router = useRouter();
@@ -112,14 +114,10 @@ export default function NewNewsArticlePage() {
         new_data: { slug, title_en: titleEn, status: targetStatus },
       } as any);
 
-      // Trigger On-Demand ISR Cache Revalidation
-      await fetch('/api/revalidate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-revalidation-secret': 'aflex-secret-token-2026',
-        },
-        body: JSON.stringify({ type: 'news', path: `/news/${slug}` }),
+      await revalidateCmsContent({
+        table: 'news_articles',
+        path: `/news/${slug}`,
+        record: { slug, id: (data as { id?: string })?.id },
       }).catch(() => {});
 
       setSuccess(true);
@@ -266,12 +264,10 @@ export default function NewNewsArticlePage() {
                   <label className="block font-mono text-[10px] uppercase tracking-wider text-[#C9A84C]">
                     Full Body Text (English)
                   </label>
-                  <textarea
-                    rows={10}
+                  <RichTextEditor
                     value={bodyEn}
-                    onChange={(e) => setBodyEn(e.target.value)}
-                    placeholder="Full press release communique..."
-                    className="w-full bg-[#010e21] border border-white/15 focus:border-[#C9A84C] rounded-[2px] px-3.5 py-2 text-xs text-white placeholder-white/40 outline-none font-sans resize-y leading-relaxed"
+                    onChange={setBodyEn}
+                    placeholder="Full press release communique…"
                   />
                 </div>
               </>

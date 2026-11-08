@@ -1,10 +1,16 @@
 import Link from "next/link";
 import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { notFound } from "next/navigation";
-import { newsArticles, type NewsItem } from "@/lib/news-data";
+import { newsArticles } from "@/lib/news-data";
+import { getNewsBySlug, getPublishedNews } from "@/lib/cms/public-content";
 
-export function generateStaticParams() {
-  return newsArticles.map((article) => ({ slug: article.slug }));
+export async function generateStaticParams() {
+  const articles = await getPublishedNews();
+  const slugs = new Set([
+    ...articles.map((article) => article.slug),
+    ...newsArticles.map((article) => article.slug),
+  ]);
+  return Array.from(slugs).map((slug) => ({ slug }));
 }
 
 interface PageProps {
@@ -13,13 +19,14 @@ interface PageProps {
 
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
-  const article = newsArticles.find((a) => a.slug === slug);
+  const article = await getNewsBySlug(slug);
 
   if (!article) {
     notFound();
   }
 
-  const related = newsArticles.filter((item) => item.slug !== slug).slice(0, 3);
+  const allNews = await getPublishedNews();
+  const related = allNews.filter((item) => item.slug !== slug).slice(0, 3);
 
   return (
     <>

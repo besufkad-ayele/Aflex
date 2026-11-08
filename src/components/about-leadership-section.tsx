@@ -18,14 +18,13 @@ export interface LeaderProfile {
 
 const seniorExecutives: LeaderProfile[] = [
   {
-    id: "zadig-abreha",
-    name: "Zadig Abreha",
-    role: "Chief of the Academy",
+    id: "mohammedrafie-abaraya",
+    name: "Mohammedrafie Abaraya",
+    role: "Chief Executive Officer (CEO)",
     category: "executive",
-    image: "/images/zadig abereha.webp",
+    image: "/Mohammedrafie.jpg",
     badge: "CHIEF EXECUTIVE OFFICER",
-    externalUrl: "https://aflexacademy.gov.et/zadig-abreha/",
-    bio: "H.E. Zadig Abreha leads the African Leadership Excellence Academy with a clear mission: to build a world-class center of excellence for dialogue, ideation, and elite executive training across Africa. Under his leadership, the Academy has established high-impact leadership paths, continent-wide partnerships, and state-of-the-art facilities at the Sululta highland campus.",
+    bio: "Mohammedrafie Abaraya (ሙሐመድራፊዕ አባራያ) leads the African Leadership Excellence Academy with a clear conviction: leadership is a science as much as it is an art — and AFLEX is where these two meet. Under his leadership, the Academy incubates, empowers, and elevates the next generation of African leaders while supporting current leaders across the public, private, and civic sectors.",
     responsibilities: [
       "Institutional Strategy & Overall Command",
       "Continental Alliances & Ministerial Partnerships",
@@ -39,7 +38,6 @@ const seniorExecutives: LeaderProfile[] = [
     category: "executive",
     image: "/about/meseret desta vice chief of acadamy leadership development.jpg",
     badge: "VICE CHIEF · LEADERSHIP DEVELOPMENT",
-    externalUrl: "https://aflexacademy.gov.et/zadig-abreha/",
     bio: "Mrs. Meseret Desta directs the Academy's flagship leadership development programs, executive cohorts, and women's leadership initiatives (Project WILD). She oversees pedagogical innovation, participant mentorship, and transformational leadership tracks tailored to senior decision-makers.",
     responsibilities: [
       "Leadership Development & Executive Cohorts",
@@ -150,15 +148,15 @@ const boardMembers: LeaderProfile[] = [
     ]
   },
   {
-    id: "zadig-board-sec",
-    name: "Zadig Abreha",
+    id: "mohammedrafie-board-sec",
+    name: "Mohammedrafie Abaraya",
     role: "Secretary to the Board",
     category: "board",
-    image: "/images/zadig abereha.webp",
-    badge: "BOARD SECRETARY & CHIEF",
-    bio: "Chief of the Academy and Secretary to the Governing Board. Leads the executive design and day-to-day execution of the Academy's continental mandate, coordinating between the Governing Board and academy faculties.",
+    image: "/Mohammedrafie.jpg",
+    badge: "BOARD SECRETARY & CEO",
+    bio: "Chief Executive Officer and Secretary to the Governing Board. Leads the executive design and day-to-day execution of the Academy's continental mandate, coordinating between the Governing Board and academy faculties.",
     responsibilities: [
-      "Chief of Academy · AFLEX",
+      "Chief Executive Officer (CEO) · AFLEX",
       "Secretary to the Governing Board",
       "Executive Directorate Leadership"
     ]
@@ -405,7 +403,7 @@ export function AboutLeadershipSection({ locale }: AboutLeadershipSectionProps) 
             <span className="summary-number gold">03</span>
             <div>
               <strong>Senior Executive Team</strong>
-              <small>Led by Zadig Abreha (Chief of the Academy)</small>
+              <small>Led by Mohammedrafie Abaraya (Chief Executive Officer)</small>
             </div>
           </div>
           <div className="leadership-summary-divider" />

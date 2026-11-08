@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { revalidateCmsContent } from '@/lib/cms/actions';
 
 export default function NewVacancyPage() {
   const router = useRouter();
@@ -68,14 +69,9 @@ export default function NewVacancyPage() {
         new_data: { reference_no: referenceNo, title },
       } as any);
 
-      // Trigger On-Demand ISR
-      await fetch('/api/revalidate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-revalidation-secret': 'aflex-secret-token-2026',
-        },
-        body: JSON.stringify({ type: 'vacancies' }),
+      await revalidateCmsContent({
+        table: 'vacancies',
+        record: { id: (data as { id?: string } | null)?.id },
       }).catch(() => {});
 
       setSuccess(true);

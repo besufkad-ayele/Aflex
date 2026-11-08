@@ -96,16 +96,16 @@ export function AboutHeroSection() {
         {/* Logo shapes */}
         <div className="about-logo-shapes" aria-hidden="true">
           <div className="about-logo-shape about-logo-shape-circle">
-            <Image src="/images/aflex-logo.png" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
+            <Image src="/images/aflex-logo.jpg" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
           </div>
           <div className="about-logo-shape about-logo-shape-rounded">
-            <Image src="/images/aflex-logo.png" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
+            <Image src="/images/aflex-logo.jpg" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
           </div>
           <div className="about-logo-shape about-logo-shape-diamond">
-            <Image src="/images/aflex-logo.png" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
+            <Image src="/images/aflex-logo.jpg" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
           </div>
           <div className="about-logo-shape about-logo-shape-hex">
-            <Image src="/images/aflex-logo.png" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
+            <Image src="/images/aflex-logo.jpg" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
           </div>
         </div>
 

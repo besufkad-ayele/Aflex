@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useAdmin } from '@/components/admin/admin-context';
 import { createClient } from '@/lib/supabase/client';
+import { revalidateCmsContent } from '@/lib/cms/actions';
 
 export default function AdminDashboardPage() {
   const { role, roleConfig } = useAdmin();
@@ -64,18 +65,10 @@ export default function AdminDashboardPage() {
     setIsRevalidating(true);
     setRevalidateFeedback(null);
     try {
-      const res = await fetch('/api/revalidate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-revalidation-secret': 'aflex-secret-token-2026',
-        },
-        body: JSON.stringify({ type: 'news' }),
-      });
-      const data = await res.json();
+      const data = await revalidateCmsContent({ table: 'news_articles' });
       setRevalidateFeedback(`Cache purged across ${data.paths?.length || 8} localized routes.`);
     } catch {
-      setRevalidateFeedback('Simulated ISR Cache Purge Executed.');
+      setRevalidateFeedback('Cache purge failed. Confirm you are signed in as staff.');
     } finally {
       setIsRevalidating(false);
       setTimeout(() => setRevalidateFeedback(null), 4000);

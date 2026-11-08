@@ -4,10 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { programDetails } from "@/lib/programs-data";
+import type { PublicProgram } from "@/lib/cms/public-content";
 import type { Locale } from "@/lib/i18n";
 
 interface ProgramsListViewProps {
   locale?: Locale;
+  programs?: PublicProgram[];
 }
 
 const programImages: Record<string, string> = {
@@ -22,12 +24,14 @@ function parseMetaChips(meta: string) {
   return meta.split("·").map((part) => part.trim()).filter(Boolean);
 }
 
-export function ProgramsListView({ locale }: ProgramsListViewProps) {
-  const [expandedProgram, setExpandedProgram] = useState<string | null>("leadership-development");
+export function ProgramsListView({ locale, programs = programDetails }: ProgramsListViewProps) {
+  const [expandedProgram, setExpandedProgram] = useState<string | null>(
+    programs[0]?.id ?? "leadership-development"
+  );
 
   return (
     <div className="programs-full-list">
-      {programDetails.map((program) => {
+      {programs.map((program) => {
         const isExpanded = expandedProgram === program.id;
         const img =
           programImages[program.id] ||
@@ -62,7 +66,7 @@ export function ProgramsListView({ locale }: ProgramsListViewProps) {
 
                   <div className="program-title-row">
                     <Image
-                      src="/images/aflex-icon.png"
+                      src="/images/aflex-icon.jpg"
                       alt=""
                       width={22}
                       height={22}
@@ -130,7 +134,7 @@ export function ProgramsListView({ locale }: ProgramsListViewProps) {
               {isExpanded && (
                 <div className="program-card-expanded-drawer">
                   <Image
-                    src="/images/aflex-icon.png"
+                    src="/images/aflex-icon.jpg"
                     alt=""
                     width={96}
                     height={96}

@@ -24,6 +24,7 @@ import {
   X
 } from 'lucide-react';
 import { useAdmin, ROLES, type AdminRole } from './admin-context';
+import { canAccessAdminPath } from '@/lib/cms/rbac';
 
 interface NavGroup {
   id: string;
@@ -45,7 +46,7 @@ const NAV_GROUPS: NavGroup[] = [
     icon: LayoutDashboard,
     items: [
       { label: 'Executive Overview', href: '/admin', exact: true },
-      { label: 'Staff & Role Simulator', href: '/admin/staff' },
+      { label: 'Staff & Roles', href: '/admin/staff' },
     ],
   },
   {
@@ -102,7 +103,7 @@ const NAV_GROUPS: NavGroup[] = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  const { role, roleConfig, setRole, isSidebarOpen, closeSidebar } = useAdmin();
+  const { role, baseRole, roleConfig, setRole, isSidebarOpen, closeSidebar, signOut, profileEmail } = useAdmin();
   
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     executive: true,
@@ -127,6 +128,11 @@ export function AdminSidebar() {
     return pathname.startsWith(href);
   };
 
+  const visibleGroups = NAV_GROUPS.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => canAccessAdminPath(item.href, role)),
+  })).filter((group) => group.items.length > 0);
+
   return (
     <>
       {/* Mobile Backdrop */}
@@ -148,7 +154,7 @@ export function AdminSidebar() {
           <Link href="/admin" className="flex items-center gap-3 group">
             <div className="w-9 h-9 border border-[#C9A84C]/60 bg-[#024696] rounded-[2px] flex items-center justify-center p-1.5 shadow-sm">
               <Image
-                src="/images/aflex-icon.png"
+                src="/images/aflex-icon.jpg"
                 alt="AFLEX"
                 width={26}
                 height={26}
@@ -177,41 +183,48 @@ export function AdminSidebar() {
           </button>
         </div>
 
-        {/* Role Simulation Switcher Widget */}
+        {/* Active staff identity */}
         <div className="p-3 bg-[#010e21] border-b border-white/10">
           <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-wider text-white/60 mb-1.5">
             <span className="flex items-center gap-1 text-[#C9A84C]">
-              <Sparkles className="w-3 h-3" /> Role View:
+              <Sparkles className="w-3 h-3" /> Signed in as
             </span>
-            <Link
-              href="/admin/staff"
-              className="text-[#C9A84C] hover:underline"
-            >
-              Matrix &rarr;
-            </Link>
+            {baseRole === 'super_admin' && (
+              <Link href="/admin/staff" className="text-[#C9A84C] hover:underline">
+                Roles &rarr;
+              </Link>
+            )}
           </div>
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value as AdminRole)}
-            className="w-full bg-[#02142d] border border-white/15 focus:border-[#C9A84C] rounded-[2px] px-2.5 py-1.5 font-sans text-xs text-white outline-none cursor-pointer"
-          >
-            {Object.values(ROLES).map((r) => (
-              <option key={r.id} value={r.id} className="bg-[#02142d] text-white">
-                {r.title} ({r.name.split(' ')[0]})
-              </option>
-            ))}
-          </select>
+          {baseRole === 'super_admin' ? (
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as AdminRole)}
+              className="w-full bg-[#02142d] border border-white/15 focus:border-[#C9A84C] rounded-[2px] px-2.5 py-1.5 font-sans text-xs text-white outline-none cursor-pointer"
+            >
+              {Object.values(ROLES)
+                .filter((r) => r.id !== 'viewer')
+                .map((r) => (
+                  <option key={r.id} value={r.id} className="bg-[#02142d] text-white">
+                    {r.title}
+                  </option>
+                ))}
+            </select>
+          ) : (
+            <div className="w-full bg-[#02142d] border border-white/15 rounded-[2px] px-2.5 py-1.5 font-sans text-xs text-white">
+              {roleConfig.title}
+            </div>
+          )}
           <div className="mt-1.5 flex items-center justify-between text-[10px] text-white/60">
-            <span className="truncate max-w-[170px]">{roleConfig.department}</span>
+            <span className="truncate max-w-[170px]">{profileEmail || roleConfig.department}</span>
             <span className="font-mono px-1.5 py-0.5 rounded-[2px] border border-[#C9A84C]/40 bg-[#C9A84C]/10 text-[#C9A84C] text-[9px] font-medium">
-              Active
+              {role}
             </span>
           </div>
         </div>
 
         {/* Navigation Groups */}
         <nav className="p-2 space-y-1 flex-1 overflow-y-auto">
-          {NAV_GROUPS.map((group) => {
+          {visibleGroups.map((group) => {
             const GroupIcon = group.icon;
             const isOpen = !!openGroups[group.id];
             const hasActiveChild = group.items.some((item) => isItemActive(item.href, item.exact));
@@ -292,6 +305,15 @@ export function AdminSidebar() {
               Open &rarr;
             </span>
           </Link>
+
+          <button
+            type="button"
+            onClick={() => void signOut()}
+            className="w-full flex items-center justify-between px-3 py-1.5 rounded-[2px] text-xs font-sans text-rose-200/90 hover:text-white bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-colors cursor-pointer"
+          >
+            <span>Sign out</span>
+            <span className="font-mono text-[9px] uppercase">Exit</span>
+          </button>
 
           <div className="flex items-center justify-between text-[10px] font-mono text-white/50 pt-1">
             <span>AFLEX Sululta Node</span>

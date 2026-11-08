@@ -14,7 +14,7 @@ import {
 import { useAdmin, ROLES, type AdminRole } from '@/components/admin/admin-context';
 
 export default function AdminStaffSimulatorPage() {
-  const { role, setRole } = useAdmin();
+  const { role, baseRole, setRole, profileName, profileEmail } = useAdmin();
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
@@ -26,14 +26,17 @@ export default function AdminStaffSimulatorPage() {
               Governance & Identity
             </span>
             <span className="text-xs text-[#C9A84C] flex items-center gap-1.5 font-mono uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5 text-[#024696]" /> Role Simulation Active
+              <Sparkles className="w-3.5 h-3.5 text-[#024696]" />{' '}
+              {baseRole === 'super_admin' ? 'Simulation available' : 'Live profile role'}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-white tracking-tight">
-            Executive Role & Permission Simulator
+            Staff Roles & Permissions
           </h1>
           <p className="text-xs sm:text-sm text-white/60 max-w-2xl font-sans">
-            Simulate and test the exact operational perspectives and security capabilities of each institutional officer across the African Leadership Excellence Academy.
+            Roles are loaded from <code className="text-[#C9A84C]">public.profiles</code>
+            {profileEmail ? ` (${profileName || profileEmail})` : ''}. Super admins may temporarily
+            preview other operational perspectives.
           </p>
         </div>
 
@@ -98,8 +101,8 @@ export default function AdminStaffSimulatorPage() {
               <div className="mt-6 pt-4 border-t border-white/10">
                 <button
                   type="button"
+                  disabled={isActive || baseRole !== 'super_admin'}
                   onClick={() => setRole(r.id)}
-                  disabled={isActive}
                   className={`w-full py-2.5 px-4 rounded-[2px] text-xs font-mono font-semibold uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     isActive
                       ? 'bg-[#C9A84C] text-[#021024] cursor-default'

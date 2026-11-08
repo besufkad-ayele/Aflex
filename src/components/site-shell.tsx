@@ -101,7 +101,7 @@ function DropdownAbout({ route }: { route: (p: string) => string }) {
               ["Campus & Facilities", "/about#campus"],
             ] as [string, string][]
           ).map(([label, href]) => (
-            <Link key={href} href={route(href)} className="nav-dropdown-link">
+            <Link key={label} href={route(href)} className="nav-dropdown-link">
               <span className="nav-link-arrow" aria-hidden="true">›</span>
               {label}
             </Link>
@@ -153,7 +153,7 @@ function DropdownPrograms({ route }: { route: (p: string) => string }) {
             { code: "03", label: "PSLE",                            sub: "EXECUTIVE PROGRAM",   href: "/programs#psle" },
           ]
         ).map(({ code, label, sub, href }) => (
-          <Link key={href} href={route(href)} className="nav-dropdown-link">
+          <Link key={label} href={route(href)} className="nav-dropdown-link">
             <span className="nav-link-code">{code}</span>
             <span>
               {label}
@@ -178,7 +178,7 @@ function DropdownPrograms({ route }: { route: (p: string) => string }) {
             ["Digital Transformation of Government",     "/programs#digital"],
           ] as [string, string][]
         ).map(([label, href]) => (
-          <Link key={href} href={route(href)} className="nav-dropdown-link nav-dropdown-link--sm">
+          <Link key={label} href={route(href)} className="nav-dropdown-link nav-dropdown-link--sm">
             <span className="nav-link-arrow" aria-hidden="true">›</span>
             {label}
           </Link>
@@ -199,7 +199,7 @@ function DropdownPrograms({ route }: { route: (p: string) => string }) {
             ["Executive Coaching",        "/programs#coaching"],
           ] as [string, string][]
         ).map(([label, href]) => (
-          <Link key={href} href={route(href)} className="nav-dropdown-link nav-dropdown-link--sm">
+          <Link key={label} href={route(href)} className="nav-dropdown-link nav-dropdown-link--sm">
             <span className="nav-link-arrow" aria-hidden="true">›</span>
             {label}
           </Link>
@@ -241,7 +241,7 @@ function DropdownNews({ route }: { route: (p: string) => string }) {
             ["Upcoming Events",   "/news?tab=events"],
           ] as [string, string][]
         ).map(([label, href]) => (
-          <Link key={href} href={route(href)} className="nav-dropdown-link">
+          <Link key={label} href={route(href)} className="nav-dropdown-link">
             <span className="nav-link-arrow" aria-hidden="true">›</span>
             {label}
           </Link>
@@ -270,11 +270,11 @@ function DropdownNews({ route }: { route: (p: string) => string }) {
             ["Photo Gallery",       "/gallery"],
             ["Video Library",       "/gallery?type=video"],
             ["Press Kit & Logos",   "/gallery#downloads"],
-            ["Annual Reports",      "/library"],
-            ["Research Publications", "/library"],
+            ["Annual Reports",      "/library?category=reports"],
+            ["Research Publications", "/library?category=research"],
           ] as [string, string][]
         ).map(([label, href]) => (
-          <Link key={href} href={route(href)} className="nav-dropdown-link nav-dropdown-link--sm">
+          <Link key={label} href={route(href)} className="nav-dropdown-link nav-dropdown-link--sm">
             <span className="nav-link-arrow" aria-hidden="true">›</span>
             {label}
           </Link>
@@ -301,7 +301,7 @@ function DropdownContact({ route }: { route: (p: string) => string }) {
             ["Submit a Vacancy Application", route("/vacancy")],
           ] as [string, string][]
         ).map(([label, href]) => (
-          <Link key={href} href={href} className="nav-dropdown-link">
+          <Link key={label} href={href} className="nav-dropdown-link">
             <span className="nav-link-arrow" aria-hidden="true">›</span>
             {label}
           </Link>
@@ -405,13 +405,19 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
 
   useEffect(() => { setMounted(true); }, []);
 
+  // Apply saved/browser locale once on first English (non-prefixed) visit.
+  // Do not re-run on every pathname change — that caused thrashing between routes.
   useEffect(() => {
     if (!mounted || hasLocalePath) return;
     const saved = document.cookie.match(/(?:^|; )aflex-locale=([^;]+)/)?.[1];
     const preferred = getLocale(saved || browserLocale());
-    if (preferred !== "en")
-      router.replace(`/${preferred}${pathname === "/" ? "" : pathname}` || `/${preferred}`);
-  }, [mounted, hasLocalePath, pathname, router]);
+    if (preferred === "en") return;
+    const target = `/${preferred}${localPath === "/" ? "" : localPath}` || `/${preferred}`;
+    if (pathname === target) return;
+    router.replace(target);
+    // intentionally omit pathname from deps — one-shot locale bootstrap
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted, hasLocalePath, router]);
 
   // Escape key closes everything
   useEffect(() => {
@@ -687,7 +693,7 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
         <div className="container nav-inner">
           <Link href={route("/")} className="wordmark brand-wordmark" aria-label="AFLEX Academy home">
             <Image
-              src="/images/aflex-icon.png"
+              src="/images/aflex-icon.jpg"
               alt=""
               width={32}
               height={32}
