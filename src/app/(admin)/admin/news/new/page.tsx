@@ -76,28 +76,27 @@ export default function NewNewsArticlePage() {
     try {
       const supabase = createClient();
 
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       const articlePayload = {
         slug: slug.trim(),
+        title: titleEn.trim(),
+        excerpt: leadEn.trim() || titleEn.trim(),
+        content: bodyEn.trim() || leadEn.trim() || titleEn.trim(),
         category,
-        published_at: publishedAt,
-        hero_image_url: heroImageUrl.trim() || null,
         featured,
+        hero_image_url: heroImageUrl.trim() || null,
+        read_time_minutes: 4,
+        language_code: 'en',
         status: targetStatus,
-        title_en: titleEn.trim(),
-        lead_en: leadEn.trim() || null,
-        body_en: bodyEn.trim() || null,
-        title_am: titleAm.trim() || null,
-        lead_am: leadAm.trim() || null,
-        body_am: bodyAm.trim() || null,
-        title_om: titleOm.trim() || null,
-        lead_om: leadOm.trim() || null,
-        body_om: bodyOm.trim() || null,
+        published_at: publishedAt ? new Date(publishedAt).toISOString() : new Date().toISOString(),
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data, error } = await supabase
         .from('news_articles')
-        .insert(articlePayload as any)
+        .insert(articlePayload as never)
         .select()
         .single();
 
@@ -105,14 +104,14 @@ export default function NewNewsArticlePage() {
         throw new Error(error.message);
       }
 
-      // Record audit log
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await supabase.from('audit_logs').insert({
+        user_id: user?.id ?? null,
+        user_email: user?.email ?? null,
         action: targetStatus === 'published' ? 'ARTICLE_PUBLISHED' : 'ARTICLE_DRAFT_CREATED',
-        target_table: 'news_articles',
-        target_id: (data as any)?.id,
-        new_data: { slug, title_en: titleEn, status: targetStatus },
-      } as any);
+        entity_type: 'news_articles',
+        entity_id: (data as { id?: string } | null)?.id ?? null,
+        changes: { slug, title: titleEn, status: targetStatus, am: titleAm, om: titleOm },
+      } as never);
 
       await revalidateCmsContent({
         table: 'news_articles',

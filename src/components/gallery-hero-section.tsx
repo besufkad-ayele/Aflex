@@ -37,7 +37,7 @@ export function GalleryHeroSection() {
   return (
     <section
       className="gallery-hero"
-      aria-label="Gallery highlight reel"
+      aria-label="Media highlight reel"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -70,7 +70,7 @@ export function GalleryHeroSection() {
 
       <div className="container gallery-hero-content">
         <span className="mono gallery-hero-breadcrumb">
-          HOME <b>/</b> GALLERY
+          HOME <b>/</b> MEDIA
         </span>
         <p className="gallery-hero-brand">AFLEX</p>
         <div className="gallery-hero-copy" key={current.id}>
@@ -78,16 +78,16 @@ export function GalleryHeroSection() {
             {current.type === "video" ? "VIDEO" : "PHOTO"} · {current.album}
           </span>
           <h1>
-            Gallery &amp;
+            Media &amp;
             <br />
-            <em>Archive</em>
+            <em>Channels</em>
           </h1>
           <p className="gallery-hero-lead">{current.title}</p>
         </div>
       </div>
 
       <div className="gallery-hero-controls">
-        <div className="gallery-hero-dots" role="tablist" aria-label="Gallery slides">
+        <div className="gallery-hero-dots" role="tablist" aria-label="Media slides">
           {slides.map((slide, index) => (
             <button
               key={slide.id}

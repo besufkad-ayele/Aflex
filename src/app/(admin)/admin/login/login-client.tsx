@@ -52,7 +52,7 @@ export default function AdminLoginPage() {
           <div className="inline-flex p-3 rounded-[2px] bg-[#02142d] border border-white/10 shadow-xl">
             <div className="w-14 h-14 bg-[#010c1c] rounded-[2px] flex items-center justify-center p-2 border border-white/5">
               <Image
-                src="/images/aflex-icon.jpg"
+                src="/images/aflex-logo.png"
                 alt="AFLEX"
                 width={40}
                 height={40}

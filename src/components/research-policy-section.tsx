@@ -45,7 +45,7 @@ export function ResearchPolicySection({ locale }: ResearchPolicySectionProps) {
           </div>
 
           <div className="research-feature-mark" aria-hidden="true">
-            <Image src="/images/aflex-logo.jpg" alt="" width={140} height={140} style={{ objectFit: "contain" }} />
+            <Image src="/images/aflex-logo.png" alt="" width={160} height={160} style={{ objectFit: "contain" }} />
           </div>
         </div>
       </div>

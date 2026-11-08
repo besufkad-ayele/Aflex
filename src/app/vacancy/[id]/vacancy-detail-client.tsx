@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { SiteHeader, SiteFooter, Weave } from "@/components/site-shell";
+import { SiteHeader, SiteFooter } from "@/components/site-shell";
 import { type Vacancy } from "@/lib/vacancies-data";
 
 export default function VacancyDetailClient({
@@ -75,8 +75,7 @@ export default function VacancyDetailClient({
               </span>
             </div>
           </div>
-          <Weave dark />
-        </section>
+                  </section>
 
         {/* Content & Sidebar Grid */}
         <section className="section" style={{ background: "#ffffff", color: "#111", padding: "64px 0" }}>

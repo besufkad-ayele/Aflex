@@ -3,7 +3,8 @@ import { EmptyState, PageFrame } from "@/components/page-primitives";
 import { copy, getLocale, locales } from "@/lib/i18n";
 
 const pageNames: Record<string, string> = {
-  gallery: "Gallery & Resources",
+  gallery: "Media Hub",
+  media: "Media Hub",
   catalog: "Training Catalog",
   vacancy: "Careers at AFLEX",
   contact: "Contact Us",

@@ -76,7 +76,7 @@ export const aboutHeroSlides: AboutHeroSlide[] = [
     id: 8,
     album: "AFLEX",
     title: "African Leadership Excellence Academy",
-    image: "/images/aflex-logo.jpg",
+    image: "/images/aflex-logo.png",
   },
   {
     id: 9,

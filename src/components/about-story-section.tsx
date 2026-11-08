@@ -8,19 +8,33 @@ export function AboutStorySection() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <section className="about-detailed-story-section" id="about-mandate">
+    <section className="about-detailed-story-section" id="story">
       <div className="container">
         <div className="about-story-grid">
-          {/* Left Column: Rich Text with See More Toggle */}
           <div className="about-story-content">
             <div className="about-story-pill">
               <span className="about-story-dot" />
               <span>ABOUT THE ACADEMY · INSTITUTIONAL MANDATE</span>
             </div>
-            
+
             <h2 className="about-story-heading">
               Shaping Africa&apos;s <em>leaders</em> for a transformative era.
             </h2>
+
+            <div className="about-story-stats" aria-label="Key institutional facts">
+              <div className="about-story-stat">
+                <strong>2021</strong>
+                <span>Reestablished</span>
+              </div>
+              <div className="about-story-stat">
+                <strong>3</strong>
+                <span>Mandate pillars</span>
+              </div>
+              <div className="about-story-stat">
+                <strong>2,450m</strong>
+                <span>Sululta campus</span>
+              </div>
+            </div>
 
             <div className="about-story-paragraphs">
               <p className="lead-paragraph">
@@ -35,7 +49,6 @@ export function AboutStorySection() {
                 The Academy will focus on three primary areas: <strong>Leadership Development</strong>, <strong>Research</strong>, and <strong>Policy Advisory Services</strong>. Under each of these pillars, flagship programs will be launched to equip senior and emerging leaders across the continent.
               </p>
 
-              {/* Collapsible Extended Paragraphs */}
               <div className={`about-story-extended ${isExpanded ? "open" : ""}`}>
                 <p>
                   The state-of-the-art facility located in Sululta, 25kms from Addis Ababa is a serene environment ideal for learning and reflection, fostering the required enabling environment.
@@ -47,7 +60,6 @@ export function AboutStorySection() {
               </div>
             </div>
 
-            {/* See More / See Less Toggle Button */}
             <div className="about-story-actions">
               <button
                 type="button"
@@ -61,7 +73,7 @@ export function AboutStorySection() {
 
               <Link href="/programs" className="about-explore-link">
                 <span>Explore Programs</span>
-                <span>↗</span>
+                <span aria-hidden="true">↗</span>
               </Link>
             </div>
           </div>

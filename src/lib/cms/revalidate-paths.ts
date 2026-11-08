@@ -8,6 +8,9 @@ export type CmsTable =
   | 'procurement_tenders'
   | 'emergency_banners'
   | 'media_assets'
+  | 'media_gallery_items'
+  | 'media_social_feeds'
+  | 'media_social_posts'
   | 'faqs'
   | 'events';
 
@@ -78,6 +81,10 @@ export function collectRevalidatePaths(payload: RevalidatePayload): string[] {
       }
       break;
     case 'media_assets':
+    case 'media_gallery_items':
+    case 'media_social_feeds':
+    case 'media_social_posts':
+      paths.add('/media');
       paths.add('/gallery');
       paths.add('/about');
       break;

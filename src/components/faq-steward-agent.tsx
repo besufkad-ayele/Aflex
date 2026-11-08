@@ -138,7 +138,7 @@ export function FaqStewardAgent() {
           <div className="steward-console-chrome">
             <div className="steward-identity">
               <span className="steward-avatar" aria-hidden="true">
-                <Image src="/images/aflex-icon.jpg" alt="" width={24} height={24} />
+                <Image src="/images/aflex-logo.png" alt="" width={40} height={40} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
               </span>
               <div>
                 <strong>Sululta Steward</strong>

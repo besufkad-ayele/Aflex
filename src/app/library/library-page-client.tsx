@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { SiteHeader, SiteFooter, Weave } from "@/components/site-shell";
+import { SiteHeader, SiteFooter } from "@/components/site-shell";
 import { libraryResources as resources } from "@/lib/library-data";
 
 const CATEGORY_ALIASES: Record<string, string> = {
@@ -119,8 +119,7 @@ export default function LibraryPage() {
               </div>
             </div>
           </div>
-          <Weave dark />
-        </section>
+                  </section>
 
         {/* Digital Repository Search & Explorer */}
         <section className="section" style={{ background: "#f0f5fd", color: "#024696", padding: "64px 0" }}>

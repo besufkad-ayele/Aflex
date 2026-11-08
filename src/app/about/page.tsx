@@ -1,41 +1,49 @@
-import Image from "next/image";
+import Link from "next/link";
 import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { AboutCampusSlideshow } from "@/components/about-campus-slideshow";
+import { AboutCeoMessage } from "@/components/about-ceo-message";
 import { AboutHeroSection } from "@/components/about-hero-section";
+import { AboutHistorySection } from "@/components/about-history-section";
 import { AboutLeadershipSection } from "@/components/about-leadership-section";
+import { AboutSectionNav } from "@/components/about-section-nav";
 import { AboutStorySection } from "@/components/about-story-section";
+import { AboutValuesSection } from "@/components/about-values-section";
 import { PartnersMarquee } from "@/components/partners-marquee";
-
-const values = [
-  { name: "Civility", letter: "C", description: "Mutual respect, deep listening, and dignity in all public deliberation." },
-  { name: "Optimity", letter: "O", description: "Relentless pursuit of optimal solutions and highest institutional standards." },
-  { name: "Magnanimity", letter: "M", description: "Nobility of spirit, generous statesmanship, and serving the greater good." },
-  { name: "Integrity", letter: "I", description: "Uncompromising ethical fortitude, honesty, and accountability." },
-  { name: "Novelty", letter: "N", description: "Original thinking, innovative statecraft, and transformative curiosity." },
-  { name: "Glocality", letter: "G", description: "Grounded in African heritage while mastering global best practices." }
-];
 
 const pillars = [
   {
     title: "INNOVATE",
-    code: "01 / TRANSFORMATION",
-    text: "Drive transformational agendas at all levels. Create and implement content that is relevant, cutting-edge, and immediately applicable across African governance."
+    code: "01 / TRANSFORM",
+    icon: "✦",
+    text: "Drive transformational agendas at all levels. Create and implement content that is relevant, cutting-edge, and immediately applicable across African governance.",
+    focus: "Curriculum · Research · New models",
   },
   {
     title: "INTEGRATE",
     code: "02 / COLLABORATION",
-    text: "Build an ecosystem of partnerships and alliances for mutual benefit. Continuously make learning accessible, collaborative, and deeply practical."
+    icon: "◎",
+    text: "Build an ecosystem of partnerships and alliances for mutual benefit. Continuously make learning accessible, collaborative, and deeply practical.",
+    focus: "Partnerships · Cohorts · Networks",
   },
   {
     title: "IMPACT",
     code: "03 / RESULTS",
-    text: "Create lasting impact through learners and stakeholders by influencing policy formulation, institutional culture, and effective ways of working."
-  }
+    icon: "▲",
+    text: "Create lasting impact through learners and stakeholders by influencing policy formulation, institutional culture, and effective ways of working.",
+    focus: "Policy · Institutions · Outcomes",
+  },
+];
+
+const mandateChips = [
+  "Leadership Development",
+  "Research",
+  "Policy Advisory",
 ];
 
 export const metadata = {
   title: "About AFLEX",
-  description: "Mandate, History, Vision, Values, Governing Board, and Senior Executive Leadership of the African Leadership Excellence Academy."
+  description:
+    "Mandate, History, Vision, Values, Governing Board, and Senior Executive Leadership of the African Leadership Excellence Academy.",
 };
 
 export default function About() {
@@ -44,126 +52,82 @@ export default function About() {
       <SiteHeader active="About AFLEX" />
       <main id="main-content">
         <AboutHeroSection />
-        
-        {/* Note from the Chief Executive Officer */}
-        <section className="message-section section" style={{ background: "#024696", color: "#fff" }}>
-          <div className="container message-grid" style={{ alignItems: "start" }}>
-            <div className="chief-portrait" style={{ position: "relative" }}>
-              <Image
-                src="/Mohammedrafie.jpg"
-                alt="Mohammedrafie Abaraya, Chief Executive Officer"
-                fill
-                sizes="(max-width: 768px) 100vw, 420px"
-                style={{ objectFit: "cover", objectPosition: "center top" }}
-                priority
-              />
-              <span className="chief-portrait-badge">CHIEF EXECUTIVE OFFICER</span>
-            </div>
-            <div className="message-copy">
-              <span className="eyebrow" style={{ color: "var(--gold)" }}>A NOTE FROM THE CHIEF EXECUTIVE OFFICER</span>
-              <blockquote>
-                “Leadership is a science as much as it is an art. African Leadership Excellence Academy is where these two meet.”
-              </blockquote>
-              <p>Welcome to the African Leadership Excellence Academy!</p>
-              <p>
-                At our academy an inter-generational leadership transaction of wisdom transfer happens. In the past half millennia Africa has lost its leadership structure and philosophy due to the many dark histories it underwent – including slavery, colonization, and internal conflicts.
-              </p>
-              <p>
-                Our academy strives to create a unique space to incubate, empower, and elevate the next generation of African leaders, and regain the lost structure of true African wisdom and leadership. Through training and research the academy envisions to support current leaders in the public, private, and civic sectors.
-              </p>
-              <p>
-                In this season, the academy is focused on training senior national leaders in parallel to completing its internal reform works. Our efforts have been fruitful, and the feedback from stakeholders is very encouraging.
-              </p>
-              <p>
-                In the next season, the academy will open its doors to its continental Pan-African agenda. As part of this endeavor the academy will host the first of its kind event on the side event of the AU 36th Heads of States Summit. With its state-of-the-art facility, the academy will host different workshops, trainings, and other deliberations to push the Pan-African agenda forward.
-              </p>
-              <p>
-                The future is in line with Africa’s renaissance and our academy looks forward to contributing to this great opportunity in the changing global order of which we are all are part of.
-              </p>
-              <blockquote>“Shaping the future leaders of Africa”</blockquote>
-              <span className="mono signature" style={{ color: "var(--gold)" }}>
-                MOHAMMEDRAFIE ABARAYA<br />
-                <span style={{ display: "block", marginTop: 4, color: "rgba(255,255,255,0.85)", fontFamily: "var(--sans, inherit)", letterSpacing: "0.02em" }}>
-                  ሙሐመድራፊዕ አባራያ
-                </span>
-                <b style={{ color: "#fff" }}>CHIEF EXECUTIVE OFFICER (CEO)</b>
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* Detailed About Us Section with Workers Image on the Right & Interactive See More Toggle */}
+        <AboutSectionNav />
+        <AboutCeoMessage />
         <AboutStorySection />
+        <AboutHistorySection />
 
-        {/* Vision & Mission Section */}
-        <section className="section vision-section about-light-section">
-          <div className="container vision-grid">
-            <article className="about-light-card">
-              <span className="eyebrow">01 / VISION</span>
-              <h2 style={{ fontSize: "clamp(1.8rem, 3.2vw, 2.6rem)", margin: "12px 0 16px" }}>
-                To be the African center of excellence in leadership and to raise <em>elite leaders</em> who realize African prosperity.
-              </h2>
-            </article>
-            <article className="about-light-card">
-              <span className="eyebrow">02 / MISSION</span>
-              <p className="lead" style={{ fontSize: "20px", lineHeight: "1.6", margin: "12px 0" }}>
-                Provide existing and emerging African leaders with premium innovative learning, research, and collaborative experience that enables them to positively impact the lives of Africans.
-              </p>
-            </article>
-          </div>
-        </section>
-
-        {/* Values Section (C-O-M-I-N-G) */}
-        <section className="values-section black-section" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <section className="section vision-section about-light-section about-vision-section" id="vision">
           <div className="container">
-            <div className="section-heading">
-              <span className="eyebrow" style={{ color: "var(--gold)" }}>OUR GUIDING VALUES</span>
-              <h2>The COMING Framework for<br /><em>ethical statecraft.</em></h2>
-              <p style={{ color: "rgba(255,255,255,0.75)" }}>Six foundational values that guide our faculties, curriculum, and every cohort at AFLEX.</p>
+            <div className="about-vision-intro">
+              <span className="eyebrow">VISION & MISSION</span>
+              <h2>
+                A continental center of excellence for
+                <br />
+                <em>elite African leadership.</em>
+              </h2>
+              <div className="about-mandate-chips" aria-label="Primary mandate areas">
+                {mandateChips.map((chip) => (
+                  <span key={chip} className="about-mandate-chip">
+                    {chip}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="value-grid">
-              {values.map((item) => (
-                <div className="value-item" key={item.name}>
-                  <span className="value-icon">{item.letter}</span>
-                  <h3>{item.name}</h3>
-                  <p style={{ fontSize: "12px", color: "var(--muted-dark)", margin: "8px 0 0", lineHeight: "1.5" }}>
-                    {item.description}
-                  </p>
-                </div>
-              ))}
+
+            <div className="vision-grid about-vision-grid">
+              <article className="about-light-card about-vision-card">
+                <span className="eyebrow">01 / VISION</span>
+                <h3>
+                  To be the African center of excellence in leadership and to raise{" "}
+                  <em>elite leaders</em> who realize African prosperity.
+                </h3>
+              </article>
+              <article className="about-light-card about-vision-card">
+                <span className="eyebrow">02 / MISSION</span>
+                <p className="lead">
+                  Provide existing and emerging African leaders with premium innovative learning, research, and collaborative experience that enables them to positively impact the lives of Africans.
+                </p>
+                <Link href="/programs" className="about-inline-link">
+                  <span>Explore leadership programs</span>
+                  <span aria-hidden="true">↗</span>
+                </Link>
+              </article>
             </div>
           </div>
         </section>
 
-        {/* Three Pillars Section */}
-        <section className="section pillars-section about-light-section about-pillars-light">
+        <AboutValuesSection />
+
+        <section className="section pillars-section about-light-section about-pillars-light" id="pillars">
           <div className="container">
             <div className="pillars-intro">
               <span className="eyebrow">THE THREE PILLARS</span>
-              <h2>Three engines of<br /><em>continental impact.</em></h2>
-              <p style={{ marginTop: "12px" }}>
+              <h2>
+                Three engines of
+                <br />
+                <em>continental impact.</em>
+              </h2>
+              <p>
                 Leadership Development, Research, and Policy Advisory Services structured into three actionable pillars.
               </p>
             </div>
-            <div className="pillar-grid">
-              {pillars.map((pillar) => (
-                <article key={pillar.title} className="about-pillar-card">
+            <div className="pillar-grid about-pillar-grid">
+              {pillars.map((pillar, index) => (
+                <article key={pillar.title} className="about-pillar-card" style={{ animationDelay: `${index * 80}ms` }}>
+                  <span className="about-pillar-icon" aria-hidden="true">{pillar.icon}</span>
                   <span className="mono pillar-code">{pillar.code}</span>
                   <h3>{pillar.title}</h3>
                   <p>{pillar.text}</p>
+                  <span className="about-pillar-focus">{pillar.focus}</span>
                 </article>
               ))}
             </div>
           </div>
         </section>
-        
-        {/* Strategic Partners & Alliances */}
+
         <PartnersMarquee />
-
-        {/* Interactive Horizontal Accordion: Board Members & Senior Executives */}
         <AboutLeadershipSection />
-
-        {/* Auto-Advancing Sululta Campus Background Video Slideshow */}
         <AboutCampusSlideshow />
       </main>
       <SiteFooter />

@@ -47,9 +47,10 @@ export default function AdminProcurementPage() {
     }
   };
 
-  const filtered = tenders.filter((t) =>
-    t.title.toLowerCase().includes(search.toLowerCase()) || t.tender_no.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = tenders.filter((t) => {
+    const ref = (t.tender_ref_number || t.tender_no || '').toLowerCase();
+    return t.title.toLowerCase().includes(search.toLowerCase()) || ref.includes(search.toLowerCase());
+  });
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -123,11 +124,11 @@ export default function AdminProcurementPage() {
               {filtered.map((item) => (
                 <tr key={item.id} className="hover:bg-white/[0.02] transition-colors">
                   <td className="py-4 px-4 font-mono font-semibold text-[#C9A84C]">
-                    {item.tender_no}
+                    {item.tender_ref_number || item.tender_no}
                   </td>
                   <td className="py-4 px-4 font-medium text-white max-w-sm">
                     <div className="line-clamp-2">{item.title}</div>
-                    {item.tor_document_url && (
+                    {(item.document_url || item.tor_document_url) && (
                       <div className="text-[10px] text-[#C9A84C]/90 font-mono flex items-center gap-1 mt-1">
                         <Download className="w-3 h-3 text-[#024696]" /> TOR Document Attached
                       </div>
@@ -135,7 +136,7 @@ export default function AdminProcurementPage() {
                   </td>
                   <td className="py-4 px-4">
                     <span className="px-2 py-0.5 rounded-[2px] bg-[#010c1c] border border-white/10 text-white/70 font-mono text-[10px] tracking-wider uppercase">
-                      {item.procurement_type}
+                      {item.category || item.procurement_type || '—'}
                     </span>
                   </td>
                   <td className="py-4 px-4 font-mono text-white/80">
@@ -148,7 +149,7 @@ export default function AdminProcurementPage() {
                     )}
                   </td>
                   <td className="py-4 px-4 font-mono text-white/70">
-                    {new Date(item.closing_date).toLocaleDateString()}
+                    {new Date(item.submission_deadline || item.closing_date || Date.now()).toLocaleDateString()}
                   </td>
                   <td className="py-4 px-4">
                     <button

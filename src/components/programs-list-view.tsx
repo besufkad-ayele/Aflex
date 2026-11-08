@@ -66,7 +66,7 @@ export function ProgramsListView({ locale, programs = programDetails }: Programs
 
                   <div className="program-title-row">
                     <Image
-                      src="/images/aflex-icon.jpg"
+                      src="/images/aflex-logo.png"
                       alt=""
                       width={22}
                       height={22}
@@ -134,7 +134,7 @@ export function ProgramsListView({ locale, programs = programDetails }: Programs
               {isExpanded && (
                 <div className="program-card-expanded-drawer">
                   <Image
-                    src="/images/aflex-icon.jpg"
+                    src="/images/aflex-logo.png"
                     alt=""
                     width={96}
                     height={96}

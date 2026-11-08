@@ -7,12 +7,25 @@ import type {
   Program,
   Vacancy as DbVacancy,
   ProcurementTender,
+  FaqItem,
+  AcademyEventRow,
+  MediaGalleryItemRow,
+  MediaSocialFeedRow,
+  MediaSocialPostRow,
 } from '@/lib/supabase/types';
+import {
+  mergeSocialFeeds,
+  staticMediaItems,
+  staticSocialPosts,
+  type MediaSocialFeed,
+  type MediaSocialPost,
+  type PublicMediaItem,
+} from '@/lib/media-hub';
 
-function estimateReadTime(body: string | null): string {
-  const words = (body || '').trim().split(/\s+/).filter(Boolean).length;
-  const minutes = Math.max(3, Math.ceil(words / 200) || 4);
-  return `${minutes} MIN READ`;
+function estimateReadTime(body: string | null, minutes?: number | null): string {
+  if (minutes) return `${minutes} MIN READ`;
+  const words = (body || '').replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length;
+  return `${Math.max(3, Math.ceil(words / 200) || 4)} MIN READ`;
 }
 
 function formatNewsDate(isoDate: string | null | undefined): string {
@@ -35,7 +48,9 @@ function mapCategory(raw: string): NewsItem['category'] {
 }
 
 export function mapNewsArticle(row: NewsArticle): NewsItem {
-  const body = row.body_en || '';
+  const title = row.title || row.title_en || 'Untitled';
+  const excerpt = row.excerpt || row.lead_en || '';
+  const body = row.content || row.body_en || '';
   const paragraphs = body.includes('<')
     ? body
         .replace(/<\/p>/gi, '\n')
@@ -51,15 +66,15 @@ export function mapNewsArticle(row: NewsArticle): NewsItem {
 
   return {
     slug: row.slug,
-    title: row.title_en,
-    category: mapCategory(row.category),
+    title,
+    category: mapCategory(row.category || 'ACADEMY'),
     date: formatNewsDate(row.published_at),
-    readTime: estimateReadTime(row.body_en),
+    readTime: estimateReadTime(body, row.read_time_minutes),
     image: row.hero_image_url || '/images/news2.png',
     author: 'AFLEX Editorial Desk',
     authorRole: 'African Leadership Excellence Academy',
-    excerpt: row.lead_en || paragraphs[0] || '',
-    content: paragraphs.length > 0 ? paragraphs : [row.lead_en || row.title_en],
+    excerpt: excerpt || paragraphs[0] || '',
+    content: paragraphs.length > 0 ? paragraphs : [excerpt || title],
     featured: Boolean(row.featured),
   };
 }
@@ -109,9 +124,7 @@ export function mapProgramRow(row: Program): PublicProgram {
     : [];
   const outcomes = Array.isArray(row.outcomes) ? row.outcomes.map(String) : [];
   const structure = Array.isArray(row.structure)
-    ? row.structure.map((s) =>
-        typeof s === 'string' ? s : `${s.label}: ${s.value}`
-      )
+    ? row.structure.map((s) => (typeof s === 'string' ? s : `${s.label}: ${s.value}`))
     : undefined;
 
   return {
@@ -149,7 +162,7 @@ export async function getPublishedPrograms(): Promise<PublicProgram[]> {
 }
 
 export function mapVacancyRow(row: DbVacancy): StaticVacancy {
-  const responsibilities = (row.responsibilities || '')
+  const responsibilities = (row.duties || row.responsibilities || '')
     .split(/\n+/)
     .map((s) => s.replace(/^[-•]\s*/, '').trim())
     .filter(Boolean);
@@ -162,16 +175,18 @@ export function mapVacancyRow(row: DbVacancy): StaticVacancy {
     id: row.id,
     title: row.title,
     department: row.department,
-    category: 'Leadership & Executive',
-    type: (row.employment_type as StaticVacancy['type']) || 'Full-time',
+    category: (row.category as StaticVacancy['category']) || 'Leadership & Executive',
+    type: (row.type as StaticVacancy['type']) || (row.employment_type as StaticVacancy['type']) || 'Full-time',
     location: row.location || 'Sululta, Ethiopia',
-    gradeLevel: 'Institutional Appointment',
+    gradeLevel: row.experience_level || 'Institutional Appointment',
     deadline: row.deadline,
     closingDateISO: row.deadline,
-    salaryRange: 'Competitive institutional scale',
-    summary: requirements[0] || row.title,
-    overview: row.requirements || row.title,
-    keyResponsibilities: responsibilities.length ? responsibilities : ['Contribute to AFLEX institutional mandate'],
+    salaryRange: row.compensation || 'Competitive institutional scale',
+    summary: row.summary || requirements[0] || row.title,
+    overview: row.summary || row.requirements || row.title,
+    keyResponsibilities: responsibilities.length
+      ? responsibilities
+      : ['Contribute to AFLEX institutional mandate'],
     requiredQualifications: {
       education: requirements.find((r) => /degree|phd|master/i.test(r)) || 'Relevant advanced degree',
       experience: requirements.find((r) => /year/i.test(r)) || 'Demonstrated professional experience',
@@ -180,7 +195,7 @@ export function mapVacancyRow(row: DbVacancy): StaticVacancy {
     preferredExperience: requirements.slice(0, 3),
     competencies: ['Leadership', 'Institutional stewardship', 'Pan-African collaboration'],
     benefits: ['Competitive package', 'Sululta campus access', 'Continental professional network'],
-    referenceNumber: row.reference_no,
+    referenceNumber: row.reference_no || row.id.slice(0, 8).toUpperCase(),
   };
 }
 
@@ -221,17 +236,34 @@ export async function getVacancyById(id: string): Promise<StaticVacancy | null> 
   return staticVacancies.find((v) => v.id === id) ?? null;
 }
 
-export async function getPublishedTenders(): Promise<ProcurementTender[]> {
+export async function getPublishedTenders(): Promise<
+  Array<
+    ProcurementTender & {
+      tender_no: string;
+      procurement_type: string;
+      closing_date: string;
+      tor_document_url: string | null;
+      bid_bond_currency: string;
+    }
+  >
+> {
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('procurement_tenders')
       .select('*')
       .eq('status', 'published')
-      .order('closing_date', { ascending: true });
+      .order('submission_deadline', { ascending: true });
 
     if (!error && data) {
-      return data as ProcurementTender[];
+      return (data as ProcurementTender[]).map((row) => ({
+        ...row,
+        tender_no: row.tender_ref_number,
+        procurement_type: row.category || 'Tender',
+        closing_date: row.submission_deadline,
+        tor_document_url: row.document_url,
+        bid_bond_currency: 'ETB',
+      }));
     }
   } catch {
     // Fall through
@@ -256,7 +288,7 @@ export async function getPublishedFaqs(): Promise<PublicFaq[] | null> {
       .order('sort_order', { ascending: true });
 
     if (error || !data) return null;
-    return (data as import('@/lib/supabase/types').FaqItem[]).map((row) => ({
+    return (data as FaqItem[]).map((row) => ({
       id: row.id,
       category: row.category,
       question: row.question_en,
@@ -276,8 +308,108 @@ export async function getPublishedEvents() {
       .eq('status', 'published')
       .order('starts_at', { ascending: true });
     if (error || !data) return null;
-    return data as import('@/lib/supabase/types').AcademyEventRow[];
+    return data as AcademyEventRow[];
   } catch {
     return null;
+  }
+}
+
+export async function getActiveEmergencyBanner() {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('emergency_banners')
+      .select('*')
+      .eq('is_active', true)
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error || !data) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+export async function getPublishedMediaItems(): Promise<PublicMediaItem[]> {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('media_gallery_items')
+      .select('*')
+      .eq('status', 'published')
+      .order('sort_order', { ascending: true })
+      .order('published_at', { ascending: false });
+
+    if (error || !data?.length) return staticMediaItems();
+
+    return (data as MediaGalleryItemRow[]).map((row) => ({
+      id: row.id,
+      album: row.album,
+      title: row.title,
+      shape: row.shape,
+      type: row.media_type,
+      image: row.image_url,
+      video: row.video_url ?? undefined,
+      caption: row.caption ?? undefined,
+    }));
+  } catch {
+    return staticMediaItems();
+  }
+}
+
+export async function getPublishedSocialFeeds(): Promise<MediaSocialFeed[]> {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('media_social_feeds')
+      .select('*')
+      .eq('is_published', true)
+      .order('sort_order', { ascending: true });
+
+    if (error || !data?.length) return mergeSocialFeeds(null);
+
+    const mapped = (data as MediaSocialFeedRow[]).map((row) => ({
+      id: row.id,
+      platform: row.platform,
+      label: row.label,
+      handle: row.handle,
+      profileUrl: row.profile_url,
+      isPublished: row.is_published,
+      sortOrder: row.sort_order,
+    }));
+
+    return mergeSocialFeeds(mapped);
+  } catch {
+    return mergeSocialFeeds(null);
+  }
+}
+
+export async function getPublishedSocialPosts(): Promise<MediaSocialPost[]> {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('media_social_posts')
+      .select('*')
+      .eq('is_published', true)
+      .order('sort_order', { ascending: true })
+      .order('published_at', { ascending: false });
+
+    if (error || !data?.length) return staticSocialPosts();
+
+    return (data as MediaSocialPostRow[]).map((row) => ({
+      id: row.id,
+      platform: row.platform,
+      title: row.title,
+      postUrl: row.post_url,
+      embedUrl: row.embed_url,
+      externalId: row.external_id,
+      thumbnailUrl: row.thumbnail_url,
+      caption: row.caption,
+      isPublished: row.is_published,
+      sortOrder: row.sort_order,
+    }));
+  } catch {
+    return staticSocialPosts();
   }
 }

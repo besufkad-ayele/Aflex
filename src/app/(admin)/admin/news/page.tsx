@@ -59,7 +59,9 @@ export default function AdminNewsListPage() {
   };
 
   const filtered = articles.filter((a) => {
-    const matchesSearch = a.title_en.toLowerCase().includes(search.toLowerCase()) || a.category.toLowerCase().includes(search.toLowerCase());
+    const headline = (a.title || a.title_en || '').toLowerCase();
+    const matchesSearch =
+      headline.includes(search.toLowerCase()) || a.category.toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === 'all' || a.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -165,7 +167,7 @@ export default function AdminNewsListPage() {
                         </div>
                       )}
                       <div>
-                        <div className="font-semibold text-white line-clamp-1">{item.title_en}</div>
+                        <div className="font-semibold text-white line-clamp-1">{item.title || item.title_en}</div>
                         <div className="font-mono text-[10px] text-[#C9A84C]">/news/{item.slug}</div>
                       </div>
                     </div>
@@ -177,9 +179,9 @@ export default function AdminNewsListPage() {
                   </td>
                   <td className="py-3.5 px-4 font-mono text-[10px]">
                     <div className="flex items-center gap-1.5">
-                      <span className="px-1 py-0.2 rounded-[2px] bg-[#024696] text-white">EN</span>
-                      {item.title_am && <span className="px-1 py-0.2 rounded-[2px] bg-[#C9A84C] text-[#021024] font-bold">AM</span>}
-                      {item.title_om && <span className="px-1 py-0.2 rounded-[2px] border border-white/30 text-white">OM</span>}
+                      <span className="px-1 py-0.2 rounded-[2px] bg-[#024696] text-white">
+                        {(item.language_code || 'en').toUpperCase()}
+                      </span>
                     </div>
                   </td>
                   <td className="py-3.5 px-4">
@@ -204,7 +206,7 @@ export default function AdminNewsListPage() {
                     </button>
                   </td>
                   <td className="py-3.5 px-4 text-white/50 font-mono text-[11px]">
-                    {item.published_at}
+                    {item.published_at ? new Date(item.published_at).toLocaleDateString() : '—'}
                   </td>
                   <td className="py-3.5 px-4 text-right">
                     <Link

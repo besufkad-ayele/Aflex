@@ -3,11 +3,17 @@ import { updateSession } from '@/lib/supabase/middleware';
 import { canAccessAdminPath, isStaffRole } from '@/lib/cms/rbac';
 
 export async function proxy(request: NextRequest) {
-  const { response, user, role } = await updateSession(request);
   const { pathname } = request.nextUrl;
-
   const isAdminRoute = pathname.startsWith('/admin');
   const isAdminLogin = pathname === '/admin/login';
+
+  // Skip Supabase auth on public pages — avoids multi-second hangs / AuthRetryableFetchError
+  // when the network is slow, and keeps marketing pages fast.
+  if (!isAdminRoute) {
+    return NextResponse.next({ request });
+  }
+
+  const { response, user, role } = await updateSession(request);
 
   if (isAdminRoute && !isAdminLogin) {
     if (!user) {
@@ -45,6 +51,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    // Only run proxy on admin routes (auth/session). Public pages skip middleware.
+    '/admin/:path*',
   ],
 };

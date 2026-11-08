@@ -6,7 +6,7 @@ export const searchIndex = [
   { type: "News", title: "News & Events", description: "The latest work, stories, and events from AFLEX Academy.", keywords: "news press events stories", href: "/news" },
   { type: "About", title: "About AFLEX", description: "Our federal mandate, history, values, pillars, and leadership.", keywords: "council ministers federal mandate history values board", href: "/about" },
   { type: "Campus", title: "Find Your Way Around Campus", description: "A guide to the AFLEX Sululta campus.", keywords: "Sululta campus locator training halls accommodation dining wayfinding", href: "/campus-locator" },
-  { type: "Resources", title: "Gallery & Resources", description: "Campus, cohorts, events, and research resources.", keywords: "photos images albums downloads resources", href: "/gallery" },
+  { type: "Resources", title: "Media Hub", description: "Photos, videos, and live TikTok, Facebook, and YouTube feeds from AFLEX.", keywords: "photos videos gallery tiktok facebook youtube social media albums", href: "/media" },
   { type: "Resources", title: "Training Catalog", description: "Browse current and upcoming training offerings.", keywords: "catalog courses modality audience cohort", href: "/catalog" },
   { type: "Services", title: "Online Learning & Student LMS", description: "Access student learning portals, asynchronous modules, and Project WILD LMS.", keywords: "online learning LMS moodle canvas student portal WILD login", href: "/online-learning" },
   { type: "Services", title: "Library & Digital Repository", description: "Pan-African research library, digital archives, and policy briefs at Sululta.", keywords: "library repository books journals research policy brief jstor", href: "/library" },

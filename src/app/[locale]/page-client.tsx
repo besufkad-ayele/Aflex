@@ -106,6 +106,7 @@ const newsItems = [
 
 export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClientProps) {
   const campusVideoRef = useRef<HTMLDivElement>(null);
+  const voicesTouchStartX = useRef<number | null>(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
   const prevTestimonial = () => {
@@ -114,6 +115,19 @@ export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClien
 
   const nextTestimonial = () => {
     setActiveTestimonial((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+  };
+
+  const onVoiceTouchStart = (clientX: number) => {
+    voicesTouchStartX.current = clientX;
+  };
+
+  const onVoiceTouchEnd = (clientX: number) => {
+    if (voicesTouchStartX.current == null) return;
+    const delta = clientX - voicesTouchStartX.current;
+    voicesTouchStartX.current = null;
+    if (Math.abs(delta) < 40) return;
+    if (delta < 0) nextTestimonial();
+    else prevTestimonial();
   };
   
   useEffect(() => {
@@ -146,12 +160,12 @@ export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClien
           </video>
           <div className="hero-overlay" />
           <div className="container hero-content" lang={locale}>
-            <span className="eyebrow hero-eyebrow">{text.eyebrow}</span>
-            <h1>{text.title}<br /><em>{text.accent}</em></h1>
-            <p className="hero-lead">{text.lead}</p>
+            <span className="eyebrow hero-eyebrow hero-enter">{text.eyebrow}</span>
+            <h1 className="hero-enter hero-enter-delay-1">{text.title}<br /><em>{text.accent}</em></h1>
+            <p className="hero-lead hero-enter hero-enter-delay-2">{text.lead}</p>
 
             {/* Key stats row */}
-            <div className="hero-stats">
+            <div className="hero-stats hero-enter hero-enter-delay-3">
               <div className="hero-stat">
                 <strong>2,450m</strong>
                 <span>Sululta Elevation</span>
@@ -170,7 +184,7 @@ export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClien
               </div>
             </div>
 
-            <div className="button-row">
+            <div className="button-row hero-enter hero-enter-delay-4">
               <Link className="button button-primary" href={locale === "en" ? "/programs" : `/${locale}/programs`}>
                 {text.explore} <span>↗</span>
               </Link>
@@ -233,7 +247,7 @@ export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClien
         {/* Upcoming Academy Events Strip */}
         <HomeEventsStrip locale={locale} />
         
-        <section className="section programs-section black-section" id="programs" style={{ background: "var(--black)", color: "var(--white)", overflow: "visible", paddingBottom: "60px" }}>
+        <section className="section programs-section black-section" id="programs" style={{ background: "var(--coffee)", color: "var(--white)", overflow: "visible", paddingBottom: "60px" }}>
           <div className="container" lang={locale}>
             <div className="section-heading">
               <span className="eyebrow" style={{ color: "var(--gold)" }}>{text.programs}</span>
@@ -241,16 +255,21 @@ export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClien
               <p style={{ color: "var(--muted-dark)" }}>{text.programsCopy}</p>
             </div>
 
-            <div className="stacked-cards-container">
+            <div className="stacked-cards-container" aria-label="Flagship leadership programs">
               {flagshipPrograms.map((program, idx) => (
-                <div 
-                  className="stacked-card-wrapper" 
+                <article
+                  className="stacked-card-wrapper"
                   key={program.id}
-                  style={{ "--stack-index": idx } as React.CSSProperties}
+                  style={
+                    {
+                      "--stack-index": idx,
+                      "--card-image": `url(${program.image})`,
+                    } as React.CSSProperties
+                  }
                 >
                   <div className="stacked-card-tab">
                     <Image
-                      src="/images/aflex-icon.jpg"
+                      src="/images/aflex-logo.png"
                       alt=""
                       width={16}
                       height={16}
@@ -265,7 +284,7 @@ export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClien
                       <h3><span>{program.code.split("/")[0]?.trim()}</span> {program.title}</h3>
                       <div className="stacked-card-separator" />
                       <p>{program.description}</p>
-                      
+
                       <div className="stacked-card-pills">
                         {program.tags.map((tag) => (
                           <span key={tag} className="stacked-card-pill">✓ {tag}</span>
@@ -288,9 +307,12 @@ export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClien
                       />
                     </div>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
+            <p className="stacked-cards-hint mono" aria-hidden="true">
+              Swipe to explore paths →
+            </p>
           </div>
         </section>
 
@@ -402,8 +424,12 @@ export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClien
               </div>
             </div>
 
-            {/* Featured Voice Spotlight Card */}
-            <div className="featured-voice-card">
+            {/* Featured Voice Spotlight Card — swipeable on mobile */}
+            <div
+              className="featured-voice-card"
+              onTouchStart={(e) => onVoiceTouchStart(e.changedTouches[0]?.clientX ?? 0)}
+              onTouchEnd={(e) => onVoiceTouchEnd(e.changedTouches[0]?.clientX ?? 0)}
+            >
               <div className="featured-voice-portrait" style={{ position: "relative" }}>
                 <Image 
                   src={testimonials[activeTestimonial].image} 
@@ -427,15 +453,25 @@ export default function LocalizedHomeClient({ locale, text }: LocalizedHomeClien
                   <strong>{testimonials[activeTestimonial].name}</strong>
                   <span>{testimonials[activeTestimonial].title}</span>
                 </div>
+                <div className="voices-mobile-dots" aria-hidden="true">
+                  {testimonials.map((item, index) => (
+                    <span
+                      key={item.name}
+                      className={`voices-mobile-dot ${index === activeTestimonial ? "active" : ""}`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Interactive Leader Switcher Tabs */}
-            <div className="voices-switcher">
+            {/* Interactive Leader Switcher — horizontal portable cards on mobile */}
+            <div className="voices-switcher" role="tablist" aria-label="Leadership voices">
               {testimonials.map((item, index) => (
                 <button
                   key={item.name}
                   type="button"
+                  role="tab"
+                  aria-selected={index === activeTestimonial}
                   className={`voice-switch-tab ${index === activeTestimonial ? "active" : ""}`}
                   onClick={() => setActiveTestimonial(index)}
                 >

@@ -33,21 +33,29 @@ export default function NewProcurementTenderPage() {
 
     try {
       const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      const docUrl =
+        torDocumentUrl.trim() ||
+        `https://qezexucrwwdxgotpofph.supabase.co/storage/v1/object/public/documents/${encodeURIComponent(tenderNo.trim())}.pdf`;
+
       const payload = {
-        tender_no: tenderNo.trim(),
+        tender_ref_number: tenderNo.trim(),
         title: title.trim(),
-        procurement_type: procurementType,
-        closing_date: new Date(closingDate).toISOString(),
+        description: `${procurementType} — bid bond ${bidBondAmount || '0'} ${bidBondCurrency}`,
+        category: procurementType,
+        document_url: docUrl,
         bid_bond_amount: bidBondAmount ? Number(bidBondAmount) : null,
-        bid_bond_currency: bidBondCurrency,
-        tor_document_url: torDocumentUrl.trim() || null,
+        submission_deadline: new Date(closingDate).toISOString(),
         status: 'published' as const,
+        created_by: user?.id ?? null,
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data, error } = await supabase
         .from('procurement_tenders')
-        .insert(payload as any)
+        .insert(payload as never)
         .select()
         .single();
 
@@ -55,13 +63,14 @@ export default function NewProcurementTenderPage() {
         throw new Error(error.message);
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await supabase.from('audit_logs').insert({
+        user_id: user?.id ?? null,
+        user_email: user?.email ?? null,
         action: 'TENDER_ISSUED',
-        target_table: 'procurement_tenders',
-        target_id: (data as any)?.id,
-        new_data: { tender_no: tenderNo, title },
-      } as any);
+        entity_type: 'procurement_tenders',
+        entity_id: (data as { id?: string } | null)?.id ?? null,
+        changes: { tender_ref_number: tenderNo, title },
+      } as never);
 
       await revalidateCmsContent({
         table: 'procurement_tenders',

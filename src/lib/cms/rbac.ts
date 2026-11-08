@@ -17,6 +17,11 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   hr_manager: 'HR Manager',
   translator: 'Translator',
   viewer: 'Viewer',
+  academic_director: 'Academic Director',
+  comms_officer: 'Communications Officer',
+  hr_procurement_officer: 'HR & Procurement Officer',
+  editorial_reviewer: 'Editorial Reviewer',
+  auditor: 'Auditor',
 };
 
 /** Admin UI sections → allowed roles */

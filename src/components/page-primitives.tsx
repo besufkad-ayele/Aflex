@@ -2,10 +2,30 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
-import { SiteFooter, SiteHeader, Weave } from "@/components/site-shell";
+import { SiteFooter, SiteHeader } from "@/components/site-shell";
 
 export function PageFrame({ active, crumb, title, intro, locale, children }: { active: string; crumb: string; title: string; intro: string; locale?: import("@/lib/i18n").Locale; children: React.ReactNode }) {
-  return <><SiteHeader active={active} locale={locale} /><main id="main-content"><section className="page-header blue-section"><div className="container page-header-inner"><div className="page-header-copy"><span className="mono breadcrumb">HOME <b>/</b> {crumb.toUpperCase()}</span><h1>{title}</h1><p>{intro}</p></div><div className="page-header-mark" aria-hidden="true"><BrandLogo variant="full" /></div></div><Weave dark /></section>{children}</main><SiteFooter /></>;
+  return (
+    <>
+      <SiteHeader active={active} locale={locale} />
+      <main id="main-content">
+        <section className="page-header blue-section">
+          <div className="container page-header-inner">
+            <div className="page-header-copy page-enter">
+              <span className="mono breadcrumb">HOME <b>/</b> {crumb.toUpperCase()}</span>
+              <h1>{title}</h1>
+              <p>{intro}</p>
+            </div>
+            <div className="page-header-mark page-enter page-enter-delay" aria-hidden="true">
+              <BrandLogo variant="full" />
+            </div>
+          </div>
+        </section>
+        {children}
+      </main>
+      <SiteFooter />
+    </>
+  );
 }
 
 export function SectionTitle({ eyebrow, title, copy }: { eyebrow: string; title: React.ReactNode; copy?: string }) {

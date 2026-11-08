@@ -173,7 +173,7 @@ export default function AdminMediaPage() {
                   {isImage ? (
                     <Image
                       src={url}
-                      alt={asset.alt_text || asset.file_name}
+                      alt={asset.alt_text || asset.file_name || asset.filename || 'Media asset'}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
@@ -189,7 +189,8 @@ export default function AdminMediaPage() {
                     {asset.file_name}
                   </div>
                   <div className="text-[10px] text-white/40 font-mono">
-                    {(asset.size_bytes / 1024).toFixed(1)} KB &bull; {asset.mime_type.split('/')[1]?.toUpperCase()}
+                    {(((asset.size_bytes ?? asset.file_size_bytes ?? 0) / 1024)).toFixed(1)} KB &bull;{' '}
+                    {asset.mime_type.split('/')[1]?.toUpperCase()}
                   </div>
 
                   <button

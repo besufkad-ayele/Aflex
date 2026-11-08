@@ -15,101 +15,12 @@ import {
   Check
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { revalidateCmsContent } from '@/lib/cms/actions';
+import { updateProgramFields } from '@/lib/cms/actions';
 import type { Program } from '@/lib/supabase/types';
 
-const INITIAL_PROGRAMS: Program[] = [
-  {
-    id: 'leadership-development',
-    code: '01 / SHORT-TERM • 3–10 DAYS',
-    title: 'Leadership Development Training',
-    lead: 'Executive modules on transformational leadership, strategy execution, and leading change for top civil servants and enterprise heads.',
-    full_description: 'An intensive executive retreat in Sululta designed for Director Generals and Permanent Secretaries across federal agencies.',
-    format: '3–10 Days • Modular Residential',
-    target_audience: 'Ministers, State Ministers, Director Generals, C-Suite Executives',
-    hero_image_url: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=1200',
-    modules: [
-      { title: 'Transformational Mindset', desc: 'Personal mastery, ethics, and strategic vision for African Renaissance.' },
-      { title: 'High-Impact Policy Execution', desc: 'Overcoming administrative inertia and delivering measurable public value.' },
-      { title: 'Digital Era Public Leadership', desc: 'Navigating AI, national data infrastructure, and smart citizen services.' },
-    ],
-    outcomes: [
-      'Master strategic consensus building across inter-ministerial portfolios.',
-      'Deploy agile project delivery methods within federal civil service frameworks.',
-      'Implement evidence-informed governance metrics in executive decision-making.'
-    ],
-    structure: [
-      { label: 'Campus Residency', value: '100% On-Campus in Sululta' },
-      { label: 'Evaluation', value: 'Cap-Stone Strategic Policy Blueprint' }
-    ],
-    admissions_note: 'Nominations accepted strictly through ministerial referral.',
-    language_code: 'en',
-    status: 'published',
-    updated_by: null,
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'project-wild',
-    code: '02 / LONG-TERM • 12–18 MONTHS',
-    title: 'Project WILD (Women Integrated Leadership Development)',
-    lead: 'Targeted capacity building for emerging and mid-career female leaders in the Ethiopian public service, state enterprises, and academia.',
-    full_description: 'Fellowship fostering the next generation of African female leaders through mentorship, policy immersion, and executive sponsorships.',
-    format: '12–18 Months • Cohort-based Hybrid',
-    target_audience: 'Mid-to-Senior Female Executives & Academic Leaders',
-    hero_image_url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=1200',
-    modules: [
-      { title: 'Institutional Governance & Influence', desc: 'Strategic communication, board presence, and continental advocacy.' },
-      { title: 'Executive Sponsorship & Mentorship', desc: '1-on-1 pairings with former heads of state and continental ministers.' },
-      { title: 'Research & Policy Innovation', desc: 'Leading strategic reforms in gender-responsive budgeting and institutional design.' },
-    ],
-    outcomes: [
-      'Accelerate advancement into top executive decision-making roles.',
-      'Build enduring continental networks with women leaders across 20+ AU countries.',
-      'Publish action-oriented policy briefs addressing critical development imperatives.'
-    ],
-    structure: [
-      { label: 'Modality', value: 'Quarterly Residential + Field Apprenticeship' },
-      { label: 'Credential', value: 'AFLEX Executive Fellowship Diploma' }
-    ],
-    admissions_note: 'Annual competitive selection open across all federal and regional bodies.',
-    language_code: 'en',
-    status: 'published',
-    updated_by: null,
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'psle',
-    code: '03 / EXECUTIVE • MODULAR',
-    title: 'Public Service Leadership Excellence (PSLE)',
-    lead: 'A flagship national program for senior civil servants focused on ethical governance, evidence-based policy making, and citizen-centric service delivery.',
-    full_description: 'The definitive executive certification for senior leaders navigating complex macroeconomic reforms and national development agendas.',
-    format: 'Modular • 4 Immersive Weeks over 6 Months',
-    target_audience: 'Bureau Heads, Regional Commissioners, Senior Policy Advisers',
-    hero_image_url: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200',
-    modules: [
-      { title: 'Ethical Civil Service Stewardship', desc: 'Combatting systemic corruption, ensuring meritocracy, and public trust.' },
-      { title: 'Macroeconomic Reforms & Fiscal Acumen', desc: 'Understanding debt sustainability, trade integration, and national balance sheets.' },
-      { title: 'Crisis Leadership & Public Communications', desc: 'Managing national emergencies, multi-stakeholder crises, and media strategy.' },
-    ],
-    outcomes: [
-      'Drive performance-based institutional restructuring in public agencies.',
-      'Formulate and stress-test comprehensive regulatory impact assessments.',
-      'Champion citizen-first digital government services with measurable SLA benchmarks.'
-    ],
-    structure: [
-      { label: 'Location', value: 'Sululta Campus Executive Senate Wing' },
-      { label: 'Accreditation', value: 'Federal Civil Service Commission & AFLEX Senate' }
-    ],
-    admissions_note: 'Endorsed by the Federal Civil Service Commission.',
-    language_code: 'en',
-    status: 'published',
-    updated_by: null,
-    updated_at: new Date().toISOString(),
-  },
-];
-
 export default function AdminProgramsPage() {
-  const [programs, setPrograms] = useState<Program[]>(INITIAL_PROGRAMS);
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
@@ -119,14 +30,16 @@ export default function AdminProgramsPage() {
 
   useEffect(() => {
     async function loadPrograms() {
+      setLoading(true);
       try {
         const supabase = createClient();
-        const { data } = await supabase.from('programs').select('*').order('code');
-        if (data && data.length > 0) {
-          setPrograms(data as unknown as Program[]);
-        }
+        const { data, error } = await supabase.from('programs').select('*').order('code');
+        if (error) throw error;
+        setPrograms((data as unknown as Program[]) || []);
       } catch {
-        // Fallback to initial programs
+        setPrograms([]);
+      } finally {
+        setLoading(false);
       }
     }
     loadPrograms();
@@ -140,22 +53,29 @@ export default function AdminProgramsPage() {
     setIsEditing(true);
   };
 
-  const handleSaveProgram = () => {
+  const handleSaveProgram = async () => {
     if (!selectedProgram) return;
-
-    const updated = programs.map((p) =>
-      p.id === selectedProgram.id
-        ? { ...p, title: editTitle, lead: editLead, format: editFormat, updated_at: new Date().toISOString() }
-        : p
-    );
-    setPrograms(updated);
-    setSavedFeedback(true);
-    setTimeout(() => {
-      setSavedFeedback(false);
-      setIsEditing(false);
-    }, 1200);
-
-    void revalidateCmsContent({ table: 'programs' }).catch(() => {});
+    try {
+      await updateProgramFields({
+        id: selectedProgram.id,
+        title: editTitle,
+        lead: editLead,
+        format: editFormat,
+      });
+      const updated = programs.map((p) =>
+        p.id === selectedProgram.id
+          ? { ...p, title: editTitle, lead: editLead, format: editFormat, updated_at: new Date().toISOString() }
+          : p
+      );
+      setPrograms(updated);
+      setSavedFeedback(true);
+      setTimeout(() => {
+        setSavedFeedback(false);
+        setIsEditing(false);
+      }, 1200);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to save program');
+    }
   };
 
   return (
@@ -183,6 +103,15 @@ export default function AdminProgramsPage() {
           <span>Public Programs Page</span>
         </Link>
       </div>
+
+      {loading && (
+        <p className="text-xs font-mono text-white/50 uppercase tracking-wider">Loading programs…</p>
+      )}
+      {!loading && programs.length === 0 && (
+        <p className="text-xs font-sans text-white/60 border border-white/10 bg-[#02142d] px-3 py-3 rounded-[2px]">
+          No programs found in Supabase yet.
+        </p>
+      )}
 
       {/* Program Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

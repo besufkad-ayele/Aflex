@@ -30,9 +30,9 @@ export default async function LocalizedPrograms({ params }: LocalizedProgramsPro
         <ProgramsHeroSection />
 
         <section
-          className="section"
+          className="section programs-offer-section"
           id="offer"
-          style={{ background: "#000000", color: "#ffffff", paddingBottom: "70px" }}
+          style={{ background: "#ffffff", color: "var(--ink)", paddingBottom: "70px" }}
         >
           <div className="container">
             <SectionTitle

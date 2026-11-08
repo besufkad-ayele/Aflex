@@ -1,167 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
 
-export interface LeaderProfile {
-  id: string;
-  name: string;
-  role: string;
-  category: "board" | "executive";
-  image: string;
-  badge: string;
-  bio: string;
-  responsibilities?: string[];
-  externalUrl?: string;
-}
-
-const seniorExecutives: LeaderProfile[] = [
-  {
-    id: "mohammedrafie-abaraya",
-    name: "Mohammedrafie Abaraya",
-    role: "Chief Executive Officer (CEO)",
-    category: "executive",
-    image: "/Mohammedrafie.jpg",
-    badge: "CHIEF EXECUTIVE OFFICER",
-    bio: "Mohammedrafie Abaraya (ሙሐመድራፊዕ አባራያ) leads the African Leadership Excellence Academy with a clear conviction: leadership is a science as much as it is an art — and AFLEX is where these two meet. Under his leadership, the Academy incubates, empowers, and elevates the next generation of African leaders while supporting current leaders across the public, private, and civic sectors.",
-    responsibilities: [
-      "Institutional Strategy & Overall Command",
-      "Continental Alliances & Ministerial Partnerships",
-      "Curricula Direction & Statecraft Flagships"
-    ]
-  },
-  {
-    id: "meseret-desta",
-    name: "Mrs. Meseret Desta",
-    role: "Vice Chief of Academy, Leadership Development",
-    category: "executive",
-    image: "/about/meseret desta vice chief of acadamy leadership development.jpg",
-    badge: "VICE CHIEF · LEADERSHIP DEVELOPMENT",
-    bio: "Mrs. Meseret Desta directs the Academy's flagship leadership development programs, executive cohorts, and women's leadership initiatives (Project WILD). She oversees pedagogical innovation, participant mentorship, and transformational leadership tracks tailored to senior decision-makers.",
-    responsibilities: [
-      "Leadership Development & Executive Cohorts",
-      "Project WILD (Women in Leadership)",
-      "Pedagogy, Faculty & Participant Experience"
-    ]
-  },
-  {
-    id: "wondeye-legesse",
-    name: "Wondeye Legesse (PhD)",
-    role: "Vice Chief of Academy, Operations",
-    category: "executive",
-    image: "/about/wondeye legese vice chief of acadaymy operation.png",
-    badge: "VICE CHIEF · OPERATIONS",
-    externalUrl: "https://aflexacademy.gov.et/aflex/vice-president-and-operational-sector/",
-    bio: "Dr. Wondeye Legesse leads operational excellence, residential infrastructure, campus technology, and institutional finance at AFLEX. He ensures the Sululta highland campus operates at globally competitive standards for executive deliberation and continuous learning.",
-    responsibilities: [
-      "Campus Operations & Residential Logistics",
-      "Institutional Technology, LMS & Infrastructure",
-      "Finance, Administration & Procurement Standards"
-    ]
-  }
-];
-
-const boardMembers: LeaderProfile[] = [
-  {
-    id: "tagese-chafo",
-    name: "H.E Tagesse Chafo",
-    role: "Chairperson of the Board",
-    category: "board",
-    image: "/about/he tages chafo chaire person.png",
-    badge: "GOVERNING BOARD CHAIR",
-    bio: "Speaker of the House of Peoples' Representatives of the Federal Democratic Republic of Ethiopia. H.E Tagesse Chafo presides over the AFLEX Governing Board, stewarding its legislative mandate and strategic alignment with national and continental leadership transformation.",
-    responsibilities: [
-      "Speaker of the House of Peoples' Representatives (FDRE)",
-      "Chairperson · AFLEX Board of Governors",
-      "Parliamentary Governance & National Policy Direction"
-    ]
-  },
-  {
-    id: "binalf-andualem",
-    name: "H.E Binalf Andualem",
-    role: "Board Member",
-    category: "board",
-    image: "/about/he binalf andualem.jpg",
-    badge: "MINISTERIAL GOVERNOR",
-    bio: "Minister of Peace of the Federal Democratic Republic of Ethiopia. H.E Binalf Andualem guides institutional consensus, state-building leadership curriculums, and national cohesion initiatives within the Academy.",
-    responsibilities: [
-      "Minister of Peace (FDRE)",
-      "Governing Board Member · AFLEX",
-      "State-Building & Civic Leadership Stewardship"
-    ]
-  },
-  {
-    id: "gedion-timotheos",
-    name: "H.E Gedion Timotheos (PhD)",
-    role: "Board Member",
-    category: "board",
-    image: "/about/he gedion timotheos.jpg",
-    badge: "LEGAL & STRATEGIC ADVISOR",
-    bio: "Minister of Foreign Affairs (and former Minister of Justice & Attorney General). Dr. Gedion Timotheos provides strategic counsel on continental legal frameworks, diplomatic statecraft, and multilateral cooperation for AFLEX programs.",
-    responsibilities: [
-      "Minister of Foreign Affairs (FDRE)",
-      "Governing Board Member · AFLEX",
-      "Constitutional Law & International Statecraft"
-    ]
-  },
-  {
-    id: "tesfaye-daba",
-    name: "H.E Tesfaye Daba",
-    role: "Board Member",
-    category: "board",
-    image: "/about/h.e tesfaye daba memener.png",
-    badge: "GOVERNANCE & POLICY MEMBER",
-    bio: "Senior Government Executive and Member of Parliament. H.E Tesfaye Daba champions institutional performance, executive public service accountability, and policy implementation excellence.",
-    responsibilities: [
-      "Member of Parliament & Senior Statesman",
-      "Governing Board Member · AFLEX",
-      "Public Sector Execution & Legislative Oversight"
-    ]
-  },
-  {
-    id: "muferihat-kamil",
-    name: "H.E Muferihat Kamil",
-    role: "Board Member",
-    category: "board",
-    image: "/about/he muferihat kamil memeber.jpg",
-    badge: "HUMAN CAPITAL & LABOUR",
-    bio: "Minister of Labour and Skills of the Federal Democratic Republic of Ethiopia. H.E Muferihat Kamil directs strategic focus on continental workforce readiness, human capital development, and executive mentorship flagships.",
-    responsibilities: [
-      "Minister of Labour and Skills (FDRE)",
-      "Governing Board Member · AFLEX",
-      "Human Capital Strategy & Executive Skill Transformation"
-    ]
-  },
-  {
-    id: "david-valle",
-    name: "David Valle",
-    role: "Board Member",
-    category: "board",
-    image: "/about/david valle memner.png",
-    badge: "INTERNATIONAL STRATEGY",
-    bio: "Global executive and international leadership strategist serving on the AFLEX Governing Board to foster global institutional linkages, executive mentorship exchanges, and cross-border research alliances.",
-    responsibilities: [
-      "International Governance & Development Strategist",
-      "Governing Board Member · AFLEX",
-      "Cross-Border Alliances & Institutional Innovation"
-    ]
-  },
-  {
-    id: "mohammedrafie-board-sec",
-    name: "Mohammedrafie Abaraya",
-    role: "Secretary to the Board",
-    category: "board",
-    image: "/Mohammedrafie.jpg",
-    badge: "BOARD SECRETARY & CEO",
-    bio: "Chief Executive Officer and Secretary to the Governing Board. Leads the executive design and day-to-day execution of the Academy's continental mandate, coordinating between the Governing Board and academy faculties.",
-    responsibilities: [
-      "Chief Executive Officer (CEO) · AFLEX",
-      "Secretary to the Governing Board",
-      "Executive Directorate Leadership"
-    ]
-  }
-];
+import {
+  boardMembers,
+  seniorExecutives,
+  type LeaderProfile,
+} from "@/lib/leadership-data";
 
 function LeaderExpandedCard({ leader, index }: { leader: LeaderProfile; index: number }) {
   return (
@@ -215,7 +63,7 @@ function LeaderExpandedCard({ leader, index }: { leader: LeaderProfile; index: n
 
 function ExecutiveShowcase({ leaders }: { leaders: LeaderProfile[] }) {
   return (
-    <div className="leadership-strip-group executive-golden-strip executive-all-expanded">
+    <div className="leadership-strip-group executive-golden-strip executive-all-expanded" id="leadership">
       <div className="leadership-strip-header executive-showcase-header">
         <div className="leadership-badge-pill">
           <span className="leadership-pill-dot" style={{ background: "#D4AF37", boxShadow: "0 0 8px #D4AF37" }} />
@@ -258,6 +106,17 @@ function HorizontalStrip({
   defaultActiveId,
 }: HorizontalStripProps) {
   const [activeId, setActiveId] = useState<string>(defaultActiveId);
+  const [isMobile, setIsMobile] = useState(false);
+  const isBoard = theme === "board";
+  const forceExpanded = isBoard && isMobile;
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 900px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   return (
     <div className={`leadership-strip-group ${theme === "gold" ? "executive-golden-strip" : "board-strip"}`}>
@@ -273,23 +132,27 @@ function HorizontalStrip({
       <div className="horizontal-accordion-container">
         <div className="horizontal-accordion-track">
           {leaders.map((leader) => {
-            const isExpanded = leader.id === activeId;
+            const isExpanded = forceExpanded || leader.id === activeId;
 
             return (
               <div
                 key={leader.id}
                 className={`horizontal-card ${isExpanded ? "expanded" : "collapsed"} ${theme === "gold" ? "card-gold" : "card-board"}`}
-                onClick={() => setActiveId(leader.id)}
-                role="button"
-                tabIndex={0}
+                onClick={forceExpanded ? undefined : () => setActiveId(leader.id)}
+                role={forceExpanded ? "article" : "button"}
+                tabIndex={forceExpanded ? undefined : 0}
                 aria-expanded={isExpanded}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    setActiveId(leader.id);
-                  }
-                }}
+                onKeyDown={
+                  forceExpanded
+                    ? undefined
+                    : (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setActiveId(leader.id);
+                        }
+                      }
+                }
               >
-                {/* 1. TOP PORTRAIT PHOTO (Always fully visible at top, never covered) */}
                 <div className="card-top-photo-box">
                   <Image
                     fill
@@ -306,7 +169,6 @@ function HorizontalStrip({
                   )}
                 </div>
 
-                {/* 2. BOTTOM DETAILS (Extending directly BELOW the image when expanded) */}
                 {isExpanded && (
                   <div className="card-bottom-extension">
                     <div className="card-extension-badge-row">
@@ -316,7 +178,6 @@ function HorizontalStrip({
                     <h4 className="card-extension-name">{leader.name}</h4>
                     <p className="card-extension-role">{leader.role}</p>
 
-                    {/* Golden accent line with slider dot matching reference image */}
                     <div className="card-extension-accent-line">
                       <div className="card-extension-accent-dot" />
                     </div>
@@ -381,6 +242,10 @@ export function AboutLeadershipSection({ locale }: AboutLeadershipSectionProps) 
           <p>
             Entrusted with the mandate to shape Africa&apos;s premier institution for leadership excellence, policy research, and continental transformation.
           </p>
+          <Link href="/about/leadership" className="button button-outline light" style={{ marginTop: 22 }}>
+            <span>See all</span>
+            <span aria-hidden="true">↗</span>
+          </Link>
         </div>
 
         {/* 1. Senior Executive Team — all profiles visible, centered */}

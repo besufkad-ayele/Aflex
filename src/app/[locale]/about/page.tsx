@@ -1,7 +1,7 @@
-import Image from "next/image";
 import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { copy, getLocale, locales } from "@/lib/i18n";
 import { AboutCampusSlideshow } from "@/components/about-campus-slideshow";
+import { AboutCeoMessage } from "@/components/about-ceo-message";
 import { AboutHeroSection } from "@/components/about-hero-section";
 import { AboutLeadershipSection } from "@/components/about-leadership-section";
 
@@ -23,54 +23,9 @@ export default async function LocalizedAbout({ params }: PageProps) {
       <SiteHeader active="About AFLEX" locale={locale} />
       <main id="main-content" lang={locale}>
         <AboutHeroSection />
+        <AboutCeoMessage />
 
-        <section className="message-section section" style={{ background: "#024696", color: "#fff" }}>
-          <div className="container message-grid" style={{ alignItems: "start" }}>
-            <div className="chief-portrait" style={{ position: "relative" }}>
-              <Image
-                src="/Mohammedrafie.jpg"
-                alt="Mohammedrafie Abaraya, Chief Executive Officer"
-                fill
-                sizes="(max-width: 768px) 100vw, 420px"
-                style={{ objectFit: "cover", objectPosition: "center top" }}
-                priority
-              />
-              <span className="chief-portrait-badge">CHIEF EXECUTIVE OFFICER</span>
-            </div>
-            <div className="message-copy">
-              <span className="eyebrow" style={{ color: "var(--gold)" }}>{text.message}</span>
-              <blockquote>
-                “Leadership is a science as much as it is an art. African Leadership Excellence Academy is where these two meet.”
-              </blockquote>
-              <p>Welcome to the African Leadership Excellence Academy!</p>
-              <p>
-                At our academy an inter-generational leadership transaction of wisdom transfer happens. In the past half millennia Africa has lost its leadership structure and philosophy due to the many dark histories it underwent – including slavery, colonization, and internal conflicts.
-              </p>
-              <p>
-                Our academy strives to create a unique space to incubate, empower, and elevate the next generation of African leaders, and regain the lost structure of true African wisdom and leadership. Through training and research the academy envisions to support current leaders in the public, private, and civic sectors.
-              </p>
-              <p>
-                In this season, the academy is focused on training senior national leaders in parallel to completing its internal reform works. Our efforts have been fruitful, and the feedback from stakeholders is very encouraging.
-              </p>
-              <p>
-                In the next season, the academy will open its doors to its continental Pan-African agenda. As part of this endeavor the academy will host the first of its kind event on the side event of the AU 36th Heads of States Summit. With its state-of-the-art facility, the academy will host different workshops, trainings, and other deliberations to push the Pan-African agenda forward.
-              </p>
-              <p>
-                The future is in line with Africa’s renaissance and our academy looks forward to contributing to this great opportunity in the changing global order of which we are all are part of.
-              </p>
-              <blockquote>“Shaping the future leaders of Africa”</blockquote>
-              <span className="mono signature" style={{ color: "var(--gold)" }}>
-                MOHAMMEDRAFIE ABARAYA<br />
-                <span style={{ display: "block", marginTop: 4, color: "rgba(255,255,255,0.85)", fontFamily: "var(--sans, inherit)", letterSpacing: "0.02em" }}>
-                  ሙሐመድራፊዕ አባራያ
-                </span>
-                <b style={{ color: "#fff" }}>CHIEF EXECUTIVE OFFICER (CEO)</b>
-              </span>
-            </div>
-          </div>
-        </section>
-
-        <section className="story-section black-section">
+        <section className="story-section black-section" id="story">
           <div className="container story-grid">
             <div>
               <span className="eyebrow" style={{ color: "var(--gold)" }}>{text.story}</span>
@@ -86,7 +41,7 @@ export default async function LocalizedAbout({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="section vision-section about-light-section">
+        <section className="section vision-section about-light-section" id="vision">
           <div className="container vision-grid">
             <article className="about-light-card">
               <span className="eyebrow">01 / {text.vision}</span>
@@ -101,7 +56,7 @@ export default async function LocalizedAbout({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="values-section black-section">
+        <section className="values-section black-section" id="values">
           <div className="container">
             <div className="section-heading">
               <span className="eyebrow" style={{ color: "var(--gold)" }}>{text.values}</span>
@@ -118,7 +73,7 @@ export default async function LocalizedAbout({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="section pillars-section about-light-section about-pillars-light">
+        <section className="section pillars-section about-light-section about-pillars-light" id="pillars">
           <div className="container">
             <div className="pillars-intro">
               <span className="eyebrow">{text.pillars}</span>

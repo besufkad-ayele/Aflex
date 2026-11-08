@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { CAMPUS_METADATA } from "@/lib/campus-data";
-import { SiteFooter, SiteHeader, Weave } from "@/components/site-shell";
+import { SiteFooter, SiteHeader } from "@/components/site-shell";
 
 function ContactInquiryForm({
   defaultProgram = "",
@@ -175,7 +175,7 @@ export default function Contact() {
       <main id="main-content">
         <section className="contact-hero page-header blue-section">
           <div className="container contact-hero-grid">
-            <div className="contact-hero-copy">
+            <div className="contact-hero-copy page-enter">
               <span className="mono breadcrumb">
                 HOME <b>/</b> CONTACT US
               </span>
@@ -256,8 +256,7 @@ export default function Contact() {
               </div>
             </div>
           </div>
-          <Weave dark />
-        </section>
+                  </section>
 
         <section className="section contact-section">
           <div className="container contact-grid">

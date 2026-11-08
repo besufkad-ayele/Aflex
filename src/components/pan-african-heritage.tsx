@@ -123,6 +123,8 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const [isUnlocked, setIsUnlocked] = useState(false);
+  const trackTouchStartX = useRef<number | null>(null);
+  const trackTouchStartTranslate = useRef(0);
 
   const programsUrl = locale ? `/${locale}/programs` : "/programs";
   const totalSlides = heritageStories.length + 1; // +1 for the Grand Closing Card
@@ -232,6 +234,28 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
 
   const isFinaleHold = activeStoryIndex === maxSlideIndex;
 
+  const onTrackTouchStart = (clientX: number) => {
+    trackTouchStartX.current = clientX;
+    trackTouchStartTranslate.current = translateX;
+  };
+
+  const onTrackTouchMove = (clientX: number) => {
+    if (trackTouchStartX.current == null) return;
+    const delta = trackTouchStartX.current - clientX;
+    const maxTranslate = getMaxTranslate();
+    const next = Math.max(0, Math.min(maxTranslate, trackTouchStartTranslate.current + delta));
+    setTranslateX(next);
+    if (maxTranslate > 0) {
+      const progress = next / maxTranslate;
+      setScrollProgress(progress);
+      setActiveStoryIndex(Math.min(maxSlideIndex, Math.round(progress * maxSlideIndex)));
+    }
+  };
+
+  const onTrackTouchEnd = () => {
+    trackTouchStartX.current = null;
+  };
+
   return (
     <div
       className="heritage-pinned-section"
@@ -242,14 +266,14 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
       <div className="heritage-sticky-viewport">
         <div className="container" style={{ width: "100%" }}>
           <div className="heritage-header">
-            <div>
-              <div className="heritage-counter-badge">
-                <span>●</span>
-                <span>PAN-AFRICAN LEADERSHIP ARCHIVE · CHAPTER {activeStoryIndex + 1} OF {totalSlides}</span>
-              </div>
-              <h2 style={{ fontSize: "clamp(22px, 2.6vw, 34px)", margin: 0 }}>
+            <div className="heritage-heading-copy section-heading">
+              <span className="eyebrow heritage-eyebrow">PAN-AFRICAN LEADERSHIP ARCHIVE</span>
+              <h2 className="heritage-title">
                 The crucible that trained Africa&apos;s <em>greatest leaders.</em>
               </h2>
+              <p className="heritage-chapter-line mono">
+                Chapter {activeStoryIndex + 1} of {totalSlides}
+              </p>
             </div>
 
             <div className="heritage-scroll-indicator">
@@ -257,7 +281,7 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
                 <span>{isFinaleHold ? "SCROLL TO CONTINUE" : "SCROLL TO EXPLORE"}</span>
                 <span>↓</span>
               </span>
-              <span className="mono" style={{ color: "var(--gold)", fontSize: "14px", fontWeight: 700 }}>
+              <span className="mono heritage-chapter-count">
                 {activeStoryIndex + 1} / {totalSlides}
               </span>
             </div>
@@ -271,6 +295,9 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
           style={{
             transform: `translate3d(-${translateX}px, 0, 0)`
           }}
+          onTouchStart={(e) => onTrackTouchStart(e.touches[0]?.clientX ?? 0)}
+          onTouchMove={(e) => onTrackTouchMove(e.touches[0]?.clientX ?? 0)}
+          onTouchEnd={onTrackTouchEnd}
         >
           {heritageStories.map((story, index) => (
             <article
@@ -351,24 +378,24 @@ export function PanAfricanHeritage({ locale }: PanAfricanHeritageProps) {
                   👑
                 </div>
                 
-                <span className="eyebrow" style={{ color: "#d4af37", letterSpacing: "0.14em", fontSize: "11px" }}>
+                <span className="eyebrow" style={{ color: "var(--gold)", letterSpacing: "0.14em", fontSize: "11px" }}>
                   BEGIN HERE · INTAKE OPEN
                 </span>
                 
-                <h3 style={{ fontSize: "clamp(26px, 2.8vw, 38px)", marginTop: "10px" }}>
+                <h3 style={{ fontSize: "clamp(26px, 2.8vw, 38px)", marginTop: "10px", color: "#ffffff" }}>
                   The next chapter<br />
-                  <em>needs leaders.</em>
+                  <em style={{ color: "var(--gold)", fontStyle: "normal" }}>needs leaders.</em>
                 </h3>
               </div>
 
               <div className="heritage-pillar-tags">
-                <span className="heritage-pillar-tag" style={{ borderColor: "#d4af37", color: "#d4af37" }}>
+                <span className="heritage-pillar-tag" style={{ borderColor: "var(--gold)", color: "var(--gold)" }}>
                   ✦ Executive Cohorts
                 </span>
-                <span className="heritage-pillar-tag" style={{ borderColor: "#d4af37", color: "#d4af37" }}>
+                <span className="heritage-pillar-tag" style={{ borderColor: "var(--gold)", color: "var(--gold)" }}>
                   ✦ Sululta Highland Campus
                 </span>
-                <span className="heritage-pillar-tag" style={{ borderColor: "#d4af37", color: "#d4af37" }}>
+                <span className="heritage-pillar-tag" style={{ borderColor: "var(--gold)", color: "var(--gold)" }}>
                   ✦ Public & Civic Leaders
                 </span>
               </div>

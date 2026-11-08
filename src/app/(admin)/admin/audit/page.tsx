@@ -80,13 +80,17 @@ export default async function AdminAuditPage() {
                       </span>
                     </td>
                     <td className="py-3.5 px-4 text-[#C9A84C]">
-                      {log.target_table}
+                      {log.entity_type || log.target_table || '—'}
                     </td>
                     <td className="py-3.5 px-4 text-white/40 truncate max-w-[140px]">
-                      {log.target_id || '-'}
+                      {log.entity_id || log.target_id || '-'}
                     </td>
                     <td className="py-3.5 px-4 text-white/70 max-w-md truncate font-sans text-xs">
-                      {log.new_data ? JSON.stringify(log.new_data) : '-'}
+                      {log.changes
+                        ? JSON.stringify(log.changes)
+                        : log.new_data
+                          ? JSON.stringify(log.new_data)
+                          : '-'}
                     </td>
                   </tr>
                 ))}

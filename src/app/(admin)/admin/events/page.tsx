@@ -1,99 +1,130 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { 
-  Calendar, 
-  Plus, 
-  MapPin, 
-  Users, 
-  CheckCircle2, 
-  Clock, 
-  ExternalLink, 
-  Sparkles,
-  ArrowRight
+import {
+  Calendar,
+  Plus,
+  MapPin,
+  CheckCircle2,
+  ExternalLink,
+  Clock,
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+import { createAcademyEvent, toggleFaqOrEventStatus } from '@/lib/cms/actions';
+import type { AcademyEventRow } from '@/lib/supabase/types';
 
-interface ExecutiveEvent {
-  id: string;
-  title: string;
-  date: string;
-  location: string;
-  delegateCapacity: number;
-  registeredCount: number;
-  keynote: string;
-  status: 'upcoming' | 'in_progress' | 'completed';
+function formatEventWindow(startsAt: string, endsAt: string | null) {
+  const start = new Date(startsAt);
+  if (Number.isNaN(start.getTime())) return startsAt;
+  const startLabel = start.toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+  if (!endsAt) return startLabel;
+  const end = new Date(endsAt);
+  if (Number.isNaN(end.getTime())) return startLabel;
+  return `${startLabel} – ${end.toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })}`;
 }
 
-const INITIAL_EVENTS: ExecutiveEvent[] = [
-  {
-    id: 'evt-01',
-    title: 'High-Level Pan-African Executive Leadership Symposium 2026',
-    date: 'November 14 - 17, 2026',
-    location: 'Nelson Mandela Great Hall, Sululta Campus',
-    delegateCapacity: 450,
-    registeredCount: 388,
-    keynote: 'HE Prime Minister & AU Commission Leadership',
-    status: 'upcoming',
-  },
-  {
-    id: 'evt-02',
-    title: 'Project WILD Continental Executive Immersion Forum',
-    date: 'December 02 - 05, 2026',
-    location: 'African Unity Executive Pavilion, Sululta',
-    delegateCapacity: 180,
-    registeredCount: 165,
-    keynote: 'Dr. Amina Diop & Leading African Women CEOs',
-    status: 'upcoming',
-  },
-  {
-    id: 'evt-03',
-    title: 'Public Service Leadership Excellence (PSLE) Cohort IV Graduation',
-    date: 'January 20, 2027',
-    location: 'Main Amphitheater, AFLEX Sululta',
-    delegateCapacity: 600,
-    registeredCount: 520,
-    keynote: 'Federal Civil Service Commission & AFLEX Senate',
-    status: 'upcoming',
-  },
-];
+function deriveUiStatus(startsAt: string, endsAt: string | null, status: string) {
+  if (status !== 'published') return status;
+  const now = Date.now();
+  const start = new Date(startsAt).getTime();
+  const end = endsAt ? new Date(endsAt).getTime() : start + 24 * 60 * 60 * 1000;
+  if (now < start) return 'upcoming';
+  if (now > end) return 'completed';
+  return 'in_progress';
+}
 
 export default function AdminEventsPage() {
-  const [events, setEvents] = useState<ExecutiveEvent[]>(INITIAL_EVENTS);
+  const [events, setEvents] = useState<AcademyEventRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  // New Event Form State
   const [title, setTitle] = useState('');
-  const [date, setDate] = useState('');
+  const [startsAt, setStartsAt] = useState('');
+  const [endsAt, setEndsAt] = useState('');
   const [location, setLocation] = useState('Nelson Mandela Great Hall, Sululta');
-  const [capacity, setCapacity] = useState(250);
-  const [keynote, setKeynote] = useState('');
+  const [summary, setSummary] = useState('');
+  const [featured, setFeatured] = useState(false);
 
-  const handleAddEvent = (e: React.FormEvent) => {
+  const loadEvents = async () => {
+    setLoading(true);
+    setLoadError(null);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .order('starts_at', { ascending: true });
+      if (error) throw new Error(error.message);
+      setEvents((data as AcademyEventRow[]) || []);
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : 'Failed to load events');
+      setEvents([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadEvents();
+  }, []);
+
+  const handleAddEvent = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim()) return;
+    if (!title.trim() || !startsAt) return;
+    setSaving(true);
+    try {
+      await createAcademyEvent({
+        title: title.trim(),
+        summary: summary.trim() || null,
+        location: location.trim() || null,
+        starts_at: new Date(startsAt).toISOString(),
+        ends_at: endsAt ? new Date(endsAt).toISOString() : null,
+        featured,
+      });
+      setTitle('');
+      setStartsAt('');
+      setEndsAt('');
+      setSummary('');
+      setFeatured(false);
+      setIsModalOpen(false);
+      await loadEvents();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to publish event');
+    } finally {
+      setSaving(false);
+    }
+  };
 
-    const newEvent: ExecutiveEvent = {
-      id: `evt-0${events.length + 1}`,
-      title: title.trim(),
-      date: date || 'December 2026',
-      location,
-      delegateCapacity: Number(capacity) || 200,
-      registeredCount: 1,
-      keynote: keynote.trim() || 'Distinguished African Leaders',
-      status: 'upcoming',
-    };
-
-    setEvents([newEvent, ...events]);
-    setTitle('');
-    setDate('');
-    setKeynote('');
-    setIsModalOpen(false);
+  const handleToggleStatus = async (evt: AcademyEventRow) => {
+    const nextStatus = evt.status === 'published' ? 'draft' : 'published';
+    try {
+      await toggleFaqOrEventStatus({
+        table: 'events',
+        id: evt.id,
+        nextStatus,
+        slug: evt.slug,
+      });
+      setEvents((prev) =>
+        prev.map((row) => (row.id === evt.id ? { ...row, status: nextStatus } : row))
+      );
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to update status');
+    }
   };
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
         <div>
           <div className="flex items-center gap-2 text-xs font-mono tracking-widest uppercase text-[#C9A84C]">
@@ -103,7 +134,7 @@ export default function AdminEventsPage() {
             Institutional Events & Symposiums
           </h1>
           <p className="text-xs text-white/60 mt-1">
-            Coordinate continental leadership summits, academic symposiums, and executive cohort workshops.
+            Coordinate continental leadership summits, academic symposiums, and executive workshops.
           </p>
         </div>
 
@@ -117,10 +148,23 @@ export default function AdminEventsPage() {
         </button>
       </div>
 
-      {/* Events Grid */}
+      {loading && (
+        <p className="text-xs font-mono text-white/50 uppercase tracking-wider">Loading events…</p>
+      )}
+      {loadError && (
+        <div className="space-y-2 p-3 border border-rose-500/30 bg-rose-500/10 rounded-[2px]">
+          <p className="text-xs font-mono text-rose-300">{loadError}</p>
+          <p className="text-[11px] text-white/60 font-sans">
+            If the message mentions a missing table, run{' '}
+            <code className="text-[#C9A84C]">supabase/migrations/20261108_faqs_events.sql</code> in
+            the Supabase SQL editor, then refresh.
+          </p>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {events.map((evt) => {
-          const percentFull = Math.min(100, Math.round((evt.registeredCount / evt.delegateCapacity) * 100));
+          const uiStatus = deriveUiStatus(evt.starts_at, evt.ends_at, evt.status);
 
           return (
             <div
@@ -128,13 +172,17 @@ export default function AdminEventsPage() {
               className="bg-[#02142d] border border-white/10 rounded-[2px] p-6 flex flex-col justify-between hover:border-[#C9A84C]/40 transition-all shadow-xl group"
             >
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-semibold text-[#C9A84C] bg-[#024696]/20 px-2.5 py-1 rounded-[2px] border border-[#C9A84C]/30 uppercase tracking-widest">
-                    {evt.id.toUpperCase()}
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[10px] font-mono font-semibold text-[#C9A84C] bg-[#024696]/20 px-2.5 py-1 rounded-[2px] border border-[#C9A84C]/30 uppercase tracking-widest truncate max-w-[55%]">
+                    {evt.slug}
                   </span>
-                  <span className="text-[10px] uppercase font-mono tracking-widest px-2 py-0.5 rounded-[2px] bg-[#024696]/20 text-[#C9A84C] border border-[#C9A84C]/40">
-                    {evt.status}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleToggleStatus(evt)}
+                    className="text-[10px] uppercase font-mono tracking-widest px-2 py-0.5 rounded-[2px] bg-[#024696]/20 text-[#C9A84C] border border-[#C9A84C]/40 cursor-pointer"
+                  >
+                    {uiStatus}
+                  </button>
                 </div>
 
                 <div>
@@ -143,28 +191,28 @@ export default function AdminEventsPage() {
                   </h3>
                   <div className="flex items-center gap-2 text-xs text-[#C9A84C]/90 font-mono mt-2">
                     <Calendar className="w-3.5 h-3.5 text-[#024696]" />
-                    <span>{evt.date}</span>
+                    <span>{formatEventWindow(evt.starts_at, evt.ends_at)}</span>
                   </div>
                 </div>
 
                 <div className="pt-3 border-t border-white/10 space-y-2 text-xs text-white/70">
                   <div className="flex items-center gap-2">
                     <MapPin className="w-3.5 h-3.5 text-[#C9A84C] shrink-0" />
-                    <span className="truncate">{evt.location}</span>
+                    <span className="truncate">{evt.location || 'Sululta Campus'}</span>
                   </div>
-                  <div className="flex items-center gap-2 font-mono text-[11px]">
-                    <Users className="w-3.5 h-3.5 text-[#024696] shrink-0" />
-                    <span>{evt.registeredCount} / {evt.delegateCapacity} Delegates Registered ({percentFull}%)</span>
-                  </div>
-                  <div className="w-full bg-[#010c1c] border border-white/5 h-1.5 rounded-[1px] overflow-hidden">
-                    <div
-                      className="bg-gradient-to-r from-[#024696] to-[#C9A84C] h-full rounded-[1px] transition-all duration-500"
-                      style={{ width: `${percentFull}%` }}
-                    />
-                  </div>
-                  <div className="text-[11px] text-white/50 pt-1">
-                    <span className="text-white/80 font-mono uppercase tracking-wider text-[10px]">Keynote: </span>
-                    {evt.keynote}
+                  {evt.summary && (
+                    <p className="text-[11px] text-white/60 leading-relaxed font-sans line-clamp-3">
+                      {evt.summary}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-white/40">
+                    <Clock className="w-3 h-3" />
+                    <span>{evt.status}</span>
+                    {evt.featured && (
+                      <span className="text-[#C9A84C] border border-[#C9A84C]/40 px-1.5 py-0.5 rounded-[2px]">
+                        Featured
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -177,30 +225,38 @@ export default function AdminEventsPage() {
                 >
                   View Public Calendar <ExternalLink className="w-3 h-3" />
                 </Link>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const updated = events.map(e => e.id === evt.id ? { ...e, registeredCount: e.registeredCount + 1 } : e);
-                    setEvents(updated);
-                  }}
-                  className="px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 rounded-[2px] text-[10px] font-mono uppercase tracking-wider cursor-pointer"
-                >
-                  + Simulate RSVP
-                </button>
+                {evt.status === 'published' ? (
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#C9A84C] flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> Live
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-white/40">
+                    Draft
+                  </span>
+                )}
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Add Event Modal */}
+      {!loading && !loadError && events.length === 0 && (
+        <p className="text-xs text-white/60 font-sans border border-white/10 bg-[#02142d] px-3 py-3 rounded-[2px]">
+          No events in the database yet. Schedule the first summit to publish it live.
+        </p>
+      )}
+
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-[#021024]/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#02142d] border border-white/10 rounded-[2px] p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div>
-                <div className="text-[10px] font-mono tracking-widest uppercase text-[#C9A84C]">Leadership Forums & Summits</div>
-                <h3 className="font-serif text-lg font-bold text-white mt-0.5">Schedule Executive Summit</h3>
+                <div className="text-[10px] font-mono tracking-widest uppercase text-[#C9A84C]">
+                  Leadership Forums & Summits
+                </div>
+                <h3 className="font-serif text-lg font-bold text-white mt-0.5">
+                  Schedule Executive Summit
+                </h3>
               </div>
               <button
                 type="button"
@@ -213,7 +269,9 @@ export default function AdminEventsPage() {
 
             <form onSubmit={handleAddEvent} className="space-y-4 text-xs">
               <div className="space-y-1">
-                <label className="block font-mono text-[11px] uppercase tracking-widest text-white/70">Event Title</label>
+                <label className="block font-mono text-[11px] uppercase tracking-widest text-white/70">
+                  Event Title
+                </label>
                 <input
                   type="text"
                   required
@@ -226,30 +284,34 @@ export default function AdminEventsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="block font-mono text-[11px] uppercase tracking-widest text-white/70">Dates / Duration</label>
+                  <label className="block font-mono text-[11px] uppercase tracking-widest text-white/70">
+                    Starts
+                  </label>
                   <input
-                    type="text"
+                    type="datetime-local"
                     required
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    placeholder="e.g. Dec 10 - 12, 2026"
+                    value={startsAt}
+                    onChange={(e) => setStartsAt(e.target.value)}
                     className="w-full bg-[#010c1c] border border-white/10 rounded-[2px] px-3 py-2 text-white outline-none font-mono"
                   />
                 </div>
-
                 <div className="space-y-1">
-                  <label className="block font-mono text-[11px] uppercase tracking-widest text-white/70">Delegate Capacity</label>
+                  <label className="block font-mono text-[11px] uppercase tracking-widest text-white/70">
+                    Ends
+                  </label>
                   <input
-                    type="number"
-                    value={capacity}
-                    onChange={(e) => setCapacity(Number(e.target.value))}
+                    type="datetime-local"
+                    value={endsAt}
+                    onChange={(e) => setEndsAt(e.target.value)}
                     className="w-full bg-[#010c1c] border border-white/10 rounded-[2px] px-3 py-2 text-white outline-none font-mono"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="block font-mono text-[11px] uppercase tracking-widest text-white/70">Campus Venue</label>
+                <label className="block font-mono text-[11px] uppercase tracking-widest text-white/70">
+                  Campus Venue
+                </label>
                 <input
                   type="text"
                   value={location}
@@ -259,15 +321,27 @@ export default function AdminEventsPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="block font-mono text-[11px] uppercase tracking-widest text-white/70">Keynote Speaker(s)</label>
-                <input
-                  type="text"
-                  value={keynote}
-                  onChange={(e) => setKeynote(e.target.value)}
-                  placeholder="e.g. AU Commissioners & Federal Ministers"
-                  className="w-full bg-[#010c1c] border border-white/10 rounded-[2px] px-3 py-2 text-white outline-none"
+                <label className="block font-mono text-[11px] uppercase tracking-widest text-white/70">
+                  Summary / Keynote
+                </label>
+                <textarea
+                  rows={3}
+                  value={summary}
+                  onChange={(e) => setSummary(e.target.value)}
+                  placeholder="Keynote speakers, agenda notes, or delegate focus…"
+                  className="w-full bg-[#010c1c] border border-white/10 rounded-[2px] px-3 py-2 text-white outline-none resize-none"
                 />
               </div>
+
+              <label className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-wider text-white/70 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={featured}
+                  onChange={(e) => setFeatured(e.target.checked)}
+                  className="accent-[#C9A84C]"
+                />
+                Feature on homepage / events board
+              </label>
 
               <div className="pt-3 border-t border-white/10 flex justify-end gap-2">
                 <button
@@ -279,9 +353,10 @@ export default function AdminEventsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#C9A84C] text-[#021024] font-mono text-xs uppercase tracking-widest font-bold rounded-[2px] hover:bg-[#b5953f]"
+                  disabled={saving}
+                  className="px-4 py-2 bg-[#C9A84C] disabled:opacity-50 text-[#021024] font-mono text-xs uppercase tracking-widest font-bold rounded-[2px] hover:bg-[#b5953f]"
                 >
-                  Publish Event
+                  {saving ? 'Publishing…' : 'Publish Event'}
                 </button>
               </div>
             </form>
@@ -291,4 +366,3 @@ export default function AdminEventsPage() {
     </div>
   );
 }
-

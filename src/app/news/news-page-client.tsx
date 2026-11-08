@@ -41,9 +41,9 @@ export default function NewsEventsPage({
 
         {/* Section 1: LATEST UPDATES · Academy News */}
         <section
-          className="section"
+          className="section academy-news-section"
           id="academy-news"
-          style={{ background: "#050507", color: "#ffffff", padding: "80px 0" }}
+          style={{ background: "#ffffff", color: "var(--ink)", padding: "80px 0" }}
         >
           <div className="container">
             <div className="section-heading" style={{ maxWidth: "800px", marginBottom: "36px" }}>
@@ -119,13 +119,13 @@ export default function NewsEventsPage({
 
         {/* Section 2: UPCOMING · Academy Events */}
         <section
-          className="section"
+          className="section academy-events-section"
           id="events"
           style={{
-            background: "#000000",
-            color: "#ffffff",
+            background: "#ffffff",
+            color: "var(--ink)",
             padding: "80px 0",
-            borderTop: "1px solid rgba(212, 175, 55, 0.2)",
+            borderTop: "1px solid rgba(2, 70, 150, 0.1)",
           }}
         >
           <div className="container">
@@ -138,7 +138,7 @@ export default function NewsEventsPage({
                 <br />
                 <em>Events.</em>
               </h2>
-              <p style={{ color: "rgba(255, 255, 255, 0.85)", fontSize: "16px", marginTop: "12px" }}>
+              <p className="academy-events-lead">
                 Join us for leadership programs, forums, and learning opportunities throughout the
                 year.
               </p>
@@ -170,7 +170,7 @@ export default function NewsEventsPage({
                     </Link>
                     <button
                       type="button"
-                      className="button button-outline light"
+                      className="button button-outline agenda-details-btn"
                       onClick={() => setSelectedEvent(event)}
                       style={{ fontSize: "12px", padding: "8px 16px" }}
                     >

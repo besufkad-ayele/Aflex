@@ -1,3 +1,3 @@
 import Link from "next/link";
-import { SiteFooter, SiteHeader, Weave } from "@/components/site-shell";
-export default function NotFound() { return <><SiteHeader /><main id="main-content"><section className="not-found blue-section"><div className="container"><span className="eyebrow">AFLEX / 404</span><h1>This page<br /><em>is elsewhere.</em></h1><p>The address you followed does not point to a published academy page.</p><Link className="button button-primary" href="/">Return to AFLEX <span>↗</span></Link></div><Weave dark /></section></main><SiteFooter /></>; }
+import { SiteFooter, SiteHeader } from "@/components/site-shell";
+export default function NotFound() { return <><SiteHeader /><main id="main-content"><section className="not-found blue-section"><div className="container"><span className="eyebrow">AFLEX / 404</span><h1>This page<br /><em>is elsewhere.</em></h1><p>The address you followed does not point to a published academy page.</p><Link className="button button-primary" href="/">Return to AFLEX <span>↗</span></Link></div></section></main><SiteFooter /></>; }

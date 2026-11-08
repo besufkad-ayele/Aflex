@@ -26,36 +26,45 @@ import { revalidateCmsContent } from '@/lib/cms/actions';
 export default function AdminDashboardPage() {
   const { role, roleConfig } = useAdmin();
   const [counts, setCounts] = useState({
-    news: 4,
-    programs: 3,
-    vacancies: 2,
-    tenders: 3,
-    research: 4,
-    events: 3,
+    news: 0,
+    programs: 0,
+    vacancies: 0,
+    tenders: 0,
+    research: 0,
+    events: 0,
+    faqs: 0,
   });
+  const [countsLoading, setCountsLoading] = useState(true);
   const [isRevalidating, setIsRevalidating] = useState(false);
   const [revalidateFeedback, setRevalidateFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadStats() {
+      setCountsLoading(true);
       try {
         const supabase = createClient();
-        const [news, progs, vacs, tenders] = await Promise.all([
+        const [news, progs, vacs, tenders, faqs, events] = await Promise.all([
           supabase.from('news_articles').select('id', { count: 'exact', head: true }),
           supabase.from('programs').select('id', { count: 'exact', head: true }),
           supabase.from('vacancies').select('id', { count: 'exact', head: true }),
           supabase.from('procurement_tenders').select('id', { count: 'exact', head: true }),
+          supabase.from('faqs').select('id', { count: 'exact', head: true }),
+          supabase.from('events').select('id', { count: 'exact', head: true }),
         ]);
 
-        setCounts((prev) => ({
-          ...prev,
-          news: news.count && news.count > 0 ? news.count : prev.news,
-          programs: progs.count && progs.count > 0 ? progs.count : prev.programs,
-          vacancies: vacs.count && vacs.count > 0 ? vacs.count : prev.vacancies,
-          tenders: tenders.count && tenders.count > 0 ? tenders.count : prev.tenders,
-        }));
+        setCounts({
+          news: news.count ?? 0,
+          programs: progs.count ?? 0,
+          vacancies: vacs.count ?? 0,
+          tenders: tenders.count ?? 0,
+          research: 0,
+          events: events.error ? 0 : events.count ?? 0,
+          faqs: faqs.error ? 0 : faqs.count ?? 0,
+        });
       } catch {
-        // Fallback to active demo state
+        setCounts({ news: 0, programs: 0, vacancies: 0, tenders: 0, research: 0, events: 0, faqs: 0 });
+      } finally {
+        setCountsLoading(false);
       }
     }
     loadStats();
@@ -126,7 +135,7 @@ export default function AdminDashboardPage() {
     },
     {
       title: 'Campus Facilities',
-      count: 5,
+      count: 0,
       label: 'Sululta GIS Points',
       href: '/admin/campus',
       newHref: '/admin/campus',
@@ -134,7 +143,7 @@ export default function AdminDashboardPage() {
     },
     {
       title: 'Steward AI & FAQ',
-      count: 34,
+      count: counts.faqs,
       label: 'Cognitive Knowledge Units',
       href: '/admin/faq',
       newHref: '/admin/faq',
@@ -218,7 +227,7 @@ export default function AdminDashboardPage() {
 
               <div className="mt-5">
                 <div className="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight">
-                  {sec.count}
+                  {countsLoading ? '—' : sec.count}
                 </div>
                 <div className="font-sans text-xs text-white/60 mt-1">
                   {sec.label}

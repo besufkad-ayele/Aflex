@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { copy, getLocale, localeNames, locales, type Locale } from "@/lib/i18n";
-import { searchIndex } from "@/lib/search-index";
+import { search as searchSite } from "@/lib/search";
 import { newsArticles } from "@/lib/news-data";
 import { BrandLogo } from "@/components/brand-logo";
 import { OnlineLearningModal } from "@/components/online-learning-modal";
@@ -58,10 +58,29 @@ const navItems: [string, string, string | null][] = [
   ["About AFLEX",   "/about",    "about"],
   ["Programs",      "/programs", "programs"],
   ["News & Events", "/news",     "news"],
-  ["Gallery",       "/gallery",  null],
+  ["Media",         "/media",    null],
+  ["Contact",       "/contact",  "contact"],
 ];
 
 const localeCodes = /^(en|am|om|so|ti|sw|ha|yo)(\/|$)/;
+
+function resolveActiveNav(pathname: string, fallback = "Home"): string {
+  const path = pathname.replace(/^\/(en|am|om|so|ti|sw|ha|yo)(?=\/|$)/, "") || "/";
+  if (path === "/" || path === "") return "Home";
+  if (path.startsWith("/about")) return "About AFLEX";
+  if (
+    path.startsWith("/programs") ||
+    path.startsWith("/catalog") ||
+    path.startsWith("/online-learning") ||
+    path.startsWith("/scholarship")
+  ) {
+    return "Programs";
+  }
+  if (path.startsWith("/news") || path.startsWith("/events")) return "News & Events";
+  if (path.startsWith("/gallery") || path.startsWith("/media")) return "Media";
+  if (path.startsWith("/contact")) return "Contact";
+  return fallback;
+}
 
 function browserLocale(): Locale {
   const languages =
@@ -93,11 +112,13 @@ function DropdownAbout({ route }: { route: (p: string) => string }) {
           {(
             [
               ["Our Story",           "/about#story"],
+              ["Story & CEO History", "/about#history"],
               ["Vision & Mission",    "/about#vision"],
               ["Our Values",          "/about#values"],
               ["The Three Pillars",   "/about#pillars"],
               ["Governance & Board",  "/about#governance"],
               ["Leadership Team",     "/about#leadership"],
+              ["Full Hierarchy",      "/about/leadership"],
               ["Campus & Facilities", "/about#campus"],
             ] as [string, string][]
           ).map(([label, href]) => (
@@ -267,9 +288,12 @@ function DropdownNews({ route }: { route: (p: string) => string }) {
         <NavColHeader>MEDIA & RESOURCES</NavColHeader>
         {(
           [
-            ["Photo Gallery",       "/gallery"],
-            ["Video Library",       "/gallery?type=video"],
-            ["Press Kit & Logos",   "/gallery#downloads"],
+            ["Photo Gallery",       "/media?tab=photos"],
+            ["Video Library",       "/media?tab=videos"],
+            ["TikTok Feed",         "/media?tab=tiktok"],
+            ["Facebook Feed",       "/media?tab=facebook"],
+            ["YouTube Channel",     "/media?tab=youtube"],
+            ["Press Kit & Logos",   "/media#archive"],
             ["Annual Reports",      "/library?category=reports"],
             ["Research Publications", "/library?category=research"],
           ] as [string, string][]
@@ -384,6 +408,7 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
 
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const utilityCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pinnedMenu = useRef<string | null>(null);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -395,12 +420,15 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
   const localePath = (nextLocale: Locale) => `/${nextLocale}${localPath}`;
   const labels = copy[currentLocale].nav;
   const utility = copy[currentLocale].utility;
+  const activeNav = resolveActiveNav(pathname, active);
 
   // Close all dropdowns on route change
   useEffect(() => {
+    pinnedMenu.current = null;
     setOpenMenu(null);
     setOpenMobileSubmenu(null);
     setOpenUtility(null);
+    setMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => { setMounted(true); }, []);
@@ -419,26 +447,57 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted, hasLocalePath, router]);
 
-  // Escape key closes everything
+  // Escape / outside click closes menus
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        pinnedMenu.current = null;
         setOpenMenu(null);
         setOpenUtility(null);
         setSearchOpen(false);
+        setMenuOpen(false);
       }
     };
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as Element | null;
+      if (!target) return;
+      if (target.closest(".site-header") || target.closest(".utility-bar") || target.closest(".nav-backdrop")) {
+        return;
+      }
+      pinnedMenu.current = null;
+      setOpenMenu(null);
+      setOpenUtility(null);
+    };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
   }, []);
 
   useEffect(() => {
     if (!mounted) return;
-    const update = () => setScrolled(globalThis.scrollY > 24);
+    const update = () => {
+      const y = globalThis.scrollY;
+      setScrolled(y > 24);
+      if (y > 40) {
+        pinnedMenu.current = null;
+        setOpenMenu(null);
+        setOpenUtility(null);
+      }
+    };
     update();
     globalThis.addEventListener("scroll", update, { passive: true });
     return () => globalThis.removeEventListener("scroll", update);
   }, [mounted]);
+
+  // Lock body scroll when mobile drawer or search is open
+  useEffect(() => {
+    const lock = menuOpen || searchOpen;
+    document.body.classList.toggle("nav-lock", lock);
+    return () => document.body.classList.remove("nav-lock");
+  }, [menuOpen, searchOpen]);
 
   const chooseLocale = async (
     event: React.MouseEvent<HTMLAnchorElement>,
@@ -455,20 +514,35 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
   };
 
   const searchResults = searchQuery.trim()
-    ? searchIndex.filter((item) =>
-        `${item.title} ${item.description} ${item.keywords}`
-          .toLowerCase()
-          .includes(searchQuery.trim().toLowerCase())
-      )
+    ? searchSite(searchQuery, 14)
     : [];
 
-  // Hover helpers — 160ms close delay so cursor can move into the panel
+  // Hover helpers — 260ms close delay so cursor can move into the panel
   const openDropdown = (key: string) => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
+    // Hovering another item releases a click-pin
+    if (pinnedMenu.current && pinnedMenu.current !== key) {
+      pinnedMenu.current = null;
+    }
     setOpenMenu(key);
   };
   const scheduleClose = () => {
-    closeTimer.current = setTimeout(() => setOpenMenu(null), 160);
+    if (pinnedMenu.current) return; // click-opened menus stay until outside click / toggle
+    closeTimer.current = setTimeout(() => {
+      if (pinnedMenu.current) return;
+      setOpenMenu(null);
+    }, 260);
+  };
+  const toggleDropdown = (key: string) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setOpenMenu((prev) => {
+      if (prev === key) {
+        pinnedMenu.current = null;
+        return null;
+      }
+      pinnedMenu.current = key;
+      return key;
+    });
   };
 
   // Utility bar hover helpers
@@ -477,13 +551,18 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
     setOpenUtility(key);
   };
   const scheduleUtilityClose = () => {
-    utilityCloseTimer.current = setTimeout(() => setOpenUtility(null), 160);
+    utilityCloseTimer.current = setTimeout(() => setOpenUtility(null), 180);
   };
 
   const toggleMobileSubmenu = (e: React.MouseEvent, key: string) => {
     e.preventDefault();
     e.stopPropagation();
     setOpenMobileSubmenu(openMobileSubmenu === key ? null : key);
+  };
+
+  const closeMobileMenu = () => {
+    setMenuOpen(false);
+    setOpenMobileSubmenu(null);
   };
 
   const dropdownMap: Record<string, ReactNode> = {
@@ -496,11 +575,13 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
   const mobileSubItems: Record<string, [string, string][]> = {
     about: [
       ["Our Story",           route("/about#story")],
+      ["Story & CEO History", route("/about#history")],
       ["Vision & Mission",    route("/about#vision")],
       ["Our Values",          route("/about#values")],
       ["The Three Pillars",   route("/about#pillars")],
       ["Governance & Board",  route("/about#governance")],
       ["Leadership Team",     route("/about#leadership")],
+      ["Full Hierarchy",      route("/about/leadership")],
       ["Campus & Facilities", route("/about#campus")],
     ],
     programs: [
@@ -535,8 +616,9 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
     labelText: string,
     index: number
   ) => {
-    const isActive = active === label;
+    const isActive = activeNav === label;
     const isOpen = openMenu === dropKey;
+    const itemHref = localized || index < 2 ? route(href) : href;
     return (
       <span
         key={label}
@@ -545,23 +627,38 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
         onMouseLeave={scheduleClose}
       >
         {/* Desktop trigger */}
-        <Link
-          href={localized || index < 2 ? route(href) : href}
-          className={`nav-drop-trigger${isActive ? " active" : ""}`}
-          aria-haspopup="true"
-          aria-expanded={isOpen}
-          onClick={() => setMenuOpen(false)}
-        >
-          {labelText}
-          <span className="nav-caret" aria-hidden="true">▾</span>
-        </Link>
+        <span className="nav-drop-cluster">
+          <Link
+            href={itemHref}
+            className={`nav-drop-trigger${isActive ? " active" : ""}`}
+            aria-haspopup="true"
+            aria-expanded={isOpen}
+            onClick={closeMobileMenu}
+          >
+            {labelText}
+          </Link>
+          <button
+            type="button"
+            className="nav-caret"
+            aria-label={`Toggle ${label} menu`}
+            aria-expanded={isOpen}
+            onMouseDown={(e) => {
+              // mousedown is more reliable than click for keeping the panel open
+              e.preventDefault();
+              e.stopPropagation();
+              toggleDropdown(dropKey);
+            }}
+          >
+            ▾
+          </button>
+        </span>
 
         {/* Mobile row: link + caret toggle */}
         <span className="mobile-drop-row">
           <Link
-            href={localized || index < 2 ? route(href) : href}
-            className="mobile-drop-label"
-            onClick={() => setMenuOpen(false)}
+            href={itemHref}
+            className={`mobile-drop-label${isActive ? " active" : ""}`}
+            onClick={closeMobileMenu}
           >
             {labelText}
           </Link>
@@ -577,20 +674,22 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
         </span>
 
         {/* Mobile accordion */}
-        {openMobileSubmenu === dropKey && (
-          <div className="mobile-submenu">
-            {mobileSubItems[dropKey]?.map(([subLabel, subHref]) => (
-              <Link
-                key={subHref}
-                href={subHref}
-                className="mobile-submenu-link"
-                onClick={() => { setMenuOpen(false); setOpenMobileSubmenu(null); }}
-              >
-                {subLabel}
-              </Link>
-            ))}
-          </div>
-        )}
+        <div
+          className={`mobile-submenu${openMobileSubmenu === dropKey ? " is-open" : ""}`}
+          aria-hidden={openMobileSubmenu !== dropKey}
+        >
+          {mobileSubItems[dropKey]?.map(([subLabel, subHref]) => (
+            <Link
+              key={subHref}
+              href={subHref}
+              className="mobile-submenu-link"
+              tabIndex={openMobileSubmenu === dropKey ? 0 : -1}
+              onClick={closeMobileMenu}
+            >
+              {subLabel}
+            </Link>
+          ))}
+        </div>
       </span>
     );
   };
@@ -623,7 +722,7 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
                 return (
                   <span
                     key={item}
-                    className="utility-drop-trigger"
+                    className={`utility-drop-trigger${openUtility === utilityDropKey ? " is-open" : ""}`}
                     onMouseEnter={() => openUtilityDrop(utilityDropKey)}
                     onMouseLeave={scheduleUtilityClose}
                   >
@@ -688,12 +787,21 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
         </div>
       </div>
 
+      {/* Mobile drawer backdrop */}
+      <button
+        type="button"
+        className={`nav-backdrop${menuOpen ? " is-open" : ""}`}
+        aria-label="Close menu"
+        tabIndex={menuOpen ? 0 : -1}
+        onClick={closeMobileMenu}
+      />
+
       {/* ── Main header ──────────────────────────────────────────── */}
-      <header className={scrolled ? "site-header scrolled" : "site-header"}>
+      <header className={`site-header${scrolled ? " scrolled" : ""}${openMenu ? " menu-expanded" : ""}${menuOpen ? " drawer-open" : ""}`}>
         <div className="container nav-inner">
           <Link href={route("/")} className="wordmark brand-wordmark" aria-label="AFLEX Academy home">
             <Image
-              src="/images/aflex-icon.jpg"
+              src="/images/aflex-logo.png"
               alt=""
               width={32}
               height={32}
@@ -706,15 +814,15 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
             </span>
           </Link>
 
-          <nav className={menuOpen ? "main-nav is-open" : "main-nav"} aria-label="Primary navigation">
+          <nav id="primary-nav" className={menuOpen ? "main-nav is-open" : "main-nav"} aria-label="Primary navigation">
             {navItems.map(([label, href, dropKey], index) => {
               if (!dropKey) {
                 return (
                   <Link
                     key={label}
-                    className={active === label ? "active" : ""}
+                    className={activeNav === label ? "active" : ""}
                     href={localized || index < 2 ? route(href) : href}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={closeMobileMenu}
                   >
                     {labels[index]}
                   </Link>
@@ -723,8 +831,43 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
               return renderDropItem(label, href, dropKey, labels[index], index);
             })}
 
-            {/* Contact with dropdown */}
-            {renderDropItem("Contact", "/contact", "contact", labels[5], 5)}
+            <div className="mobile-utility-links" aria-label="Services and portals">
+              <span className="mobile-utility-label">Services &amp; portals</span>
+              {(
+                [
+                  [utility[0], route("/online-learning"), "lms"],
+                  [utility[1], route("/library"), "library"],
+                  [utility[2], route("/faq"), "faq"],
+                  [utility[3], route("/campus-locator"), "campus"],
+                  [utility[4], localized ? route("/vacancy") : "/vacancy", "vacancy"],
+                ] as [string, string, string][]
+              ).map(([label, href, key]) => (
+                <a
+                  key={key}
+                  href={href}
+                  className={`mobile-utility-link${key === "vacancy" ? " utility-link-vacancies" : ""}`}
+                  onClick={(e) => {
+                    if (key === "lms" && e.button === 0 && !e.ctrlKey && !e.metaKey) {
+                      e.preventDefault();
+                      closeMobileMenu();
+                      setLmsOpen(true);
+                      return;
+                    }
+                    closeMobileMenu();
+                  }}
+                >
+                  <span>{key === "lms" ? `🎓 ${label}` : label}</span>
+                  {key === "vacancy" && openVacancyCount > 0 ? (
+                    <span className="utility-job-badge" aria-label={`${openVacancyCount} new jobs posted`}>
+                      {openVacancyCount}
+                      <span className="utility-job-badge-label">new</span>
+                    </span>
+                  ) : (
+                    <span aria-hidden="true">↗</span>
+                  )}
+                </a>
+              ))}
+            </div>
 
             <div className="mobile-language">
               {locales.map((code) => (
@@ -759,7 +902,18 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
                 ))}
               </div>
             </details>
-            <button className="icon-button" type="button" aria-label="Search" onClick={() => setSearchOpen(true)}>
+            <button
+              className="icon-button"
+              type="button"
+              aria-label="Search"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setSearchOpen(true);
+                setMenuOpen(false);
+                setOpenMenu(null);
+              }}
+            >
               ⌕
             </button>
             <Link
@@ -769,12 +923,16 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
               Apply / Enroll <span>↗</span>
             </Link>
             <button
-              className="menu-button"
+              className={`menu-button${menuOpen ? " is-open" : ""}`}
               type="button"
               aria-expanded={menuOpen}
-              onClick={() => setMenuOpen(!menuOpen)}
+              aria-controls="primary-nav"
+              onClick={(e) => {
+                e.stopPropagation();
+                setMenuOpen((open) => !open);
+              }}
             >
-              <span /><span /><span /><b>Menu</b>
+              <span /><span /><span /><b>{menuOpen ? "Close" : "Menu"}</b>
             </button>
           </div>
         </div>
@@ -786,6 +944,7 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
             className={`mega-menu-bar${openMenu === key ? " is-open" : ""}`}
             role="region"
             aria-label={`${key} submenu`}
+            aria-hidden={openMenu !== key}
             onMouseEnter={() => openDropdown(key)}
             onMouseLeave={scheduleClose}
           >
@@ -798,16 +957,38 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
 
       {/* ── Search overlay ────────────────────────────────────────── */}
       {searchOpen && (
-        <div className="search-overlay" role="dialog" aria-modal="true" aria-label="Search AFLEX">
+        <div
+          className="search-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Search AFLEX"
+          onClick={() => {
+            setSearchOpen(false);
+            setSearchQuery("");
+          }}
+        >
           <button
             className="search-close"
             type="button"
             aria-label="Close search"
-            onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSearchOpen(false);
+              setSearchQuery("");
+            }}
           >
             ×
           </button>
-          <div className="search-box">
+          <div
+            className="search-box"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                setSearchOpen(false);
+                setSearchQuery("");
+              }
+            }}
+          >
             <span className="eyebrow">SEARCH THE ACADEMY</span>
             <input
               autoFocus
@@ -819,8 +1000,8 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
             />
             <p>
               {searchQuery
-                ? `${searchResults.length} result${searchResults.length === 1 ? "" : "s"}`
-                : "Search programs, news, pages, and downloads."}
+                ? `${searchResults.length} result${searchResults.length === 1 ? "" : "s"} · fuzzy & related matches included`
+                : "Search programs, news, pages, careers, campus, and more."}
             </p>
             {searchQuery && (
               <div className="search-results" id="search-results" aria-live="polite">
@@ -829,10 +1010,13 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
                     <Link
                       className="search-result"
                       href={localized ? `/${currentLocale}${result.href}` : result.href}
-                      key={result.href}
+                      key={`${result.type}-${result.href}-${result.title}`}
                       onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
                     >
-                      <span className="mono">{result.type}</span>
+                      <span className="mono">
+                        {result.type}
+                        {typeof result.relevance === "number" ? ` · ${Math.round(result.relevance * 100)}%` : ""}
+                      </span>
                       <strong>{result.title}</strong>
                       <small>{result.description}</small>
                       <span className="search-arrow">↗</span>
@@ -840,7 +1024,7 @@ export function SiteHeader({ active = "Home", locale = "en" }: { active?: string
                   ))
                 ) : (
                   <p className="search-empty">
-                    No matching AFLEX pages. Try &quot;leadership&quot;, &quot;campus&quot;, or &quot;vacancy&quot;.
+                    No matching AFLEX pages. Try &quot;jobs&quot;, &quot;women&quot;, &quot;campuss&quot;, or &quot;ldshp&quot;.
                   </p>
                 )}
               </div>
@@ -877,7 +1061,7 @@ export function SiteFooter() {
             <Link href="/about">About AFLEX</Link>
             <Link href="/programs">Programs</Link>
             <Link href="/news">News &amp; Events</Link>
-            <Link href="/gallery">Gallery</Link>
+            <Link href="/media">Media</Link>
           </div>
           <div>
             <span className="footer-label">SERVICES &amp; PORTALS</span>

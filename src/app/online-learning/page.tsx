@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { SiteFooter, SiteHeader, Weave } from "@/components/site-shell";
+import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { lmsPortals, type LMSPortal } from "@/components/online-learning-modal";
 
 export default function OnlineLearningPage() {
@@ -46,19 +46,18 @@ export default function OnlineLearningPage() {
             <h1>Online Learning &<br /><em>Student LMS.</em></h1>
             <p>Access your designated AFLEX learning portal, asynchronous modules, policy labs, and leadership coaching.</p>
           </div>
-          <Weave dark />
-        </section>
+                  </section>
 
         {/* Portals Showcase Section */}
-        <section className="section" style={{ background: "#000000", color: "#fff", padding: "80px 0" }}>
+        <section className="section black-section online-learning-portals" style={{ background: "var(--coffee)", color: "#fff", padding: "80px 0" }}>
           <div className="container">
             <div className="section-heading" style={{ maxWidth: "800px", marginBottom: "48px" }}>
               <span className="eyebrow" style={{ color: "var(--gold)" }}>
                 SELECT YOUR COHORT PORTAL
               </span>
-              <h2>
+              <h2 style={{ color: "#ffffff" }}>
                 Choose your learning<br />
-                <em>pathway & sign in.</em>
+                <em style={{ color: "var(--gold)" }}>pathway & sign in.</em>
               </h2>
               <p style={{ color: "rgba(255, 255, 255, 0.85)", fontSize: "16px", marginTop: "12px" }}>
                 Each AFLEX program operates a specialized digital ecosystem tailored to the confidential deliberations and applied projects of its cohort.

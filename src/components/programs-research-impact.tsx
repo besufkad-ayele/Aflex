@@ -111,7 +111,7 @@ export function ProgramsResearchImpact({ locale }: ProgramsResearchImpactProps) 
             Research impact &<br />
             <em>policy monographs.</em>
           </h2>
-          <p style={{ color: "rgba(255, 255, 255, 0.85)", fontSize: "16px", marginTop: "12px" }}>
+          <p className="research-impact-lead">
             Our research practice directly informs AFLEX executive curricula and provides African policy-makers with rigorous, locally-grounded monographs and actionable governance frameworks.
           </p>
         </div>
@@ -188,7 +188,7 @@ export function ProgramsResearchImpact({ locale }: ProgramsResearchImpactProps) 
             <article key={study.id} className="program-study-item">
               <div className="study-header-line">
                 <span className="study-cat-badge">{study.categoryLabel}</span>
-                <span className="mono" style={{ color: "var(--gold)", fontSize: "11px" }}>{study.badge}</span>
+                <span className="mono study-badge-label">{study.badge}</span>
               </div>
 
               <h3>{study.title}</h3>
@@ -205,13 +205,12 @@ export function ProgramsResearchImpact({ locale }: ProgramsResearchImpactProps) 
 
               <div className="study-doc-footer">
                 <div className="study-doc-info">
-                  <span className="mono" style={{ color: "var(--gold)", fontSize: "11px" }}>{study.pages}</span>
-                  <span style={{ fontSize: "13px", color: "#fff", fontWeight: 500 }}>{study.docTitle}</span>
+                  <span className="mono study-pages-label">{study.pages}</span>
+                  <span className="study-doc-title">{study.docTitle}</span>
                 </div>
                 <Link
-                  className="button button-outline light"
+                  className="button button-outline research-download-btn"
                   href={`/catalog?doc=${study.id}`}
-                  style={{ fontSize: "12px", padding: "8px 18px", borderRadius: "20px" }}
                 >
                   <span>Request PDF Brief</span>
                   <span>↓</span>

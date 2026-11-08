@@ -123,22 +123,24 @@ export default function AdminVacanciesPage() {
               {filtered.map((item) => (
                 <tr key={item.id} className="hover:bg-white/5 transition-colors">
                   <td className="py-3.5 px-4 font-mono font-semibold text-[#C9A84C]">
-                    {item.reference_no}
+                    {item.reference_no || item.id.slice(0, 8).toUpperCase()}
                   </td>
                   <td className="py-3.5 px-4 font-medium text-white">
                     <div>{item.title}</div>
-                    <div className="font-mono text-[10px] text-white/40 mt-0.5">{item.positions_available} Position(s)</div>
+                    <div className="font-mono text-[10px] text-white/40 mt-0.5">
+                      {item.experience_level || item.category || 'Open role'}
+                    </div>
                   </td>
                   <td className="py-3.5 px-4 text-white/70">
                     {item.department}
                   </td>
                   <td className="py-3.5 px-4">
                     <span className="px-2 py-0.5 rounded-[2px] bg-[#024696]/20 border border-white/10 text-white font-mono text-[10px]">
-                      {item.employment_type}
+                      {item.type || item.employment_type || '—'}
                     </span>
                   </td>
                   <td className="py-3.5 px-4 font-mono text-white/60">
-                    {item.deadline}
+                    {item.deadline ? new Date(item.deadline).toLocaleDateString() : '—'}
                   </td>
                   <td className="py-3.5 px-4">
                     <button

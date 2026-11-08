@@ -87,7 +87,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Sululta Campus Facilities', href: '/admin/campus', badge: 'GIS' },
       { label: 'Steward AI & FAQ Engine', href: '/admin/faq', badge: 'Agent' },
-      { label: 'Photo & Video Archives', href: '/admin/gallery' },
+      { label: 'Media Hub (Photos / Social)', href: '/admin/gallery' },
       { label: 'Cloud Storage Assets', href: '/admin/media' },
     ],
   },
@@ -154,7 +154,7 @@ export function AdminSidebar() {
           <Link href="/admin" className="flex items-center gap-3 group">
             <div className="w-9 h-9 border border-[#C9A84C]/60 bg-[#024696] rounded-[2px] flex items-center justify-center p-1.5 shadow-sm">
               <Image
-                src="/images/aflex-icon.jpg"
+                src="/images/aflex-logo.png"
                 alt="AFLEX"
                 width={26}
                 height={26}

@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Weave } from "@/components/site-shell";
 import { aboutHeroSlides } from "@/lib/gallery-data";
 
-const LOGO_ANIMATION_SRC = "/videos/logo animation.mp4";
 const SLIDE_INTERVAL_MS = 3000;
 
 const collageTiles = [
@@ -17,52 +15,20 @@ const collageTiles = [
 ];
 
 export function AboutHeroSection() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [showIntro, setShowIntro] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const handleEnded = () => setShowIntro(false);
-    video.addEventListener("ended", handleEnded);
-
-    video.play().catch(() => {
-      setShowIntro(false);
-    });
-
-    return () => video.removeEventListener("ended", handleEnded);
-  }, []);
-
-  useEffect(() => {
-    if (showIntro) return;
-
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % aboutHeroSlides.length);
     }, SLIDE_INTERVAL_MS);
-
     return () => clearInterval(interval);
-  }, [showIntro]);
+  }, []);
 
   const activeItem = aboutHeroSlides[currentSlide];
 
   return (
     <section className="about-hero-section page-header blue-section">
-      {/* Logo intro — plays once */}
-      <div className={`about-hero-intro ${showIntro ? "visible" : "hidden"}`} aria-hidden={!showIntro}>
-        <video
-          ref={videoRef}
-          src={LOGO_ANIMATION_SRC}
-          muted
-          playsInline
-          className="about-hero-logo-video"
-        />
-        <div className="about-hero-intro-overlay" />
-      </div>
-
-      {/* Gallery collage backdrop */}
-      <div className={`about-hero-collage ${showIntro ? "" : "active"}`}>
+      <div className="about-hero-collage active">
         {aboutHeroSlides.map((item, index) => (
           <div
             key={item.id}
@@ -72,7 +38,6 @@ export function AboutHeroSection() {
           />
         ))}
 
-        {/* Floating collage tiles in varied shapes */}
         <div className="about-collage-tiles" aria-hidden="true">
           {collageTiles.map((tile, index) => {
             const item = aboutHeroSlides[(currentSlide + index + 1) % aboutHeroSlides.length];
@@ -93,27 +58,25 @@ export function AboutHeroSection() {
           })}
         </div>
 
-        {/* Logo shapes */}
         <div className="about-logo-shapes" aria-hidden="true">
           <div className="about-logo-shape about-logo-shape-circle">
-            <Image src="/images/aflex-logo.jpg" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
+            <Image src="/images/aflex-logo.png" alt="" width={120} height={120} style={{ objectFit: "contain", width: "auto", height: "auto" }} />
           </div>
           <div className="about-logo-shape about-logo-shape-rounded">
-            <Image src="/images/aflex-logo.jpg" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
+            <Image src="/images/aflex-logo.png" alt="" width={120} height={120} style={{ objectFit: "contain", width: "auto", height: "auto" }} />
           </div>
           <div className="about-logo-shape about-logo-shape-diamond">
-            <Image src="/images/aflex-logo.jpg" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
+            <Image src="/images/aflex-logo.png" alt="" width={120} height={120} style={{ objectFit: "contain", width: "auto", height: "auto" }} />
           </div>
           <div className="about-logo-shape about-logo-shape-hex">
-            <Image src="/images/aflex-logo.jpg" alt="" width={120} height={120} style={{ objectFit: "contain" }} />
+            <Image src="/images/aflex-logo.png" alt="" width={120} height={120} style={{ objectFit: "contain", width: "auto", height: "auto" }} />
           </div>
         </div>
 
         <div className="about-hero-collage-gradient" />
       </div>
 
-      {/* Page copy */}
-      <div className="container about-hero-content">
+      <div className="container about-hero-content page-enter">
         <span className="mono breadcrumb">
           HOME <b>/</b> ABOUT AFLEX
         </span>
@@ -124,15 +87,22 @@ export function AboutHeroSection() {
         </h1>
         <p>A premier institution for public leadership, policy research, and Africa&apos;s renaissance.</p>
 
-        {!showIntro && (
-          <div className="about-hero-caption">
-            <span className="mono">{activeItem.album}</span>
-            <span>{activeItem.title}</span>
-          </div>
-        )}
-      </div>
+        <div className="about-hero-actions button-row">
+          <a className="button button-primary about-hero-cta" href="#story">
+            <span>Our story</span>
+            <span aria-hidden="true">↓</span>
+          </a>
+          <a className="button button-outline light" href="#leadership">
+            <span>Meet leadership</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
 
-      <Weave dark />
+        <div className="about-hero-caption">
+          <span className="mono">{activeItem.album}</span>
+          <span>{activeItem.title}</span>
+        </div>
+      </div>
     </section>
   );
 }

@@ -56,6 +56,36 @@ const ROLE_STYLES: Record<UserRole, Pick<RoleConfig, 'badgeBg' | 'badgeBorder' |
     badgeText: 'text-white/70',
     permissions: [],
   },
+  academic_director: {
+    badgeBg: 'bg-[#024696]/30',
+    badgeBorder: 'border-[#024696]',
+    badgeText: 'text-white',
+    permissions: ['programs', 'events', 'research'],
+  },
+  comms_officer: {
+    badgeBg: 'bg-[#024696]/20',
+    badgeBorder: 'border-[#C9A84C]/30',
+    badgeText: 'text-[#C9A84C]',
+    permissions: ['news', 'banners', 'gallery', 'faq'],
+  },
+  hr_procurement_officer: {
+    badgeBg: 'bg-[#C9A84C]/10',
+    badgeBorder: 'border-[#C9A84C]/40',
+    badgeText: 'text-white',
+    permissions: ['vacancies', 'procurement', 'staff'],
+  },
+  editorial_reviewer: {
+    badgeBg: 'bg-[#024696]/20',
+    badgeBorder: 'border-[#024696]/60',
+    badgeText: 'text-[#C9A84C]',
+    permissions: ['news'],
+  },
+  auditor: {
+    badgeBg: 'bg-white/10',
+    badgeBorder: 'border-white/20',
+    badgeText: 'text-white/70',
+    permissions: ['audit'],
+  },
 };
 
 export const ROLES: Record<AdminRole, RoleConfig> = {
@@ -106,6 +136,46 @@ export const ROLES: Record<AdminRole, RoleConfig> = {
     department: 'Read Only',
     avatarInitials: 'VW',
     ...ROLE_STYLES.viewer,
+  },
+  academic_director: {
+    id: 'academic_director',
+    title: ROLE_LABELS.academic_director,
+    name: 'Academic Director',
+    department: 'Academic Affairs',
+    avatarInitials: 'AD',
+    ...ROLE_STYLES.academic_director,
+  },
+  comms_officer: {
+    id: 'comms_officer',
+    title: ROLE_LABELS.comms_officer,
+    name: 'Communications Officer',
+    department: 'Communications',
+    avatarInitials: 'CO',
+    ...ROLE_STYLES.comms_officer,
+  },
+  hr_procurement_officer: {
+    id: 'hr_procurement_officer',
+    title: ROLE_LABELS.hr_procurement_officer,
+    name: 'HR & Procurement',
+    department: 'Operations',
+    avatarInitials: 'HP',
+    ...ROLE_STYLES.hr_procurement_officer,
+  },
+  editorial_reviewer: {
+    id: 'editorial_reviewer',
+    title: ROLE_LABELS.editorial_reviewer,
+    name: 'Editorial Reviewer',
+    department: 'Communications',
+    avatarInitials: 'ER',
+    ...ROLE_STYLES.editorial_reviewer,
+  },
+  auditor: {
+    id: 'auditor',
+    title: ROLE_LABELS.auditor,
+    name: 'Auditor',
+    department: 'Compliance',
+    avatarInitials: 'AU',
+    ...ROLE_STYLES.auditor,
   },
 };
 

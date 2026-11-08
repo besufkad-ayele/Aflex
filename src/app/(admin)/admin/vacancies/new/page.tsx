@@ -36,24 +36,31 @@ export default function NewVacancyPage() {
 
     try {
       const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       const payload = {
-        reference_no: referenceNo.trim(),
         title: title.trim(),
         department,
+        category: 'Leadership & Executive',
         location,
-        employment_type: employmentType,
-        positions_available: Number(positionsAvailable) || 1,
-        deadline,
+        type: employmentType,
+        experience_level: Number(positionsAvailable) > 1 ? 'Multiple openings' : 'Open',
+        summary: responsibilities.trim() || title.trim(),
+        duties: responsibilities.trim() || null,
         requirements: requirements.trim() || null,
-        responsibilities: responsibilities.trim() || null,
-        application_url: applicationUrl.trim() || null,
+        compensation: applicationUrl.trim()
+          ? `Apply: ${applicationUrl.trim()}`
+          : 'Competitive institutional scale',
+        deadline: new Date(deadline).toISOString(),
         status: 'published' as const,
+        created_by: user?.id ?? null,
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data, error } = await supabase
         .from('vacancies')
-        .insert(payload as any)
+        .insert(payload as never)
         .select()
         .single();
 
@@ -61,13 +68,14 @@ export default function NewVacancyPage() {
         throw new Error(error.message);
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await supabase.from('audit_logs').insert({
+        user_id: user?.id ?? null,
+        user_email: user?.email ?? null,
         action: 'VACANCY_POSTED',
-        target_table: 'vacancies',
-        target_id: (data as any)?.id,
-        new_data: { reference_no: referenceNo, title },
-      } as any);
+        entity_type: 'vacancies',
+        entity_id: (data as { id?: string } | null)?.id ?? null,
+        changes: { reference_no: referenceNo, title },
+      } as never);
 
       await revalidateCmsContent({
         table: 'vacancies',

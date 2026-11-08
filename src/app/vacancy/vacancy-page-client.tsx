@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { SiteHeader, SiteFooter, Weave } from "@/components/site-shell";
+import { SiteHeader, SiteFooter } from "@/components/site-shell";
 import { type Vacancy } from "@/lib/vacancies-data";
 
 export default function VacancyHubPage({ vacancies }: { vacancies: Vacancy[] }) {
@@ -106,8 +106,7 @@ export default function VacancyHubPage({ vacancies }: { vacancies: Vacancy[] }) 
               </div>
             </div>
           </div>
-          <Weave dark />
-        </section>
+                  </section>
 
         {/* Search, Filter & Listings Section */}
         <section className="section" style={{ background: "#f0f5fd", color: "#024696", padding: "64px 0" }}>

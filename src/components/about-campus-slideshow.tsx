@@ -63,7 +63,7 @@ export function AboutCampusSlideshow({ locale }: AboutCampusSlideshowProps) {
   const locatorUrl = "/campus-locator";
 
   return (
-    <section className="about-campus-slideshow-section" id="campus-retreat">
+    <section className="about-campus-slideshow-section" id="campus">
       {/* Background Slides */}
       <div className="campus-slideshow-backdrop">
         {campusSlides.map((slide, index) => {

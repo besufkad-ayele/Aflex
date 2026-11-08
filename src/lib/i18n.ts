@@ -87,10 +87,10 @@ export interface LocaleCopy {
 
 export const copy: Record<Locale, LocaleCopy> = {
   en: {
-    nav: ["Home", "About AFLEX", "Programs", "News & Events", "Gallery", "Contact"],
+    nav: ["Home", "About AFLEX", "Programs", "News & Events", "Media", "Contact"],
     utility: ["Online Learning", "Library", "FAQ", "Campus Locator", "Vacancies"],
     home: {
-      eyebrow: "FEDERAL DEMOCRATIC REPUBLIC OF ETHIOPIA · COUNCIL OF MINISTERS",
+      eyebrow: "AFRICAN LEADERSHIP EXCELLENCE ACADEMY · AFLEX",
       title: "Where African",
       accent: "leadership is refined.",
       lead: "A premier academy for Africa's public, private, and civic leaders, grounded in rigorous learning and reflection at our Sululta campus.",
@@ -163,7 +163,7 @@ export const copy: Record<Locale, LocaleCopy> = {
     nav: ["መነሻ", "ስለ AFLEX", "ፕሮግራሞች", "ዜና እና ዝግጅቶች", "ጋለሪ", "ያግኙን"],
     utility: ["የመስመር ላይ ትምህርት", "ቤተ መጻሕፍት", "FAQ", "የካምፓስ ካርታ", "ቦታዎች"],
     home: {
-      eyebrow: "የኢትዮጵያ ፌዴራል ዲሞክራሲያዊ ሪፐብሊክ · የሚኒስትሮች ምክር ቤት",
+      eyebrow: "የአፍሪካ የአመራር ልህቀት አካዳሚ · AFLEX",
       title: "የአፍሪካ",
       accent: "አመራርን ማጎልበት።",
       lead: "ለአፍሪካ የህዝብ፣ የግል እና የሲቪክ መሪዎች የተቋቋመ የአመራር አካዳሚ። በሱሉልታ ካምፓስ ጥልቅ ትምህርትና ምልከታ ይሰጣል።",
@@ -236,7 +236,7 @@ export const copy: Record<Locale, LocaleCopy> = {
     nav: ["Fuula Jalqabaa", "Waa'ee AFLEX", "Sagantaalee", "Oduu fi Taateewwan", "Gaalarii", "Nu Qunnamaa"],
     utility: ["Barnoota Sarara", "Mana Kitaabaa", "FAQ", "Kaampaasii", "Carraawwan Hojii"],
     home: {
-      eyebrow: "RIPUBLIKA DIMOKRAATAWAA FEDERAALAA ITOOPHIYAA · MANA MAREE MINISTIROOTAA",
+      eyebrow: "AKKAADAAMII OLAANUMMAA HOGGANSAA AFRIKAA · AFLEX",
       title: "Bakka hoggansi",
       accent: "Afrikaa itti qophaa'u.",
       lead: "Akkaadaamii hoggansa uummataa, dhuunfaa fi siiviikii Afrikaa, barumsa cimaa fi xiinxala Kaampaasii Sulultaa irratti hundaa'e.",
@@ -306,10 +306,10 @@ export const copy: Record<Locale, LocaleCopy> = {
   },
 
   so: {
-    nav: ["Bogga Hore", "Ku Saabsan AFLEX", "Barnaamijyada", "Wararka iyo Dhacdooyinka", "Gallery", "Nala Soo Xiriir"],
+    nav: ["Bogga Hore", "Ku Saabsan AFLEX", "Barnaamijyada", "Wararka iyo Dhacdooyinka", "Media", "Nala Soo Xiriir"],
     utility: ["Waxbarashada Online-ka", "Maktabadda", "FAQ", "Khariidadda Xarunta", "Shaqooyin"],
     home: {
-      eyebrow: "JAMHUURIYADDA FEDERAALKA DIMUQRAADIGA EE ITOOBIYA · GOLAHA WASIIRRADA",
+      eyebrow: "AKADEMIGA HAGAAGGA HOGAAMINTA AFRIKA · AFLEX",
       title: "Halka hoggaanka Afrika",
       accent: "lagu kobciyo.",
       lead: "Akadeemiyad heer sare ah oo loogu talagalay hoggaamiyeyaasha Afrika, kuna dhisan waxbarasho iyo milicsi xarunta Sululta.",
@@ -382,7 +382,7 @@ export const copy: Record<Locale, LocaleCopy> = {
     nav: ["መበገሲ ገጽ", "ብዛዕባ AFLEX", "መደባት", "ዜናን ፍጻመታትን", "ጋለሪ", "ርኸቡና"],
     utility: ["ኦንላይን ትምህርቲ", "ቤተ መጻሕፍቲ", "FAQ", "ካምፓስ", "ስራታት"],
     home: {
-      eyebrow: "ፌደራላዊ ዲሞክራሳዊ ሪፓብሊክ ኢትዮጵያ · ምኽሪ ሚኒስተራት",
+      eyebrow: "ኣካዳሚ ልዑላውነት መራሕነት ኣፍሪቃ · AFLEX",
       title: "ኣብ ዝተሓደሰሉ",
       accent: "ኣመራር ኣፍሪቃ።",
       lead: "ንህዝባዊ፣ ንግልን ሲቪክን መራሕቲ ኣፍሪቃ ዝተዳለወ ኣካዳሚ።",
@@ -455,7 +455,7 @@ export const copy: Record<Locale, LocaleCopy> = {
     nav: ["Mwanzo", "Kuhusu AFLEX", "Programu", "Habari na Matukio", "Matunzio", "Wasiliana Nasi"],
     utility: ["Mafunzo Mtandaoni", "Maktaba", "FAQ", "Ramani ya Kampasi", "Nafasi za Kazi"],
     home: {
-      eyebrow: "JAMHURI YA KIDEMOKRASIA YA SHIRIKISHO LA ETHIOPIA · BARAZA LA MAWAZIRI",
+      eyebrow: "CHUO CHA UBORA WA UONGOZI WA AFRIKA · AFLEX",
       title: "Ambapo uongozi wa Afrika",
       accent: "unakomazwa.",
       lead: "Chuo cha kiwango cha juu kwa viongozi wa umma, binafsi na kiraia wa Afrika, katika mazingira ya kujifunza na kutafakari katika kampasi yetu ya Sululta.",
@@ -528,7 +528,7 @@ export const copy: Record<Locale, LocaleCopy> = {
     nav: ["Gida", "Game da AFLEX", "Shirye-shirye", "Labarai da Abubuwan da suka faru", "Gidan Hoto", "Tuntube Mu"],
     utility: ["Koyon Kan Layi", "Dakin Karatu", "FAQ", "Taswirar Harabar", "Ayyuka"],
     home: {
-      eyebrow: "JAMHURIYAR TARAYYAR DIMOKURADIYYAR HABASH · MAJALISAR MINISTOCI",
+      eyebrow: "KWALEJIN FIFIKON SHUGABANCI NA AFIRKA · AFLEX",
       title: "Inda jagorancin Afirka",
       accent: "ake inganta.",
       lead: "Cibiyar kwarewa ga shugabannin jama'a, masu zaman kansu da na al'umma na Afirka a harabar Sululta.",
@@ -601,7 +601,7 @@ export const copy: Record<Locale, LocaleCopy> = {
     nav: ["Ile", "Nipa AFLEX", "Awọn Eto", "Awọn Iroyin ati Awọn Iṣẹlẹ", "Àwòrán", "Kan si Wa"],
     utility: ["Ẹkọ lori Ayelujara", "Ile-ikawe", "FAQ", "Maapu Ile-ẹkọ", "Awọn Iṣẹ"],
     home: {
-      eyebrow: "FẸ́DẸ́RÀLÌ DÍMỌ́ḰRÀTÍKÌ RẸ́PÚBLIKÌ TI ETIÓPÍÀ · ÌGBÌMỌ̀ ÀWỌN MINISTÀ",
+      eyebrow: "ILÉ-Ẹ̀KỌ́ GÍGA TI ÌDARÍ Ẹ̀KỌ́ AFIRIKA · AFLEX",
       title: "Ibi ti a ti n ṣe atunṣe",
       accent: "olori Afirika.",
       lead: "Ile-ẹkọ giga fun awọn olori ilu, aladani ati awujọ Afirika ni Sululta.",

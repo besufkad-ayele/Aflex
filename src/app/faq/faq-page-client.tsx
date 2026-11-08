@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { SiteHeader, SiteFooter, Weave } from "@/components/site-shell";
+import { SiteHeader, SiteFooter } from "@/components/site-shell";
 import { FaqStewardAgent } from "@/components/faq-steward-agent";
 
 interface FAQItem {
@@ -145,221 +145,137 @@ export default function FaqPage({ initialFaqs }: { initialFaqs?: FAQItem[] }) {
         <section className="page-header blue-section">
           <div className="container">
             <span className="mono breadcrumb">HOME <b>/</b> FREQUENTLY ASKED QUESTIONS</span>
-            <h1>Knowledge & Guidance<br /><em>Help Center.</em></h1>
-            <p>
+            <h1 style={{ color: "#ffffff" }}>Knowledge & Guidance<br /><em>Help Center.</em></h1>
+            <p style={{ color: "rgba(255,255,255,0.88)" }}>
               Find clear answers regarding academy admissions, Sululta residential life, digital LMS access, credentials, and career appointments.
             </p>
           </div>
-          <Weave dark />
         </section>
 
         <FaqStewardAgent />
 
-        {/* FAQ Search & Interactive Accordions */}
-        <section className="section" style={{ background: "#f0f5fd", color: "#024696", padding: "64px 0" }}>
+        <section className="section faq-browse-section" aria-labelledby="faq-browse-heading">
           <div className="container">
-            
-            {/* Search Box */}
-            <div style={{ maxWidth: "700px", margin: "0 auto 40px" }}>
-              <div style={{ position: "relative" }}>
-                <input
-                  type="text"
-                  placeholder="Search questions by keyword, topic, or phrase..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input-field"
-                  style={{
-                    background: "#fff",
-                    borderColor: "#cbd5e1",
-                    color: "#024696",
-                    padding: "16px 20px",
-                    borderRadius: "6px",
-                    fontSize: "16px",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.05)"
-                  }}
-                />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery("")}
-                    style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "rgba(2,70,150,0.4)", cursor: "pointer", fontSize: "16px" }}
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
+            <div className="faq-browse-header">
+              <span className="eyebrow">KNOWLEDGE BASE</span>
+              <h2 id="faq-browse-heading">
+                Browse academy
+                <br />
+                <em>answers & guidance.</em>
+              </h2>
             </div>
 
-            {/* Category Filter Tabs */}
-            <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "8px", marginBottom: "32px" }}>
+            <div className="faq-search-wrap">
+              <input
+                type="text"
+                placeholder="Search questions by keyword, topic, or phrase..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="faq-search-input"
+                aria-label="Search FAQ questions"
+              />
+              {searchQuery ? (
+                <button
+                  type="button"
+                  className="faq-search-clear"
+                  onClick={() => setSearchQuery("")}
+                  aria-label="Clear search"
+                >
+                  ✕
+                </button>
+              ) : null}
+            </div>
+
+            <div className="faq-category-row" role="tablist" aria-label="FAQ categories">
               {categories.map((cat) => (
                 <button
                   key={cat}
-                  className={`filter ${selectedCategory === cat ? "active" : ""}`}
-                  onClick={() => setSelectedCategory(cat)}
                   type="button"
-                  style={{ margin: 0 }}
+                  role="tab"
+                  aria-selected={selectedCategory === cat}
+                  className={`faq-category-chip ${selectedCategory === cat ? "active" : ""}`}
+                  onClick={() => setSelectedCategory(cat)}
                 >
                   {cat}
                 </button>
               ))}
             </div>
 
-            {/* Quick Actions (Expand/Collapse) */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: "860px", margin: "0 auto 16px" }}>
-              <span className="mono" style={{ color: "rgba(2,70,150,0.6)", fontSize: "12px" }}>
+            <div className="faq-toolbar">
+              <span className="mono faq-count">
                 Showing {filteredFaqs.length} question{filteredFaqs.length === 1 ? "" : "s"}
               </span>
-              <div style={{ display: "flex", gap: "12px" }}>
-                <button
-                  type="button"
-                  onClick={expandAll}
-                  style={{ background: "none", border: "none", color: "var(--gold)", fontSize: "12px", cursor: "pointer", fontWeight: 600 }}
-                >
-                  Expand All +
+              <div className="faq-toolbar-actions">
+                <button type="button" className="faq-toolbar-btn" onClick={expandAll}>
+                  Expand all +
                 </button>
-                <span style={{ color: "#cbd5e1" }}>|</span>
-                <button
-                  type="button"
-                  onClick={collapseAll}
-                  style={{ background: "none", border: "none", color: "rgba(2,70,150,0.6)", fontSize: "12px", cursor: "pointer" }}
-                >
-                  Collapse All −
+                <button type="button" className="faq-toolbar-btn muted" onClick={collapseAll}>
+                  Collapse all −
                 </button>
               </div>
             </div>
 
-            {/* Accordion List */}
-            <div style={{ maxWidth: "860px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div className="faq-accordion-list">
               {filteredFaqs.map((faq) => {
                 const isOpen = !!openItems[faq.id];
                 return (
-                  <div
-                    key={faq.id}
-                    style={{
-                      background: "#fff",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: "6px",
-                      overflow: "hidden",
-                      boxShadow: isOpen ? "0 4px 12px rgba(0,0,0,0.04)" : "0 1px 3px rgba(0,0,0,0.02)",
-                      transition: "all 0.2s ease"
-                    }}
-                  >
+                  <article key={faq.id} className={`faq-accordion-card ${isOpen ? "is-open" : ""}`}>
                     <button
                       type="button"
+                      className="faq-accordion-trigger"
                       onClick={() => toggleItem(faq.id)}
-                      style={{
-                        width: "100%",
-                        padding: "20px 24px",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        background: isOpen ? "rgba(212, 175, 55, 0.03)" : "none",
-                        border: "none",
-                        textAlign: "left",
-                        cursor: "pointer",
-                        gap: "16px"
-                      }}
+                      aria-expanded={isOpen}
                     >
-                      <div>
-                        <span className="mono" style={{ fontSize: "11px", color: "var(--gold)", fontWeight: 700, display: "block", marginBottom: "4px" }}>
-                          {faq.category.toUpperCase()}
-                        </span>
-                        <h3 style={{ margin: 0, fontSize: "16px", color: "#0f172a", fontWeight: 600, lineHeight: "1.4" }}>
-                          {faq.question}
-                        </h3>
+                      <div className="faq-accordion-copy">
+                        <span className="mono faq-accordion-category">{faq.category}</span>
+                        <h3>{faq.question}</h3>
                       </div>
-                      <span
-                        style={{
-                          fontSize: "20px",
-                          color: "var(--gold)",
-                          width: "28px",
-                          height: "28px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          borderRadius: "50%",
-                          background: isOpen ? "rgba(212, 175, 55, 0.15)" : "#f1f5f9",
-                          flexShrink: 0
-                        }}
-                      >
+                      <span className="faq-accordion-icon" aria-hidden="true">
                         {isOpen ? "−" : "+"}
                       </span>
                     </button>
 
-                    {isOpen && (
-                      <div
-                        style={{
-                          padding: "0 24px 24px",
-                          color: "#475569",
-                          fontSize: "14.5px",
-                          lineHeight: "1.7",
-                          borderTop: "1px solid #f1f5f9"
-                        }}
-                      >
+                    {isOpen ? (
+                      <div className="faq-accordion-answer">
                         {faq.answer}
                       </div>
-                    )}
-                  </div>
+                    ) : null}
+                  </article>
                 );
               })}
 
-              {filteredFaqs.length === 0 && (
-                <div style={{ padding: "64px 24px", textAlign: "center", background: "#fff", borderRadius: "6px", border: "1px solid #e2e8f0" }}>
-                  <span style={{ fontSize: "36px", display: "block", marginBottom: "12px" }}>❓</span>
-                  <h3 style={{ margin: "0 0 8px", fontSize: "20px" }}>No matching answers found</h3>
-                  <p style={{ color: "rgba(2,70,150,0.6)", maxWidth: "480px", margin: "0 auto 24px", fontSize: "14px" }}>
-                    Have a specific question not covered here? Reach out directly to our Academy Admissions & Inquiries team.
+              {filteredFaqs.length === 0 ? (
+                <div className="faq-empty-state">
+                  <h3>No matching answers found</h3>
+                  <p>
+                    Have a specific question not covered here? Reach out directly to our Academy Admissions &amp; Inquiries team.
                   </p>
                   <Link href="/contact" className="button button-primary">
                     <span>Contact Academy Inquiries</span>
                     <span>↗</span>
                   </Link>
                 </div>
-              )}
+              ) : null}
             </div>
 
-            {/* Still Have Questions Box */}
-            <div
-              style={{
-                maxWidth: "860px",
-                margin: "64px auto 0",
-                padding: "36px 32px",
-                background: "#050508",
-                color: "#fff",
-                borderRadius: "6px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "wrap",
-                gap: "24px"
-              }}
-            >
-              <div>
-                <span className="eyebrow" style={{ color: "var(--gold)" }}>DIRECT ASSISTANCE</span>
-                <h3 style={{ margin: "6px 0 4px", fontSize: "22px", color: "#fff" }}>
-                  Still have questions?
-                </h3>
-                <p style={{ margin: 0, fontSize: "14px", color: "rgba(255,255,255,0.75)" }}>
+            <div className="faq-assist-banner">
+              <div className="faq-assist-copy">
+                <span className="eyebrow">DIRECT ASSISTANCE</span>
+                <h3>Still have questions?</h3>
+                <p>
                   Our admissions counselors and protocol officers are on hand to assist with your delegation or enrollment inquiry.
                 </p>
               </div>
-
-              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+              <div className="faq-assist-actions">
                 <Link href="/contact" className="button button-primary">
-                  <span>Send Inquiries</span>
+                  <span>Send inquiries</span>
                   <span>↗</span>
                 </Link>
-                <a
-                  href="tel:+251111234567"
-                  className="button button-outline light"
-                  style={{ fontSize: "13px" }}
-                >
-                  <span>📞 Call Hotline</span>
+                <a href="tel:+251111234567" className="button button-outline">
+                  <span>Call hotline</span>
                 </a>
               </div>
             </div>
-
           </div>
         </section>
       </main>
